@@ -17,19 +17,25 @@ import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.sail.SailException;
 import org.openrdf.sail.helpers.SailBase;
 import org.openrdf.sail.helpers.SailConnectionBase;
+import org.tmapi.core.TopicMap;
+import org.tmapi.core.TopicMapExistsException;
+import org.tmapi.core.TopicMapSystem;
 
 /**
  * @author userunknown
  *
  */
 public class TmapiSailConnection extends SailConnectionBase {
+	
+	
+	private TopicMapSystem tmSystem;
 
 	/**
 	 * @param sailBase
 	 */
 	public TmapiSailConnection(SailBase sailBase) {
 		super(sailBase);
-		// TODO Auto-generated constructor stub
+		tmSystem = ((TmapiStore) sailBase).getTmSystem();
 	}
 
 	/* (non-Javadoc)
@@ -38,8 +44,13 @@ public class TmapiSailConnection extends SailConnectionBase {
 	@Override
 	protected void addStatementInternal(Resource arg0, URI arg1, Value arg2,
 			Resource... arg3) throws SailException {
-		// TODO Auto-generated method stub
-
+		System.out.println("hier" + arg0 + arg1 + arg2 + arg3);
+		TopicMap tm;
+		try {
+			tm = tmSystem.createTopicMap(arg3[0].toString());
+		} catch (TopicMapExistsException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/* (non-Javadoc)

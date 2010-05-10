@@ -7,7 +7,6 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
 import org.openrdf.sail.helpers.SailBase;
-import org.openrdf.sail.memory.model.MemValueFactory;
 import org.tmapi.core.FactoryConfigurationException;
 import org.tmapi.core.TMAPIException;
 import org.tmapi.core.TopicMapSystem;
@@ -24,7 +23,7 @@ public class TmapiStore extends SailBase {
 	/**
 	 * Factory/cache for MemValue objects.
 	 */
-	private final MemValueFactory valueFactory = new MemValueFactory();
+	private TmapiValueFactory valueFactory = new TmapiValueFactory();
 	
 	private TopicMapSystem tmSystem;
 
@@ -60,7 +59,7 @@ public class TmapiStore extends SailBase {
 	 * @see org.openrdf.sail.Sail#getValueFactory()
 	 */
 	public ValueFactory getValueFactory() {
-		return null;
+		return valueFactory;
 	}
 
 	/* (non-Javadoc)
