@@ -10,8 +10,8 @@
 
 	<artifactId>sesame-sail-tmapi</artifactId>
 
-	<name>OpenRDF Sesame: MemoryStore</name>
-	<description>Sail implementation that stores data in main memory, optionally using a dump-restore file for persistence.</description>
+	<name>OpenRDF Sesame: TMAPI</name>
+	<description>Sail implementation that stores data in TMAPI</description>
 
 	<dependencies>
 		<dependency>
@@ -65,7 +65,22 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.tinytim</groupId>
+			<artifactId>tinytim</artifactId>
+			<version>2.0.0a6</version>
+		</dependency>
 	</dependencies>
+		<repositories>
+		<repository>
+			<id>tmapi</id>
+			<url>http://www.tmapi.org/maven-repository/</url>
+		</repository>
+		<repository>
+			<id>Topic Maps Lab third_party</id>
+			<url>http://maven.topicmapslab.de/third_party</url>
+		</repository>
+	</repositories>
 
 	<scm>
 		<connection>scm:svn:https://repo.aduna-software.org/svn/org.openrdf/sesame/branches/2.3/core/sail/memory</connection>
