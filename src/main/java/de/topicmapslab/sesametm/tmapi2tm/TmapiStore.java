@@ -3,6 +3,9 @@
  */
 package de.topicmapslab.sesametm.tmapi2tm;
 
+import info.aduna.concurrent.locks.Lock;
+import info.aduna.concurrent.locks.ReadPrefReadWriteLockManager;
+import info.aduna.concurrent.locks.ReadWriteLockManager;
 import info.aduna.iteration.CloseableIteration;
 
 import org.openrdf.model.Resource;
@@ -37,6 +40,14 @@ public class TmapiStore extends SailBase {
 	private TmapiValueFactory valueFactory = new TmapiValueFactory();
 	
 	private TopicMapSystem tmSystem;
+	
+	
+	/**
+	 * Lock manager used to give the snapshot cleanup thread exclusive access to
+	 * the statement list.
+	 */
+	private final ReadWriteLockManager statementListLockManager = new ReadPrefReadWriteLockManager(
+			debugEnabled());
 
 	/**
 	 * @throws TMAPIException 
@@ -89,14 +100,23 @@ public class TmapiStore extends SailBase {
 		return tmSystem;
 	}
 	
-
-	
-	
 	protected <X extends Exception> CloseableIteration<ContextStatementImpl, X> createStatementIterator(
 			Class<QueryEvaluationException> class1, Resource subj, URI pred,
-			Value obj, boolean b, Resource[] contexts) {
-		return new TmapiStatementIterator<X>();
+			Value obj, boolean includeInferred, Resource[] contexts) {
+		return new TmapiStatementIterator<X>(subj, pred, obj, includeInferred,contexts);
 	}
+	
+	
+	protected Lock getStatementsReadLock()
+	throws SailException
+{
+	try {
+		return statementListLockManager.getReadLock();
+	}
+	catch (InterruptedException e) {
+		throw new SailException(e);
+	}
+}
 	
 
 }

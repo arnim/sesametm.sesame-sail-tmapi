@@ -115,10 +115,15 @@ public class TmapiStoreTest {
 	public final void testSsparql() throws Exception {
 			String queryString = "CONSTRUCT   { <http://www.google.com/predicate2> <http://www.google.com/predicate> ?o }  WHERE       { <http://www.google.com/predicatehe> <http://www.google.com/predicate> ?o}";
 			GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
+			System.out.println(0);
 			GraphQueryResult result = query.evaluate();
+			System.out.println("has ne " + result.hasNext());
 			System.out.println(1);
-			System.out.println(result.hasNext());
-			System.out.println(3);
+
+			System.out.println("nesxt is" + result.next());
+			System.out.println(2);
+//			System.out.println(result.hasNext());
+//			System.out.println(3);
 	}
 
 	/**

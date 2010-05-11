@@ -3,8 +3,10 @@
  */
 package de.topicmapslab.sesametm.tmapi2tm;
 
+import info.aduna.concurrent.locks.Lock;
 import info.aduna.iteration.CloseableIteration;
 import info.aduna.iteration.CloseableIteratorIteration;
+import info.aduna.iteration.LockingIteration;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -123,16 +125,19 @@ public class TmapiSailConnection extends SailConnectionBase {
 		tupleExpr = tupleExpr.clone();
 		TripleSource tripleSource = new TmapiTripleSource(includeInferred);
 		EvaluationStrategyImpl strategy = new EvaluationStrategyImpl(tripleSource, dataset);
-
+		
+		Lock stLock = store.getStatementsReadLock();
 		CloseableIteration<BindingSet, QueryEvaluationException> iter;
 		try {
 			iter = strategy.evaluate(tupleExpr, EmptyBindingSet.getInstance());
+			return new LockingIteration<BindingSet, QueryEvaluationException>(stLock, iter);
 		} catch (QueryEvaluationException e) {
 			e.printStackTrace();
+			stLock.release();
+			throw new SailException(e);
 		}
 
-//		System.out.println("wichtige in CloseableIteration 4"+ "Incoming query model:\n{}"+ tupleExpr.toString());
-		return null;
+//		System.out.println("Incoming query model:\n{}"+ tupleExpr.toString());
 	}
 
 	/*
@@ -290,8 +295,6 @@ public class TmapiSailConnection extends SailConnectionBase {
 		public CloseableIteration<? extends Statement, QueryEvaluationException> getStatements(
 				Resource subj, URI pred, Value obj, Resource... contexts)
 				throws QueryEvaluationException {
-			System.out.println(" ---  : " + subj + " : " + pred + " : " + obj + " : ");
-			
 			return store.createStatementIterator(QueryEvaluationException.class, subj, pred, obj,
 					!includeInferred, contexts);
 		}
