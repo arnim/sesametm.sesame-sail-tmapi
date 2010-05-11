@@ -3,13 +3,18 @@
  */
 package de.topicmapslab.sesametm.tmapi2tm;
 
+import java.util.ArrayList;
+
 import info.aduna.iteration.CloseableIteration;
+import info.aduna.iteration.CloseableIterationBase;
+import info.aduna.iteration.CloseableIteratorIteration;
 
 import org.openrdf.model.Namespace;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.QueryEvaluationException;
@@ -22,7 +27,7 @@ import org.tmapi.core.TopicMapExistsException;
 import org.tmapi.core.TopicMapSystem;
 
 /**
- * @author userunknown
+ * @author Arnim Bleier
  *
  */
 public class TmapiSailConnection extends SailConnectionBase {
@@ -58,7 +63,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void clearInternal(Resource... arg0) throws SailException {
-		// TODO Auto-generated method stub
+		System.out.println("clearInternal");
 
 	}
 
@@ -67,7 +72,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void clearNamespacesInternal() throws SailException {
-		// TODO Auto-generated method stub
+		System.out.println("clearNamespacesInternal");
 
 	}
 
@@ -76,7 +81,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void closeInternal() throws SailException {
-		// TODO Auto-generated method stub
+		System.out.println("closeInternal");
 
 	}
 
@@ -85,7 +90,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void commitInternal() throws SailException {
-		// TODO Auto-generated method stub
+		System.out.println("commitInternal");
 
 	}
 
@@ -96,7 +101,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	protected CloseableIteration<? extends BindingSet, QueryEvaluationException> evaluateInternal(
 			TupleExpr arg0, Dataset arg1, BindingSet arg2, boolean arg3)
 			throws SailException {
-		// TODO Auto-generated method stub
+		System.out.println("wichtige in CloseableIteration");
 		return null;
 	}
 
@@ -106,8 +111,31 @@ public class TmapiSailConnection extends SailConnectionBase {
 	@Override
 	protected CloseableIteration<? extends Resource, SailException> getContextIDsInternal()
 			throws SailException {
-		// TODO Auto-generated method stub
-		return null;
+		System.out.println("wichtige in CloseableIteration 3");
+		CloseableIteration<? extends Resource, SailException> result = new CloseableIterationBase<Resource, SailException>() {
+
+			public boolean hasNext() throws SailException {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			public Resource next() throws SailException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			public void remove() throws SailException {
+				// TODO Auto-generated method stub
+				
+			}};
+			System.out.println("  33");
+			
+			ArrayList<Resource> contextIDs = new ArrayList<Resource>(32);
+			contextIDs.add(new URIImpl("http://www.openrdf.org/doc/sesame2/2.3.1/apidocs/"));
+
+			CloseableIteratorIteration<Resource, SailException> result2 = new CloseableIteratorIteration<Resource, SailException>(contextIDs.iterator());
+			
+		return result2;
 	}
 
 	/* (non-Javadoc)
@@ -115,7 +143,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected String getNamespaceInternal(String arg0) throws SailException {
-		// TODO Auto-generated method stub
+		System.out.println("getNamespaceInternal");
 		return null;
 	}
 
@@ -125,7 +153,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	@Override
 	protected CloseableIteration<? extends Namespace, SailException> getNamespacesInternal()
 			throws SailException {
-		// TODO Auto-generated method stub
+		System.out.println("wichtige in CloseableIteration 1");
 		return null;
 	}
 
@@ -136,7 +164,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	protected CloseableIteration<? extends Statement, SailException> getStatementsInternal(
 			Resource arg0, URI arg1, Value arg2, boolean arg3, Resource... arg4)
 			throws SailException {
-		// TODO Auto-generated method stub
+		System.out.println("wichtige in CloseableIteration 2");
 		return null;
 	}
 
@@ -145,7 +173,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void removeNamespaceInternal(String arg0) throws SailException {
-		// TODO Auto-generated method stub
+		System.out.println("removeNamespaceInternal");
 
 	}
 
@@ -155,7 +183,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	@Override
 	protected void removeStatementsInternal(Resource arg0, URI arg1,
 			Value arg2, Resource... arg3) throws SailException {
-		// TODO Auto-generated method stub
+		System.out.println("removeNamespaceInternal");
 
 	}
 
@@ -164,7 +192,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void rollbackInternal() throws SailException {
-		// TODO Auto-generated method stub
+		System.out.println("rollbackInternal");
 
 	}
 
@@ -174,7 +202,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	@Override
 	protected void setNamespaceInternal(String arg0, String arg1)
 			throws SailException {
-		// TODO Auto-generated method stub
+		System.out.println("setNamespaceInternal");
 
 	}
 
@@ -183,7 +211,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected long sizeInternal(Resource... arg0) throws SailException {
-		// TODO Auto-generated method stub
+		System.out.println("sizeInternal 0");
 		return 0;
 	}
 
@@ -192,8 +220,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void startTransactionInternal() throws SailException {
-		// TODO Auto-generated method stub
-
+		System.out.println("startTransactionInternal");
 	}
 
 }

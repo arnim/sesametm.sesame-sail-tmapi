@@ -53,6 +53,7 @@ public class TmapiStore extends SailBase {
 
 
 	protected void shutDownInternal() throws SailException {
+		System.out.println("shutDownInternal");
 	}
 
 	/* (non-Javadoc)
