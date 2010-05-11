@@ -18,6 +18,8 @@ import org.openrdf.query.QueryLanguage;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
+import org.openrdf.repository.sail.SailRepositoryConnection;
+import org.openrdf.sail.memory.MemoryStore;
 import org.tmapi.core.Association;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
@@ -81,10 +83,32 @@ public class TmapiStoreTest {
 	public void tearDown() throws Exception {
 	}
 	
-	@Test
-	public final void testGetContextIDs() throws Exception {
-		assertEquals(1,_con.getContextIDs().asList().size());
-	}
+//	@Test
+//	public final void testGetContextIDs() throws Exception {
+//		assertEquals(1,_con.getContextIDs().asList().size());
+//		String queryString = "CONSTRUCT   { ?s ?p ?o }  WHERE       { ?s ?p ?o}";
+//		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
+//		GraphQueryResult result = query.evaluate();
+//	}
+//	
+//	@Test
+//	public final void testTest() {
+//		try {
+//			System.out.println("huhu");
+//			SailRepository sr = new SailRepository(new MemoryStore());
+//			sr.initialize();
+//			SailRepositoryConnection mc =  sr.getConnection();
+//			String queryString = "CONSTRUCT   { ?s ?p ?o }  WHERE       { ?s ?p ?o}";
+//			GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
+//			GraphQueryResult result = query.evaluate();
+//			System.out.println("huhu 2");
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//
+//		
+//	}
 	
 	
 	@Test
