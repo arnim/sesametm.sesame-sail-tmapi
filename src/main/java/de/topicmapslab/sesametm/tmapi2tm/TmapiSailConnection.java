@@ -21,6 +21,8 @@ import org.openrdf.query.Dataset;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.algebra.evaluation.TripleSource;
+import org.openrdf.query.algebra.evaluation.impl.EvaluationStrategyImpl;
+import org.openrdf.query.impl.EmptyBindingSet;
 import org.openrdf.sail.SailException;
 import org.openrdf.sail.helpers.SailConnectionBase;
 import org.openrdf.sail.memory.model.ReadMode;
@@ -116,11 +118,20 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected CloseableIteration<? extends BindingSet, QueryEvaluationException> evaluateInternal(
-			TupleExpr tupleExpr, Dataset arg1, BindingSet arg2, boolean includeInferred)
+			TupleExpr tupleExpr, Dataset dataset, BindingSet arg2, boolean includeInferred)
 			throws SailException {
 		tupleExpr = tupleExpr.clone();
 		TripleSource tripleSource = new TmapiTripleSource(includeInferred);
-		System.out.println("wichtige in CloseableIteration 4"+ "Incoming query model:\n{}"+ tupleExpr.toString());
+		EvaluationStrategyImpl strategy = new EvaluationStrategyImpl(tripleSource, dataset);
+
+		CloseableIteration<BindingSet, QueryEvaluationException> iter;
+		try {
+			iter = strategy.evaluate(tupleExpr, EmptyBindingSet.getInstance());
+		} catch (QueryEvaluationException e) {
+			e.printStackTrace();
+		}
+
+//		System.out.println("wichtige in CloseableIteration 4"+ "Incoming query model:\n{}"+ tupleExpr.toString());
 		return null;
 	}
 
@@ -277,8 +288,11 @@ public class TmapiSailConnection extends SailConnectionBase {
 		}
 
 		public CloseableIteration<? extends Statement, QueryEvaluationException> getStatements(
-				Resource arg0, URI arg1, Value arg2, Resource... arg3)
+				Resource subj, URI pred, Value obj, Resource... arg3)
 				throws QueryEvaluationException {
+			System.out.println(" --- " + QueryEvaluationException.class + " : " + subj + " : " + pred + " : " + obj + " : " +
+					!includeInferred);
+			
 			System.out.println("fettt");
 			return null;
 		}

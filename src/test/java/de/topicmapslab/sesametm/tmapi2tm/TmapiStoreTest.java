@@ -47,7 +47,7 @@ public class TmapiStoreTest {
 		_con = _tmapiRepository.getConnection();
 		_tm = _sail.getTmSystem().createTopicMap("ha:lo");
 		Topic t1 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("Sub:ject"));
-		Topic t2 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("predi:cate"));
+		Topic t2 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("http://www.google.com/predicate"));
 		Topic t3 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("ob:ject"));
 		Topic rt1 =_tm.createTopicBySubjectIdentifier(_tm.createLocator("Sub:jectROletype"));
 		Topic rt2 =_tm.createTopicBySubjectIdentifier(_tm.createLocator("Object:jectROletype"));
@@ -113,7 +113,7 @@ public class TmapiStoreTest {
 	
 	@Test
 	public final void testSsparql() throws Exception {
-			String queryString = "CONSTRUCT   { ?s ?p ?o }  WHERE       { ?s ?p ?o}";
+			String queryString = "CONSTRUCT   { ?s <http://www.google.com/predicate> ?o }  WHERE       { ?s <http://www.google.com/predicate> ?o}";
 			GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
 			GraphQueryResult result = query.evaluate();
 			System.out.println(1);
