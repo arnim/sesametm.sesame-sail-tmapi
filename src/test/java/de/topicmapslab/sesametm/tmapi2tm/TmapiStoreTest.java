@@ -113,17 +113,12 @@ public class TmapiStoreTest {
 	
 	@Test
 	public final void testSsparql() throws Exception {
-			
-System.out.println(1);
 			String queryString = "CONSTRUCT   { ?s ?p ?o }  WHERE       { ?s ?p ?o}";
-			System.out.println(2);
-
 			GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
-			System.out.println(3);
-
 			GraphQueryResult result = query.evaluate();
-			System.out.println(4);
-
+			System.out.println(1);
+			System.out.println(result.hasNext());
+			System.out.println(3);
 	}
 
 	/**

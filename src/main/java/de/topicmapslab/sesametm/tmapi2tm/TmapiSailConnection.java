@@ -14,14 +14,16 @@ import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
+import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.algebra.TupleExpr;
+import org.openrdf.query.algebra.evaluation.TripleSource;
 import org.openrdf.sail.SailException;
-import org.openrdf.sail.helpers.SailBase;
 import org.openrdf.sail.helpers.SailConnectionBase;
+import org.openrdf.sail.memory.model.ReadMode;
 import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMapSystem;
 
@@ -32,12 +34,14 @@ import org.tmapi.core.TopicMapSystem;
 public class TmapiSailConnection extends SailConnectionBase {
 
 	private TopicMapSystem tmSystem;
+	protected final TmapiStore store;
 
 	/**
 	 * @param sailBase
 	 */
-	public TmapiSailConnection(SailBase sailBase) {
+	public TmapiSailConnection(TmapiStore sailBase) {
 		super(sailBase);
+		this.store = sailBase;
 		tmSystem = ((TmapiStore) sailBase).getTmSystem();
 	}
 
@@ -112,9 +116,11 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected CloseableIteration<? extends BindingSet, QueryEvaluationException> evaluateInternal(
-			TupleExpr arg0, Dataset arg1, BindingSet arg2, boolean arg3)
+			TupleExpr tupleExpr, Dataset arg1, BindingSet arg2, boolean includeInferred)
 			throws SailException {
-		System.out.println("wichtige in CloseableIteration");
+		tupleExpr = tupleExpr.clone();
+		TripleSource tripleSource = new TmapiTripleSource(includeInferred);
+		System.out.println("wichtige in CloseableIteration 4"+ "Incoming query model:\n{}"+ tupleExpr.toString());
 		return null;
 	}
 
@@ -252,5 +258,30 @@ public class TmapiSailConnection extends SailConnectionBase {
 	protected void startTransactionInternal() throws SailException {
 		System.out.println("startTransactionInternal");
 	}
+	
+	
+	/**
+	 * Implementation of the TripleSource interface from the Sail Query Model
+	 */
+	protected class TmapiTripleSource implements TripleSource {
+
+		protected final boolean includeInferred;
+
+		
+		public TmapiTripleSource(boolean includeInferred) {
+			this.includeInferred = includeInferred;
+		}
+
+		public ValueFactory getValueFactory() {
+			return store.getValueFactory();
+		}
+
+		public CloseableIteration<? extends Statement, QueryEvaluationException> getStatements(
+				Resource arg0, URI arg1, Value arg2, Resource... arg3)
+				throws QueryEvaluationException {
+			System.out.println("fettt");
+			return null;
+		}
+	} // end inner class TmapiTripleSource
 
 }
