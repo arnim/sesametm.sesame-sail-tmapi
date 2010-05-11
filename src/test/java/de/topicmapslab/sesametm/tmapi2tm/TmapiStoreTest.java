@@ -113,7 +113,7 @@ public class TmapiStoreTest {
 	
 	@Test
 	public final void testSsparql() throws Exception {
-			String queryString = "CONSTRUCT   { ?s <http://www.google.com/predicate> ?o }  WHERE       { ?s <http://www.google.com/predicate> ?o}";
+			String queryString = "CONSTRUCT   { <http://www.google.com/predicate2> <http://www.google.com/predicate> ?o }  WHERE       { <http://www.google.com/predicatehe> <http://www.google.com/predicate> ?o}";
 			GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
 			GraphQueryResult result = query.evaluate();
 			System.out.println(1);

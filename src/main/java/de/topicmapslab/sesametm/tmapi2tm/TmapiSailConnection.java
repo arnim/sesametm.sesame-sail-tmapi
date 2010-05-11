@@ -288,13 +288,12 @@ public class TmapiSailConnection extends SailConnectionBase {
 		}
 
 		public CloseableIteration<? extends Statement, QueryEvaluationException> getStatements(
-				Resource subj, URI pred, Value obj, Resource... arg3)
+				Resource subj, URI pred, Value obj, Resource... contexts)
 				throws QueryEvaluationException {
-			System.out.println(" --- " + QueryEvaluationException.class + " : " + subj + " : " + pred + " : " + obj + " : " +
-					!includeInferred);
+			System.out.println(" ---  : " + subj + " : " + pred + " : " + obj + " : ");
 			
-			System.out.println("fettt");
-			return null;
+			return store.createStatementIterator(QueryEvaluationException.class, subj, pred, obj,
+					!includeInferred, contexts);
 		}
 	} // end inner class TmapiTripleSource
 

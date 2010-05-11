@@ -3,10 +3,21 @@
  */
 package de.topicmapslab.sesametm.tmapi2tm;
 
+import info.aduna.iteration.CloseableIteration;
+
+import org.openrdf.model.Resource;
+import org.openrdf.model.Statement;
+import org.openrdf.model.URI;
+import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
+import org.openrdf.model.impl.ContextStatementImpl;
+import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
 import org.openrdf.sail.helpers.SailBase;
+import org.openrdf.sail.memory.model.MemStatement;
+import org.openrdf.sail.memory.model.MemStatementIterator;
+import org.openrdf.sail.memory.model.ReadMode;
 import org.tmapi.core.FactoryConfigurationException;
 import org.tmapi.core.TMAPIException;
 import org.tmapi.core.TopicMapSystem;
@@ -76,6 +87,15 @@ public class TmapiStore extends SailBase {
 
 	public TopicMapSystem getTmSystem() {
 		return tmSystem;
+	}
+	
+
+	
+	
+	protected <X extends Exception> CloseableIteration<ContextStatementImpl, X> createStatementIterator(
+			Class<QueryEvaluationException> class1, Resource subj, URI pred,
+			Value obj, boolean b, Resource[] contexts) {
+		return new TmapiStatementIterator<X>();
 	}
 	
 
