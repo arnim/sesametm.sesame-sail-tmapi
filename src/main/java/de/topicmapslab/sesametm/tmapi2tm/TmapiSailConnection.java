@@ -3,12 +3,11 @@
  */
 package de.topicmapslab.sesametm.tmapi2tm;
 
+import info.aduna.iteration.CloseableIteration;
+import info.aduna.iteration.CloseableIteratorIteration;
+
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import info.aduna.iteration.CloseableIteration;
-import info.aduna.iteration.CloseableIterationBase;
-import info.aduna.iteration.CloseableIteratorIteration;
 
 import org.openrdf.model.Namespace;
 import org.openrdf.model.Resource;
@@ -24,8 +23,6 @@ import org.openrdf.sail.SailException;
 import org.openrdf.sail.helpers.SailBase;
 import org.openrdf.sail.helpers.SailConnectionBase;
 import org.tmapi.core.Locator;
-import org.tmapi.core.TopicMap;
-import org.tmapi.core.TopicMapExistsException;
 import org.tmapi.core.TopicMapSystem;
 
 /**
@@ -55,13 +52,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	@Override
 	protected void addStatementInternal(Resource arg0, URI arg1, Value arg2,
 			Resource... arg3) throws SailException {
-		System.out.println("hier" + arg0 + arg1 + arg2 + arg3);
-		TopicMap tm;
-		try {
-			tm = tmSystem.createTopicMap(arg3[0].toString());
-		} catch (TopicMapExistsException e) {
-			e.printStackTrace();
-		}
+		System.out.println("adding " + arg0 + arg1 + arg2 + arg3);
 	}
 
 	/*
@@ -140,9 +131,8 @@ public class TmapiSailConnection extends SailConnectionBase {
 		while (allBaseIris.hasNext()) {
 			contextIDs.add(new URIImpl(allBaseIris.next().toExternalForm()));
 		}
-		CloseableIteratorIteration<Resource, SailException> result2 = new CloseableIteratorIteration<Resource, SailException>(
+		return new CloseableIteratorIteration<Resource, SailException>(
 				contextIDs.iterator());
-		return result2;
 	}
 
 	/*

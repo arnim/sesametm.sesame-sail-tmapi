@@ -3,6 +3,8 @@
  */
 package de.topicmapslab.sesametm.tmapi2tm;
 
+import static org.junit.Assert.*;
+
 import java.util.HashSet;
 
 import org.junit.After;
@@ -10,14 +12,12 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openrdf.query.GraphQuery;
+import org.openrdf.query.GraphQueryResult;
 import org.openrdf.query.QueryLanguage;
-import org.openrdf.query.TupleQuery;
-import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.model.impl.StatementImpl;
-import org.openrdf.model.impl.URIImpl;
 import org.tmapi.core.Association;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
@@ -81,30 +81,25 @@ public class TmapiStoreTest {
 	public void tearDown() throws Exception {
 	}
 	
-	
+	@Test
+	public final void testGetContextIDs() throws Exception {
+		assertEquals(1,_con.getContextIDs().asList().size());
+	}
 	
 	
 	@Test
 	public final void testSsparql() throws Exception {
 			
-			
-			System.out.println(_con.toString());
-			URIImpl s = new URIImpl("http://www.openrdf.org/ddd#s");
-			URIImpl p = new URIImpl("http://www.openrdf.org/ddd#p");
-			URIImpl o = new URIImpl("http://www.openrdf.org/ddd#o");
-			URIImpl c = new URIImpl("http://www.openrdf.org/ddd#c");
+System.out.println(1);
+			String queryString = "CONSTRUCT   { ?s ?p ?o }  WHERE       { ?s ?p ?o}";
+			System.out.println(2);
 
-			
-//			_con.add(new StatementImpl(s, p, o), c);
-			try {
-				System.out.println(_con.getContextIDs().asList());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
+			System.out.println(3);
 
-//			String queryString = "SELECT x, y FROM {x} p {y}";
-//			TupleQuery tupleQuery = _con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
-//		    TupleQueryResult result = tupleQuery.evaluate();
+			GraphQueryResult result = query.evaluate();
+			System.out.println(4);
+
 	}
 
 	/**
