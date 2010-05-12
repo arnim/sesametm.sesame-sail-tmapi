@@ -12,12 +12,14 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openrdf.model.Statement;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.query.GraphQuery;
 import org.openrdf.query.GraphQueryResult;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
+import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.repository.sail.SailRepositoryConnection;
 import org.openrdf.sail.memory.MemoryStore;
@@ -52,13 +54,9 @@ public class TmapiStoreTest {
 		Topic t3 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("ob:ject"));
 		Topic rt1 =_tm.createTopicBySubjectIdentifier(_tm.createLocator("Sub:jectROletype"));
 		Topic rt2 =_tm.createTopicBySubjectIdentifier(_tm.createLocator("Object:jectROletype"));
-
 		Association asso = _tm.createAssociation(t2,new HashSet<Topic>());
 		asso.createRole(rt1, t1);
 		asso.createRole(rt2, t3);
-
-
-		
 	}	
 
 	/**
@@ -95,26 +93,22 @@ public class TmapiStoreTest {
 	public final void testSsparql() throws Exception {
 			String queryString = "CONSTRUCT   { <http://www.google.com/predicate2> <http://www.google.com/predicate> ?o }  WHERE   { <http://www.google.com/predicatehe> <http://www.google.com/predicate> ?o}";
 			GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
-			System.out.println(0);
 			GraphQueryResult result = query.evaluate();
-			System.out.println("has ne " + result.hasNext());
-			System.out.println(1);
-			System.out.println("nesxt is" + result.next());
-			System.out.println(2);
+			assertTrue(result.hasNext());
+			System.out.println("Return of graph Q" + result.next());
 	}
 	
 	
 	@Test
 	public final void testGetSPO() throws Exception {
-			String queryString = "CONSTRUCT   { <http://www.google.com/predicate2> <http://www.google.com/predicate> ?o }  WHERE   { <http://www.google.com/predicatehe> <http://www.google.com/predicate> ?o}";
-			GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
-			System.out.println(0);
-			GraphQueryResult result = query.evaluate();
-			System.out.println("has ne " + result.hasNext());
 			System.out.println(1);
-			System.out.println(_con.getValueFactory().createURI("http://www.google.com/predicate"));
-			
-			System.out.println(_con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true).asList());
+			try {
+				RepositoryResult<Statement> r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true);
+				System.out.println(r.asList());
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
 			System.out.println(2);
 	}

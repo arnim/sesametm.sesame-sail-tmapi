@@ -17,7 +17,7 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.URIImpl;
+import org.openrdf.model.impl.ContextStatementImpl;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.QueryEvaluationException;
@@ -27,6 +27,8 @@ import org.openrdf.query.algebra.evaluation.impl.EvaluationStrategyImpl;
 import org.openrdf.query.impl.EmptyBindingSet;
 import org.openrdf.sail.SailException;
 import org.openrdf.sail.helpers.SailConnectionBase;
+import org.openrdf.sail.memory.model.MemStatement;
+import org.openrdf.sail.memory.model.ReadMode;
 import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMapSystem;
 
@@ -59,7 +61,6 @@ public class TmapiSailConnection extends SailConnectionBase {
 	@Override
 	protected void addStatementInternal(Resource arg0, URI arg1, Value arg2,
 			Resource... arg3) throws SailException {
-		System.out.println("adding " + arg0 + arg1 + arg2 + arg3);
 	}
 
 	/*
@@ -84,7 +85,6 @@ public class TmapiSailConnection extends SailConnectionBase {
 	@Override
 	protected void clearNamespacesInternal() throws SailException {
 		System.out.println("clearNamespacesInternal");
-
 	}
 
 	/*
@@ -95,7 +95,6 @@ public class TmapiSailConnection extends SailConnectionBase {
 	@Override
 	protected void closeInternal() throws SailException {
 		System.out.println("closeInternal");
-
 	}
 
 	/*
@@ -106,7 +105,6 @@ public class TmapiSailConnection extends SailConnectionBase {
 	@Override
 	protected void commitInternal() throws SailException {
 		System.out.println("commitInternal");
-
 	}
 
 	/*
@@ -149,7 +147,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 		ArrayList<Resource> contextIDs = new ArrayList<Resource>();
 		Iterator<Locator> allBaseIris = tmSystem.getLocators().iterator();
 		while (allBaseIris.hasNext()) {
-			contextIDs.add(new URIImpl(allBaseIris.next().toExternalForm()));
+			contextIDs.add(store.getValueFactory().createURI(allBaseIris.next().toExternalForm()));
 		}
 		return new CloseableIteratorIteration<Resource, SailException>(
 				contextIDs.iterator());
@@ -190,19 +188,20 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected CloseableIteration<? extends Statement, SailException> getStatementsInternal(
-			Resource subj, URI predi, Value obj, boolean arg3, Resource... arg4)
-			throws SailException {
-
-		
+			Resource subj, URI pred, Value obj, boolean includeInferred, Resource... contexts)
+			throws SailException {		
 		Lock stLock = store.getStatementsReadLock();
-		CloseableIteration<BindingSet, QueryEvaluationException> iter;
-		
-		
-		System.out.println("getStatementsInternal: " + subj + " " +  predi + " " + obj );
-		return null;
+//		System.out.println(" # "+ subj + " "+ pred + " "+ obj + " "+ contexts.length);
 
-		
-//		System.out.println("Incoming query model:\n{}"+ tupleExpr.toString());
+		 try {
+			 return new LockingIteration<Statement, SailException>(stLock, store.createStatementIterator(
+						SailException.class, subj, pred, obj, !includeInferred,  contexts));
+		} catch (RuntimeException e) {
+			stLock.release();
+			throw e;
+		}
+		 
+
 	}
 
 	/*
@@ -230,7 +229,6 @@ public class TmapiSailConnection extends SailConnectionBase {
 	protected void removeStatementsInternal(Resource arg0, URI arg1,
 			Value arg2, Resource... arg3) throws SailException {
 		System.out.println("removeNamespaceInternal");
-
 	}
 
 	/*
@@ -301,9 +299,8 @@ public class TmapiSailConnection extends SailConnectionBase {
 
 		public CloseableIteration<? extends Statement, QueryEvaluationException> getStatements(
 				Resource subj, URI pred, Value obj, Resource... contexts)
-				throws QueryEvaluationException {
-			return store.createStatementIterator(QueryEvaluationException.class, subj, pred, obj,
-					!includeInferred, contexts);
+				throws QueryEvaluationException {		
+			return store.createStatementIterator(QueryEvaluationException.class, subj, pred, obj, !includeInferred, contexts);
 		}
 	} // end inner class TmapiTripleSource
 

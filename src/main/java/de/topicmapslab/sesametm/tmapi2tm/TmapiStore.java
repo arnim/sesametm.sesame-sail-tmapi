@@ -9,18 +9,13 @@ import info.aduna.concurrent.locks.ReadWriteLockManager;
 import info.aduna.iteration.CloseableIteration;
 
 import org.openrdf.model.Resource;
-import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ContextStatementImpl;
-import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
 import org.openrdf.sail.helpers.SailBase;
-import org.openrdf.sail.memory.model.MemStatement;
-import org.openrdf.sail.memory.model.MemStatementIterator;
-import org.openrdf.sail.memory.model.ReadMode;
 import org.tmapi.core.FactoryConfigurationException;
 import org.tmapi.core.TMAPIException;
 import org.tmapi.core.TopicMapSystem;
@@ -35,7 +30,7 @@ public class TmapiStore extends SailBase {
 	
 	
 	/**
-	 * Factory/cache for MemValue objects.
+	 * Factory/cache for TmapiValue objects.
 	 */
 	private TmapiValueFactory valueFactory = new TmapiValueFactory();
 	
@@ -82,7 +77,6 @@ public class TmapiStore extends SailBase {
 	 * @see org.openrdf.sail.Sail#getValueFactory()
 	 */
 	public ValueFactory getValueFactory() {
-		System.out.println(" getValueFactory " + valueFactory);
 		return valueFactory;
 	}
 
@@ -102,12 +96,14 @@ public class TmapiStore extends SailBase {
 	}
 	
 	protected <X extends Exception> CloseableIteration<ContextStatementImpl, X> createStatementIterator(
-			Class<QueryEvaluationException> class1, Resource subj, URI pred,
+			Class<X> class1, Resource subj, URI pred,
 			Value obj, boolean includeInferred, Resource[] contexts) {
 		return new TmapiStatementIterator<X>(subj, pred, obj, includeInferred,contexts);
 	}
 	
 	
+	
+
 	protected Lock getStatementsReadLock()
 	throws SailException
 {
@@ -118,6 +114,8 @@ public class TmapiStore extends SailBase {
 		throw new SailException(e);
 	}
 }
+
+
 	
 
 }
