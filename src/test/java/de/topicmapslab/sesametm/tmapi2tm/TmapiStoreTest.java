@@ -22,6 +22,9 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.repository.sail.SailRepositoryConnection;
+import org.openrdf.rio.RDFHandler;
+import org.openrdf.rio.n3.N3Writer;
+import org.openrdf.rio.rdfxml.RDFXMLWriter;
 import org.openrdf.sail.memory.MemoryStore;
 import org.tmapi.core.Association;
 import org.tmapi.core.Topic;
@@ -91,7 +94,7 @@ public class TmapiStoreTest {
 	
 	@Test
 	public final void testSsparql() throws Exception {
-			String queryString = "CONSTRUCT   { <http://www.google.com/predicate2> <http://www.google.com/predicate> ?o }  WHERE   { <http://www.google.com/predicatehe> <http://www.google.com/predicate> ?o}";
+			String queryString = "CONSTRUCT   { <http://www.google.com/predicate2> <http://www.google.com/predicate> ?o }  WHERE   { <http://www.google.com/rightSub> <http://www.google.com/predicate> ?o}";
 			GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
 			GraphQueryResult result = query.evaluate();
 			assertTrue(result.hasNext());
@@ -99,67 +102,30 @@ public class TmapiStoreTest {
 	}
 	
 	
+	
+	
 	@Test
-	public final void testGetSPO() throws Exception {
-			System.out.println(1);
+	public final void testExport() throws Exception {
 			try {
-				RepositoryResult<Statement> r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true);
-				System.out.println(r.asList());
-
+				RDFHandler rdfWriter = new N3Writer(System.out);
+				_con.exportStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true, rdfWriter);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
-			System.out.println(2);
 	}
-
-	/**
-	 * Test method for {@link de.topicmapslab.sesametm.tmapi2tm.TmapiStore#shutDownInternal()}.
-	 */
+	
+	
+	
 	@Test
-	public final void testShutDownInternal() {
+	public final void testGetSPO() throws Exception {
+			try {
+				RepositoryResult<Statement> r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true);
+				System.out.println(r.asList());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 	}
 
-	/**
-	 * Test method for {@link de.topicmapslab.sesametm.tmapi2tm.TmapiStore#TmapiStore()}.
-	 */
-	@Test
-	public final void testTmapiStore() {
-	}
 
-	/**
-	 * Test method for {@link de.topicmapslab.sesametm.tmapi2tm.TmapiStore#TmapiStore(org.tmapi.core.TopicMapSystem)}.
-	 */
-	@Test
-	public final void testTmapiStoreTopicMapSystem() {
-	}
-
-	/**
-	 * Test method for {@link de.topicmapslab.sesametm.tmapi2tm.TmapiStore#getConnectionInternal()}.
-	 */
-	@Test
-	public final void testGetConnectionInternal() {
-	}
-
-	/**
-	 * Test method for {@link de.topicmapslab.sesametm.tmapi2tm.TmapiStore#getValueFactory()}.
-	 */
-	@Test
-	public final void testGetValueFactory() {
-	}
-
-	/**
-	 * Test method for {@link de.topicmapslab.sesametm.tmapi2tm.TmapiStore#isWritable()}.
-	 */
-	@Test
-	public final void testIsWritable() {
-	}
-
-	/**
-	 * Test method for {@link org.openrdf.sail.helpers.SailBase#getConnection()}.
-	 */
-	@Test
-	public final void testGetConnection() {
-	}
 
 }

@@ -10,6 +10,7 @@ import info.aduna.iteration.LockingIteration;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 import org.openrdf.model.Namespace;
 import org.openrdf.model.Resource;
@@ -18,6 +19,7 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.ContextStatementImpl;
+import org.openrdf.model.impl.NamespaceImpl;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.QueryEvaluationException;
@@ -174,8 +176,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	@Override
 	protected CloseableIteration<? extends Namespace, SailException> getNamespacesInternal()
 			throws SailException {
-		System.out.println("wichtige in CloseableIteration 1");
-		return null;
+			 return new CloseableIteratorIteration<Namespace, SailException>(new LinkedHashMap<String, NamespaceImpl>(16).values().iterator());
 	}
 
 	/*
@@ -191,8 +192,6 @@ public class TmapiSailConnection extends SailConnectionBase {
 			Resource subj, URI pred, Value obj, boolean includeInferred, Resource... contexts)
 			throws SailException {		
 		Lock stLock = store.getStatementsReadLock();
-//		System.out.println(" # "+ subj + " "+ pred + " "+ obj + " "+ contexts.length);
-
 		 try {
 			 return new LockingIteration<Statement, SailException>(stLock, store.createStatementIterator(
 						SailException.class, subj, pred, obj, !includeInferred,  contexts));
@@ -200,8 +199,6 @@ public class TmapiSailConnection extends SailConnectionBase {
 			stLock.release();
 			throw e;
 		}
-		 
-
 	}
 
 	/*
