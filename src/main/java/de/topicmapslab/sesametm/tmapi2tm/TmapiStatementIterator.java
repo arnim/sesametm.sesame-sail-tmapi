@@ -21,12 +21,12 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 
 	public TmapiStatementIterator(Resource subj, URI pred,
 			Value obj, boolean explicitOnly,Resource... contexts) {
-		//		System.out.println(" ->itera--  : " + subj + " : " + pred + " : " + obj + " : " + contexts.length);
+				System.out.println(" ->itera--  : " + subj + " : " + pred + " : " + obj + " : " + contexts.length);
 	}
 
 	@Override
 	protected ContextStatementImpl getNextElement() {
-		if (ne < 4){
+		if (ne < 1){
 			ne++;
 			return new ContextStatementImpl(new URIImpl("http://www.fixreturn.org/1"), new URIImpl("http://www.fixreturn.org/2"), new URIImpl("http://www.fixreturn.org/3"), new URIImpl("http://www.fixreturn.org/4")) ;
 		}

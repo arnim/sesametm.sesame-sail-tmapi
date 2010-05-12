@@ -17,6 +17,8 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.query.GraphQuery;
 import org.openrdf.query.GraphQueryResult;
 import org.openrdf.query.QueryLanguage;
+import org.openrdf.query.TupleQuery;
+import org.openrdf.query.resultio.sparqlxml.SPARQLResultsXMLWriter;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryResult;
@@ -70,32 +72,43 @@ public class TmapiStoreTest {
 	}
 
 
+//	@Test
+//	public final void testSsparqlGraph() throws Exception {
+//		String queryString = "CONSTRUCT   { ?s <http://www.google.com/predicate> ?o }  WHERE   { ?s <http://www.google.com/predicate> ?o.  ?s <http://www.google.com/predicateZwie> ?o}";
+//		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
+//		GraphQueryResult result = query.evaluate();
+//		System.out.println("Return of graph Q" + result.next());
+//	}
+	
+	
 	@Test
-	public final void testSsparql() throws Exception {
-		String queryString = "CONSTRUCT   { ?s <http://www.google.com/predicate> ?o }  WHERE   { ?s <http://www.google.com/predicate> ?o}";
-		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
-		GraphQueryResult result = query.evaluate();
-		System.out.println("Return of graph Q" + result.next());
+	public final void testSsparqlSelect() throws Exception {
+		SPARQLResultsXMLWriter sparqlWriter = new SPARQLResultsXMLWriter(System.out);
+		String queryString = "PREFIX foaf:    <http://www.google.com/> " +
+				"SELECT ?name ?mbox " +
+				"WHERE  { ?name foaf:mbox ?mbox .}";
+		TupleQuery query = _con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
+		query.evaluate(sparqlWriter);
 	}
 
 
 
-
-	@Test
-	public final void testExport() throws Exception {
-		RDFHandler rdfWriter = new N3Writer(System.out);
-		_con.exportStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true, rdfWriter);
-
-	}
-
-
-
-	@Test
-	public final void testGetSPO() throws Exception {
-		RepositoryResult<Statement> r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true);
-		System.out.println(r.next());
-		System.out.println(r.asList());
-	}
+//
+//	@Test
+//	public final void testExport() throws Exception {
+//		RDFHandler rdfWriter = new N3Writer(System.out);
+//		_con.exportStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true, rdfWriter);
+//
+//	}
+//
+//
+//
+//	@Test
+//	public final void testGetSPO() throws Exception {
+//		RepositoryResult<Statement> r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true);
+//		System.out.println(r.next());
+//		System.out.println(r.asList());
+//	}
 
 
 
