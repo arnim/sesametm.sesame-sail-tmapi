@@ -124,7 +124,6 @@ public class TmapiSailConnection extends SailConnectionBase {
 		tupleExpr = tupleExpr.clone();
 		TripleSource tripleSource = new TmapiTripleSource(includeInferred);
 		EvaluationStrategyImpl strategy = new EvaluationStrategyImpl(tripleSource, dataset);
-		
 		Lock stLock = store.getStatementsReadLock();
 		CloseableIteration<BindingSet, QueryEvaluationException> iter;
 		try {
@@ -135,7 +134,6 @@ public class TmapiSailConnection extends SailConnectionBase {
 			stLock.release();
 			throw new SailException(e);
 		}
-//		System.out.println("Incoming query model:\n{}"+ tupleExpr.toString());
 	}
 
 	/*
