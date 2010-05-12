@@ -3,17 +3,13 @@
  */
 package de.topicmapslab.sesametm.tmapi2tm;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.HashSet;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openrdf.model.Statement;
-import org.openrdf.model.ValueFactory;
 import org.openrdf.query.GraphQuery;
 import org.openrdf.query.GraphQueryResult;
 import org.openrdf.query.QueryLanguage;
@@ -23,11 +19,8 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.repository.sail.SailRepositoryConnection;
 import org.openrdf.rio.RDFHandler;
 import org.openrdf.rio.n3.N3Writer;
-import org.openrdf.rio.rdfxml.RDFXMLWriter;
-import org.openrdf.sail.memory.MemoryStore;
 import org.tmapi.core.Association;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
@@ -72,13 +65,13 @@ public class TmapiStoreTest {
 	}
 
 
-//	@Test
-//	public final void testSsparqlGraph() throws Exception {
-//		String queryString = "CONSTRUCT   { ?s <http://www.google.com/predicate> ?o }  WHERE   { ?s <http://www.google.com/predicate> ?o.  ?s <http://www.google.com/predicateZwie> ?o}";
-//		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
-//		GraphQueryResult result = query.evaluate();
-//		System.out.println("Return of graph Q" + result.next());
-//	}
+	@Test
+	public final void testSsparqlGraph() throws Exception {
+		String queryString = "CONSTRUCT   { ?s <http://www.google.com/predicate> ?o }  WHERE   { ?s <http://www.google.com/predicate> ?o.  ?s <http://www.google.com/predicateZwie> ?o}";
+		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
+		GraphQueryResult result = query.evaluate();
+		System.out.println("Return of graph Q" + result.next());
+	}
 	
 	
 	@Test
@@ -93,22 +86,20 @@ public class TmapiStoreTest {
 
 
 
-//
-//	@Test
-//	public final void testExport() throws Exception {
-//		RDFHandler rdfWriter = new N3Writer(System.out);
-//		_con.exportStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true, rdfWriter);
-//
-//	}
-//
-//
-//
-//	@Test
-//	public final void testGetSPO() throws Exception {
-//		RepositoryResult<Statement> r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true);
-//		System.out.println(r.next());
-//		System.out.println(r.asList());
-//	}
+
+	@Test
+	public final void testExport() throws Exception {
+		RDFHandler rdfWriter = new N3Writer(System.out);
+		_con.exportStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true, rdfWriter);
+	}
+
+
+
+	@Test
+	public final void testGetSPO() throws Exception {
+		RepositoryResult<Statement> r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true);
+		System.out.println(r.asList());
+	}
 
 
 

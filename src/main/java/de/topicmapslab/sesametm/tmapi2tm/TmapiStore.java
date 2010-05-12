@@ -98,7 +98,7 @@ public class TmapiStore extends SailBase {
 	protected <X extends Exception> CloseableIteration<ContextStatementImpl, X> createStatementIterator(
 			Class<X> class1, Resource subj, URI pred,
 			Value obj, boolean includeInferred, Resource[] contexts) {
-		return new TmapiStatementIterator<X>(subj, pred, obj, includeInferred,contexts);
+		return new TmapiStatementIterator<X>(this, subj, pred, obj, includeInferred, contexts);
 	}
 	
 	
