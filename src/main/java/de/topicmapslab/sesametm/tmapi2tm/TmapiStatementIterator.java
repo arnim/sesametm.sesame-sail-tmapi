@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import info.aduna.iteration.LookAheadIteration;
@@ -36,6 +37,9 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 	private Value obj;
 	boolean explicitOnly;
 	private Resource[] contexts;
+	private LinkedList<TopicMap> topicMpas;
+
+	private Set<Topic> sTopics;
 	
 
 	public TmapiStatementIterator(TmapiStore tmapiStore, Resource subj, URI pred,
@@ -46,10 +50,16 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 		this.pred = pred;
 		this.obj = obj;
 		this.contexts = contexts;
-//				System.out.println(" ->itera--  : " + subj + " : " + pred + " : " + obj + " : " + contexts.length);
-//		getTopics(obj, contexts);
-		System.out.println(getTopicMaps(contexts).getFirst().getId()+ "dsf");
+				System.out.println(" ->itera--  : " + subj + " : " + pred + " : " + obj + " : " + contexts.length);
+		
+		topicMpas = getTopicMaps(contexts);
+		sTopics = getTopics(tmSystem.createLocator("http://www.google.com/predicate"), topicMpas);
+		System.out.println(sTopics);
+		System.out.println(getTopic(tmSystem.createLocator("http://www.google.com/predicate"), topicMpas.getFirst()).getSubjectIdentifiers());
+		
 	}
+
+
 
 	@Override
 	protected ContextStatementImpl getNextElement() {
@@ -60,7 +70,12 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 		return null;
 	}
 	
-	
+	/**
+	 * 
+	 * 
+	 * @param contexts
+	 * @return	A List of {@link TopicMap} to be queried.
+	 */
 	private LinkedList<TopicMap> getTopicMaps(Resource... contexts){
 		LinkedList<TopicMap> topicMpas = new LinkedList<TopicMap>();
 		Set<Locator> knownLocators = tmSystem.getLocators();
@@ -81,32 +96,55 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 		return topicMpas;
 	}
 	
-	private Set<Topic> getTopics(Value iri, Resource... contexts){
-		if(contexts.length == 0){
-			
-			
-			System.out.println("hier " + contexts.getClass().toString() + " hier ");
-//			Iterator<Locator> knownTMs = tmSystem.getLocators().iterator();
-//			contexts = new ArrayList<Value>();
-//			while (knownTMs.hasNext()) {
-//				Locator locator = (Locator) knownTMs.next();
-//				contexts.
-//			}
-		}
+//	private Set<Topic> getTopics(Value iri, Resource... contexts){
+//		if(contexts.length == 0){
+//			
+//			
+//			System.out.println("hier " + contexts.getClass().toString() + " hier ");
+////			Iterator<Locator> knownTMs = tmSystem.getLocators().iterator();
+////			contexts = new ArrayList<Value>();
+////			while (knownTMs.hasNext()) {
+////				Locator locator = (Locator) knownTMs.next();
+////				contexts.
+////			}
+//		}
+//		Set<Topic> topics = new HashSet<Topic>();
+//		for (Value context :contexts) {
+//			Topic t = getTopic(tmSystem.createLocator(iri.stringValue()), tmSystem.createLocator(context.stringValue()));
+//			if (t != null)
+//				topics.add(t);
+//		}
+//		return topics;
+//	}
+	
+	/**
+	 * 
+	 */
+	private Set<Topic> getTopics(Locator locator, List<TopicMap> tMaps) {
+		Iterator<TopicMap> tmIterator = tMaps.iterator();
 		Set<Topic> topics = new HashSet<Topic>();
-		for (Value context :contexts) {
-			Topic t = getTopic(tmSystem.createLocator(iri.stringValue()), tmSystem.createLocator(context.stringValue()));
+		Topic t = null;
+		while (tmIterator.hasNext()) {
+			t = getTopic(locator, tmIterator.next());
 			if (t != null)
 				topics.add(t);
 		}
-		return topics;
+		return topics;		
 	}
 	
-	private Topic getTopic(Locator iri, Locator context){
-		TopicMap tm = tmSystem.getTopicMap(context);
-		Topic topic = tm.getTopicBySubjectIdentifier(iri);
+	/**
+	 * 
+	 */
+	private Topic getTopic(Locator iri, TopicMap tm){
+		Topic topic = null;
+		topic = tm.getTopicBySubjectIdentifier(iri);
+		if (topic == null)
+			topic = tm.getTopicBySubjectLocator(iri);
+		if (topic == null)
+			try {
+				topic = (Topic) tm.getConstructByItemIdentifier(iri);
+			} catch (ClassCastException e) {}
 		return topic;
-		
 	}
 
 }
