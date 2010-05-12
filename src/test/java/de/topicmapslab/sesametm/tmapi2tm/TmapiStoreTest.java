@@ -12,6 +12,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openrdf.model.ValueFactory;
 import org.openrdf.query.GraphQuery;
 import org.openrdf.query.GraphQueryResult;
 import org.openrdf.query.QueryLanguage;
@@ -98,6 +99,12 @@ public class TmapiStoreTest {
 //			SailRepository sr = new SailRepository(new MemoryStore());
 //			sr.initialize();
 //			SailRepositoryConnection mc =  sr.getConnection();
+//			
+//			ValueFactory vf = mc.getValueFactory();
+//			mc.add(vf.createStatement(vf.createURI("http://www.slf4j.org/codes.html#a"), vf.createURI("http://www.slf4j.org/codes.html#b"), vf.createURI("http://www.slf4j.org/codes.html#c")), vf.createURI("http://www.slf4j.org/codes.html#d"));
+//			System.out.println(mc.getContextIDs().asList());
+//			System.out.println(mc.getStatements(null, null, null, true).asList());
+//
 //			String queryString = "CONSTRUCT   { ?s ?p ?o }  WHERE       { ?s ?p ?o}";
 //			GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
 //			GraphQueryResult result = query.evaluate();
@@ -106,21 +113,24 @@ public class TmapiStoreTest {
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}
-//
-//		
 //	}
 	
 	
 	@Test
 	public final void testSsparql() throws Exception {
-			String queryString = "CONSTRUCT   { <http://www.google.com/predicate2> <http://www.google.com/predicate> ?o }  WHERE       { <http://www.google.com/predicatehe> <http://www.google.com/predicate> ?o}";
-			GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
-			System.out.println(0);
-			GraphQueryResult result = query.evaluate();
-			System.out.println("has ne " + result.hasNext());
+			String queryString = "CONSTRUCT   { <http://www.google.com/predicate2> <http://www.google.com/predicate> ?o }  WHERE   { <http://www.google.com/predicatehe> <http://www.google.com/predicate> ?o}";
+//			GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
+//			System.out.println(0);
+//			GraphQueryResult result = query.evaluate();
+//			System.out.println("has ne " + result.hasNext());
 			System.out.println(1);
+			
+			
+			System.out.println(_con.getValueFactory().createURI("http://www.google.com/predicate"));
+			
+			System.out.println(_con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true).asList());
 
-			System.out.println("nesxt is" + result.next());
+//			System.out.println("nesxt is" + result.next());
 			System.out.println(2);
 //			System.out.println(result.hasNext());
 //			System.out.println(3);

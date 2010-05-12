@@ -82,6 +82,7 @@ public class TmapiStore extends SailBase {
 	 * @see org.openrdf.sail.Sail#getValueFactory()
 	 */
 	public ValueFactory getValueFactory() {
+		System.out.println(" getValueFactory " + valueFactory);
 		return valueFactory;
 	}
 

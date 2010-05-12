@@ -27,7 +27,6 @@ import org.openrdf.query.algebra.evaluation.impl.EvaluationStrategyImpl;
 import org.openrdf.query.impl.EmptyBindingSet;
 import org.openrdf.sail.SailException;
 import org.openrdf.sail.helpers.SailConnectionBase;
-import org.openrdf.sail.memory.model.ReadMode;
 import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMapSystem;
 
@@ -136,7 +135,6 @@ public class TmapiSailConnection extends SailConnectionBase {
 			stLock.release();
 			throw new SailException(e);
 		}
-
 //		System.out.println("Incoming query model:\n{}"+ tupleExpr.toString());
 	}
 
@@ -192,10 +190,19 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected CloseableIteration<? extends Statement, SailException> getStatementsInternal(
-			Resource arg0, URI arg1, Value arg2, boolean arg3, Resource... arg4)
+			Resource subj, URI predi, Value obj, boolean arg3, Resource... arg4)
 			throws SailException {
-		System.out.println("wichtige in CloseableIteration 2");
+
+		
+		Lock stLock = store.getStatementsReadLock();
+		CloseableIteration<BindingSet, QueryEvaluationException> iter;
+		
+		
+		System.out.println("getStatementsInternal: " + subj + " " +  predi + " " + obj );
 		return null;
+
+		
+//		System.out.println("Incoming query model:\n{}"+ tupleExpr.toString());
 	}
 
 	/*
