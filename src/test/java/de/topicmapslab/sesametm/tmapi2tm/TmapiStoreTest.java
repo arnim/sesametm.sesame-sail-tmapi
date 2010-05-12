@@ -46,7 +46,7 @@ public class TmapiStoreTest {
 		_tmapiRepository = new SailRepository(_sail );
 		_tmapiRepository.initialize();
 		_con = _tmapiRepository.getConnection();
-		_tm = _sail.getTmSystem().createTopicMap("ha:lo");
+		_tm = _sail.getTmSystem().createTopicMap("http://www.base.com/iri/");
 		Topic t1 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("Sub:ject"));
 		Topic t2 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("http://www.google.com/predicate"));
 		Topic t3 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("ob:ject"));
@@ -84,56 +84,39 @@ public class TmapiStoreTest {
 	public void tearDown() throws Exception {
 	}
 	
-//	@Test
-//	public final void testGetContextIDs() throws Exception {
-//		assertEquals(1,_con.getContextIDs().asList().size());
-//		String queryString = "CONSTRUCT   { ?s ?p ?o }  WHERE       { ?s ?p ?o}";
-//		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
-//		GraphQueryResult result = query.evaluate();
-//	}
-//	
-//	@Test
-//	public final void testTest() {
-//		try {
-//			System.out.println("huhu");
-//			SailRepository sr = new SailRepository(new MemoryStore());
-//			sr.initialize();
-//			SailRepositoryConnection mc =  sr.getConnection();
-//			
-//			ValueFactory vf = mc.getValueFactory();
-//			mc.add(vf.createStatement(vf.createURI("http://www.slf4j.org/codes.html#a"), vf.createURI("http://www.slf4j.org/codes.html#b"), vf.createURI("http://www.slf4j.org/codes.html#c")), vf.createURI("http://www.slf4j.org/codes.html#d"));
-//			System.out.println(mc.getContextIDs().asList());
-//			System.out.println(mc.getStatements(null, null, null, true).asList());
-//
-//			String queryString = "CONSTRUCT   { ?s ?p ?o }  WHERE       { ?s ?p ?o}";
-//			GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
-//			GraphQueryResult result = query.evaluate();
-//			System.out.println("huhu 2");
-//
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
+	@Test
+	public final void testGetContextIDs() throws Exception {
+		assertEquals(1,_con.getContextIDs().asList().size());
+		assertEquals("http://www.base.com/iri/",_con.getContextIDs().next().stringValue());
+	}
 	
 	
 	@Test
 	public final void testSsparql() throws Exception {
 			String queryString = "CONSTRUCT   { <http://www.google.com/predicate2> <http://www.google.com/predicate> ?o }  WHERE   { <http://www.google.com/predicatehe> <http://www.google.com/predicate> ?o}";
-//			GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
-//			System.out.println(0);
-//			GraphQueryResult result = query.evaluate();
-//			System.out.println("has ne " + result.hasNext());
+			GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
+			System.out.println(0);
+			GraphQueryResult result = query.evaluate();
+			System.out.println("has ne " + result.hasNext());
 			System.out.println(1);
-			
-			
+			System.out.println("nesxt is" + result.next());
+			System.out.println(2);
+	}
+	
+	
+	@Test
+	public final void testGetSPO() throws Exception {
+			String queryString = "CONSTRUCT   { <http://www.google.com/predicate2> <http://www.google.com/predicate> ?o }  WHERE   { <http://www.google.com/predicatehe> <http://www.google.com/predicate> ?o}";
+			GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
+			System.out.println(0);
+			GraphQueryResult result = query.evaluate();
+			System.out.println("has ne " + result.hasNext());
+			System.out.println(1);
 			System.out.println(_con.getValueFactory().createURI("http://www.google.com/predicate"));
 			
 			System.out.println(_con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true).asList());
 
-//			System.out.println("nesxt is" + result.next());
 			System.out.println(2);
-//			System.out.println(result.hasNext());
-//			System.out.println(3);
 	}
 
 	/**
