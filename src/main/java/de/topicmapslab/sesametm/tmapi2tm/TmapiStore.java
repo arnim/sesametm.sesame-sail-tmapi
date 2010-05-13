@@ -27,6 +27,7 @@ import org.openrdf.sail.helpers.SailBase;
 import org.tmapi.core.FactoryConfigurationException;
 import org.tmapi.core.Locator;
 import org.tmapi.core.TMAPIException;
+import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
 import org.tmapi.core.TopicMapSystemFactory;
@@ -142,11 +143,28 @@ public class TmapiStore extends SailBase {
 				return new EmptyIteration<ContextStatementImpl, X>();
 			}
 		}
-
+		System.out.println(getAllTopics(relevantMSs));
 		
 		TmapiStatementFactory.generateStatements(subject, predicate, object);
 		
 		return new TmapiStatementIterator<X>(this, subject, predicate, object, includeInferred, relevantMSs);
+	}
+	
+	private Set<SailTopic> getAllTopics(TopicMap... contexts){
+		Set<SailTopic> topics = new HashSet<SailTopic>();
+		Iterator<Topic> tIterator;
+		for (TopicMap tm : contexts){
+			tIterator = tm.getTopics().iterator();
+			while (tIterator.hasNext()) {
+				try {
+					topics.add(new SailTopic(tIterator.next(), contexts));
+				} catch (SailException e) {
+					e.printStackTrace();
+				}
+				
+			}
+		}
+		return topics;
 	}
 	
 	/**

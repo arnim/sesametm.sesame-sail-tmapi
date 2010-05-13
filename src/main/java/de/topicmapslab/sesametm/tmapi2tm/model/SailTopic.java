@@ -16,26 +16,43 @@ import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
 
-
-
 /**
  * @author Arnim Bleier
- *
+ * 
  */
 public class SailTopic {
-	
+
 	Set<Topic> topics;
 	TopicMap[] topicMaps;
 	Locator locator;
 	Set<Locator> locators = null;
 	Set<TmapiValue> values = null;
 	
-	public SailTopic(Locator locator, TopicMap[] topicMaps) throws SailException{
+	public SailTopic(Topic topic, TopicMap[] topicMaps) throws SailException {
+		Set<Locator> ls = new HashSet<Locator>();
+		topic.getItemIdentifiers();
+		if (ls.isEmpty())
+			ls.addAll(topic.getSubjectIdentifiers());
+		if (ls.isEmpty())
+			ls.addAll(topic.getSubjectLocators());
+		if (ls.isEmpty())
+			throw new SailException("No topics found");
+		this.locator = ls.iterator().next();
+		this.topicMaps = topicMaps;
+		init();
+	}
+
+	public SailTopic(Locator locator, TopicMap[] topicMaps)
+			throws SailException {
 		this.topicMaps = topicMaps;
 		this.locator = locator;
-		topics = new HashSet<Topic>();
+		init();
+	}
+	
+	private void init() throws SailException{
 		Topic t = null;
-		for (TopicMap tm :topicMaps){ // getting all the Topics in the Maps
+		topics = new HashSet<Topic>();
+		for (TopicMap tm : topicMaps) { // getting all the Topics in the Maps
 			t = tm.getTopicBySubjectIdentifier(locator);
 			if (t != null)
 				topics.add(t);
@@ -47,21 +64,23 @@ public class SailTopic {
 				t = (Topic) tm.getConstructByItemIdentifier(locator);
 				if (t != null)
 					topics.add(t);
-			} catch (ClassCastException e) {}
+			} catch (ClassCastException e) {
+			}
 		} // end of getting all the Topics in the Maps
 		if (!existis())
 			throw new SailException("No topics found with the IRI " + locator);
 	}
 
-	private boolean existis(){
+
+	private boolean existis() {
 		return topics.size() > 0;
 	}
-	
-	public Set<Topic> getWrapped(){
+
+	public Set<Topic> getWrapped() {
 		return topics;
 	}
-	
-	public Set<Locator> getLocators(){
+
+	public Set<Locator> getLocators() {
 		if (locators != null)
 			return locators;
 		locators = new HashSet<Locator>();
@@ -81,15 +100,15 @@ public class SailTopic {
 		return "SailTopic [locators=" + getLocators() + ", topicMaps="
 				+ Arrays.toString(topicMaps) + "]";
 	}
-	
-	public Set<TmapiValue> getCharacteristics(SailTopic type){
+
+	public Set<TmapiValue> getCharacteristics(SailTopic type) {
 		if (values != null)
 			return values;
 		values = new HashSet<TmapiValue>();
 		return null;
 	}
-	
-	public Set<SailAssociation> getAssociations(){
+
+	public Set<SailAssociation> getAssociations() {
 		Set<SailAssociation> associations = new HashSet<SailAssociation>();
 		Iterator<Topic> tIterator = topics.iterator();
 		Iterator<Role> roles;
@@ -101,5 +120,7 @@ public class SailTopic {
 		}
 		return associations;
 	}
+	
+	
 
 }
