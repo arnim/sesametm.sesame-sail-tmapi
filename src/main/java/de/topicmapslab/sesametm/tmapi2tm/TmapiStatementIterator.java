@@ -32,31 +32,22 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 	
 	private TmapiStore tmapiStore;
 	private TopicMapSystem tmSystem;
-	private Locator subj, pred, obj;
+	private SailTopic subj, pred, obj;
 	boolean explicitOnly;
 	private TopicMap[] topicMaps;
 	
 
-	private Set<Topic> sTopics, pTopics;
-	
-
-	public TmapiStatementIterator(TmapiStore tmapiStore, Locator subjLocator, Locator prediLocator,
-			Locator objLocator, boolean explicitOnly,TopicMap... contexts) {
+	public TmapiStatementIterator(TmapiStore tmapiStore, SailTopic subject, SailTopic predicate,
+			SailTopic object, boolean explicitOnly,TopicMap... contexts) {
 		this.tmapiStore = tmapiStore;
 		this.tmSystem = tmapiStore.getTmSystem();
-		this.subj = subjLocator;
-		this.pred = prediLocator;
-		this.obj = objLocator;
+		this.subj = subject;
+		this.pred = predicate;
+		this.obj = object;
 		this.topicMaps = contexts;
 		
-				System.out.println(" ->itera--  : " + subjLocator + " : " + prediLocator + " : " + objLocator + " : " + contexts.length +  " " + contexts[0]);
-		// Verify weather all locators exists;
-//		pTopics = getTopics(tmSystem.createLocator(pred.stringValue()), topicMpas);
-//		sTopics = getTopics(tmSystem.createLocator(subj.stringValue()), topicMpas);
+		System.out.println(" ->itera--  : " + subject + " : " + predicate + " : " + object + " : " + contexts.length +  " " + contexts[0]);
 
-//		System.out.println(pTopics);
-//		System.out.println(getTopic(tmSystem.createLocator("http://www.google.com/predicate"), topicMpas.getFirst()).getSubjectIdentifiers());
-		
 	}
 	
 
@@ -74,55 +65,7 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 	
 
 	
-//	private Set<Topic> getTopics(Value iri, Resource... contexts){
-//		if(contexts.length == 0){
-//			
-//			
-//			System.out.println("hier " + contexts.getClass().toString() + " hier ");
-////			Iterator<Locator> knownTMs = tmSystem.getLocators().iterator();
-////			contexts = new ArrayList<Value>();
-////			while (knownTMs.hasNext()) {
-////				Locator locator = (Locator) knownTMs.next();
-////				contexts.
-////			}
-//		}
-//		Set<Topic> topics = new HashSet<Topic>();
-//		for (Value context :contexts) {
-//			Topic t = getTopic(tmSystem.createLocator(iri.stringValue()), tmSystem.createLocator(context.stringValue()));
-//			if (t != null)
-//				topics.add(t);
-//		}
-//		return topics;
-//	}
 	
-	/**
-	 * 
-	 */
-	private Set<Topic> getTopics(Locator locator, List<TopicMap> tMaps) {
-		Iterator<TopicMap> tmIterator = tMaps.iterator();
-		Set<Topic> topics = new HashSet<Topic>();
-		Topic t = null;
-		while (tmIterator.hasNext()) {
-			t = getTopic(locator, tmIterator.next());
-			if (t != null)
-				topics.add(t);
-		}
-		return topics;		
-	}
-	
-	/**
-	 * 
-	 */
-	private Topic getTopic(Locator iri, TopicMap tm){
-		Topic topic = null;
-		topic = tm.getTopicBySubjectIdentifier(iri);
-		if (topic == null)
-			topic = tm.getTopicBySubjectLocator(iri);
-		if (topic == null)
-			try {
-				topic = (Topic) tm.getConstructByItemIdentifier(iri);
-			} catch (ClassCastException e) {}
-		return topic;
-	}
+
 
 }

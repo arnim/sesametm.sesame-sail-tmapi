@@ -3,6 +3,7 @@
  */
 package de.topicmapslab.sesametm.tmapi2tm;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -54,7 +55,7 @@ public class SailTopic {
 		}
 	}
 
-	public boolean existis(){
+	private boolean existis(){
 		return topics.size() > 0;
 	}
 	
@@ -65,5 +66,12 @@ public class SailTopic {
 	public Set<Locator> getLocators(){
 		return locators;
 	}
+
+	@Override
+	public String toString() {
+		return "SailTopic [locators=" + locators + ", topicMaps="
+				+ Arrays.toString(topicMaps) + "]";
+	}
+	
 
 }

@@ -13,6 +13,7 @@ import info.aduna.concurrent.locks.Lock;
 import info.aduna.concurrent.locks.ReadPrefReadWriteLockManager;
 import info.aduna.concurrent.locks.ReadWriteLockManager;
 import info.aduna.iteration.CloseableIteration;
+import info.aduna.iteration.EmptyIteration;
 
 import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
@@ -22,6 +23,7 @@ import org.openrdf.model.impl.ContextStatementImpl;
 import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
 import org.openrdf.sail.helpers.SailBase;
+import org.openrdf.sail.memory.model.MemStatement;
 import org.tmapi.core.FactoryConfigurationException;
 import org.tmapi.core.Locator;
 import org.tmapi.core.TMAPIException;
@@ -108,11 +110,38 @@ public class TmapiStore extends SailBase {
 			Value obj, boolean includeInferred, Resource[] contexts) {
 		
 		TopicMap[] relevantMSs = getTopicMaps(contexts);
-		Locator subjLocator = getLocator(subj);
-		Locator prediLocator = getLocator(pred);
-		Locator objLocator = getLocator(obj);
+		Locator l;
+		SailTopic subject = null, predicate = null, object = null;
+		
+		l = getLocator(subj);
+		if (l != null) {
+			try {
+				subject = new SailTopic(l, relevantMSs);
+			} catch (SailException e) {
+				return new EmptyIteration<ContextStatementImpl, X>();
+			}
+		}
+		
+		l = getLocator(pred);
+		if (l != null) {
+			try {
+				predicate = new SailTopic(l, relevantMSs);
+			} catch (SailException e) {
+				return new EmptyIteration<ContextStatementImpl, X>();
+			}
+		}
+		
+		l = getLocator(obj);
+		if (l != null) {
+			try {
+				object = new SailTopic(l, relevantMSs);
+			} catch (SailException e) {
+				return new EmptyIteration<ContextStatementImpl, X>();
+			}
+		}
 
-		return new TmapiStatementIterator<X>(this, subjLocator, prediLocator, objLocator, includeInferred, relevantMSs);
+
+		return new TmapiStatementIterator<X>(this, subject, predicate, object, includeInferred, relevantMSs);
 	}
 	
 	/**
