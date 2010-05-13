@@ -32,52 +32,34 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 	
 	private TmapiStore tmapiStore;
 	private TopicMapSystem tmSystem;
-	private Resource subj;
-	private URI pred;
-	private Value obj;
+	private Locator subj, pred, obj;
 	boolean explicitOnly;
-	private Resource[] contexts;
-	private LinkedList<TopicMap> topicMpas;
+	private TopicMap[] topicMaps;
 	
-	private Locator sLocator = null, pLocator = null, oLocator = null;
 
 	private Set<Topic> sTopics, pTopics;
 	
 
-	public TmapiStatementIterator(TmapiStore tmapiStore, Resource subj, URI pred,
-			Value obj, boolean explicitOnly,Resource... contexts) {
+	public TmapiStatementIterator(TmapiStore tmapiStore, Locator subjLocator, Locator prediLocator,
+			Locator objLocator, boolean explicitOnly,TopicMap... contexts) {
 		this.tmapiStore = tmapiStore;
 		this.tmSystem = tmapiStore.getTmSystem();
-		this.subj = subj;
-		this.pred = pred;
-		this.obj = obj;
-		this.contexts = contexts;
-				System.out.println(" ->itera--  : " + subj + " : " + pred + " : " + obj + " : " + contexts.length);
+		this.subj = subjLocator;
+		this.pred = prediLocator;
+		this.obj = objLocator;
+		this.topicMaps = contexts;
 		
-		topicMpas = getTopicMaps(contexts);
-		generateLocators();
+				System.out.println(" ->itera--  : " + subjLocator + " : " + prediLocator + " : " + objLocator + " : " + contexts.length +  " " + contexts[0]);
 		// Verify weather all locators exists;
-		pTopics = getTopics(tmSystem.createLocator(pred.stringValue()), topicMpas);
+//		pTopics = getTopics(tmSystem.createLocator(pred.stringValue()), topicMpas);
 //		sTopics = getTopics(tmSystem.createLocator(subj.stringValue()), topicMpas);
 
-		System.out.println(pTopics);
+//		System.out.println(pTopics);
 //		System.out.println(getTopic(tmSystem.createLocator("http://www.google.com/predicate"), topicMpas.getFirst()).getSubjectIdentifiers());
 		
 	}
 	
-	private Locator generateLocator(Value v){
-		try {
-			return tmSystem.createLocator(v.stringValue());
-		} catch (Exception e) {
-			return null;
-		}
-	}
-	
-	private void generateLocators(){
-		sLocator = generateLocator(subj);
-		pLocator = generateLocator(pred);
-		oLocator = generateLocator(obj);
-	}
+
 
 
 
@@ -90,31 +72,7 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 		return null;
 	}
 	
-	/**
-	 * 
-	 * 
-	 * @param contexts
-	 * @return	A List of {@link TopicMap} to be queried.
-	 */
-	private LinkedList<TopicMap> getTopicMaps(Resource... contexts){
-		LinkedList<TopicMap> topicMpas = new LinkedList<TopicMap>();
-		Set<Locator> knownLocators = tmSystem.getLocators();
-		Locator l;
-		if (contexts.length > 0){
-			HashSet<Locator> relevantLocators = new HashSet<Locator>();
-			for (Resource context :contexts){
-				l = tmSystem.createLocator(context.stringValue());
-				if (knownLocators.contains(l))
-					relevantLocators.add(l);
-			}
-			knownLocators = relevantLocators;
-		}
-		Iterator<Locator> locatorsIterator = knownLocators.iterator();
-		while (locatorsIterator.hasNext()) {
-			topicMpas.add(tmSystem.getTopicMap(locatorsIterator.next()));
-		}
-		return topicMpas;
-	}
+
 	
 //	private Set<Topic> getTopics(Value iri, Resource... contexts){
 //		if(contexts.length == 0){

@@ -3,6 +3,12 @@
  */
 package de.topicmapslab.sesametm.tmapi2tm;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import info.aduna.concurrent.locks.Lock;
 import info.aduna.concurrent.locks.ReadPrefReadWriteLockManager;
 import info.aduna.concurrent.locks.ReadWriteLockManager;
@@ -17,7 +23,9 @@ import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
 import org.openrdf.sail.helpers.SailBase;
 import org.tmapi.core.FactoryConfigurationException;
+import org.tmapi.core.Locator;
 import org.tmapi.core.TMAPIException;
+import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
 import org.tmapi.core.TopicMapSystemFactory;
 
@@ -98,10 +106,53 @@ public class TmapiStore extends SailBase {
 	protected <X extends Exception> CloseableIteration<ContextStatementImpl, X> createStatementIterator(
 			Class<X> class1, Resource subj, URI pred,
 			Value obj, boolean includeInferred, Resource[] contexts) {
-		return new TmapiStatementIterator<X>(this, subj, pred, obj, includeInferred, contexts);
+		
+		TopicMap[] relevantMSs = getTopicMaps(contexts);
+		Locator subjLocator = getLocator(subj);
+		Locator prediLocator = getLocator(pred);
+		Locator objLocator = getLocator(obj);
+
+		return new TmapiStatementIterator<X>(this, subjLocator, prediLocator, objLocator, includeInferred, relevantMSs);
 	}
 	
+	/**
+	 * 
+	 * 
+	 * @param contexts
+	 * @return	A List of {@link TopicMap} to be queried.
+	 */
+	private TopicMap[] getTopicMaps(Resource... contexts){
+		LinkedList<TopicMap> topicMpas = new LinkedList<TopicMap>();
+		Set<Locator> knownLocators = tmSystem.getLocators();
+		Locator l;
+		if (contexts.length > 0){
+			HashSet<Locator> relevantLocators = new HashSet<Locator>();
+			for (Resource context :contexts){
+				l = getLocator(context);
+				if (knownLocators.contains(l))
+					relevantLocators.add(l);
+			}
+			knownLocators = relevantLocators;
+		}
+		Iterator<Locator> locatorsIterator = knownLocators.iterator();
+		while (locatorsIterator.hasNext()) {
+			topicMpas.add(tmSystem.getTopicMap(locatorsIterator.next()));
+		}
+		return (TopicMap[])topicMpas.toArray(new TopicMap[topicMpas.size()]);
+	}
 	
+	/**
+	 * 
+	 * @param v {@link Value}
+	 * @return The {@link Locator} representation of the given {@link Value}
+	 */
+	private Locator getLocator(Value v){
+		try {
+			return tmSystem.createLocator(v.stringValue());
+		} catch (Exception e) {
+			return null;
+		}
+	}
 	
 
 	protected Lock getStatementsReadLock()
