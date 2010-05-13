@@ -31,6 +31,8 @@ import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
 import org.tmapi.core.TopicMapSystemFactory;
 
+import de.topicmapslab.sesametm.tmapi2tm.model.SailTopic;
+
 /**
  * @author Arnim Bleier
  *

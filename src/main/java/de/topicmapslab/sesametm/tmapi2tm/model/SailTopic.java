@@ -1,7 +1,4 @@
-/**
- * 
- */
-package de.topicmapslab.sesametm.tmapi2tm;
+package de.topicmapslab.sesametm.tmapi2tm.model;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -13,7 +10,7 @@ import org.tmapi.core.Locator;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
 
-import de.topicmapslab.sesametm.tmapi2tm.model.TmapiValue;
+
 
 /**
  * @author Arnim Bleier
