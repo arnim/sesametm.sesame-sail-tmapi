@@ -3,7 +3,7 @@
  */
 package de.topicmapslab.sesametm.tmapi2tm;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.HashSet;
 
@@ -49,6 +49,7 @@ public class TmapiStoreTest {
 		_tm = _sail.getTmSystem().createTopicMap("http://www.base.com/iri/");
 		Topic t1 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("Sub:ject"));
 		Topic t2 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("http://www.google.com/predicate"));
+		t2.addItemIdentifier(_tm.createLocator("http://www.google.com/predicate-ii"));
 		Topic t3 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("ob:ject"));
 		Topic rt1 =_tm.createTopicBySubjectIdentifier(_tm.createLocator("Sub:jectROletype"));
 		Topic rt2 =_tm.createTopicBySubjectIdentifier(_tm.createLocator("Object:jectROletype"));
@@ -94,6 +95,14 @@ public class TmapiStoreTest {
 	}
 
 
+	@Test
+	public final void testNothing2BFound() throws Exception {
+		RepositoryResult<Statement> r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicateo"), null, true);
+		assertFalse(r.hasNext());
+		r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true);
+		assertTrue(r.hasNext());
+	}
+	
 
 	@Test
 	public final void testGetSPO() throws Exception {
