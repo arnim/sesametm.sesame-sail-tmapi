@@ -13,6 +13,8 @@ import org.tmapi.core.Locator;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
 
+import de.topicmapslab.sesametm.tmapi2tm.model.TmapiValue;
+
 /**
  * @author Arnim Bleier
  *
@@ -73,5 +75,9 @@ public class SailTopic {
 				+ Arrays.toString(topicMaps) + "]";
 	}
 	
+	public Set<TmapiValue> getCharacteristics(SailTopic type){
+		Set<TmapiValue> values = new HashSet<TmapiValue>();
+		return values;
+	}
 
 }
