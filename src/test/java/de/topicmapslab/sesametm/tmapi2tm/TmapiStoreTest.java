@@ -70,7 +70,7 @@ public class TmapiStoreTest {
 		String queryString = "CONSTRUCT   { ?s <http://www.google.com/predicate> ?o }  WHERE   { ?s <http://www.google.com/predicate> ?o.  ?s <http://www.google.com/predicateZwie> ?o}";
 		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
 		GraphQueryResult result = query.evaluate();
-		System.out.println("Return of graph Q" + result.next());
+//		System.out.println("Return of graph Q" + result.next());
 	}
 	
 	
@@ -81,7 +81,7 @@ public class TmapiStoreTest {
 				"SELECT ?name ?mbox " +
 				"WHERE  { ?name foaf:mbox ?mbox .}";
 		TupleQuery query = _con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
-		query.evaluate(sparqlWriter);
+//		query.evaluate(sparqlWriter);
 	}
 
 
@@ -90,7 +90,7 @@ public class TmapiStoreTest {
 	@Test
 	public final void testExport() throws Exception {
 		RDFHandler rdfWriter = new N3Writer(System.out);
-		_con.exportStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true, rdfWriter);
+//		_con.exportStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true, rdfWriter);
 	}
 
 
@@ -98,7 +98,7 @@ public class TmapiStoreTest {
 	@Test
 	public final void testGetSPO() throws Exception {
 		RepositoryResult<Statement> r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true);
-		System.out.println(r.asList());
+//		System.out.println(r.asList());
 	}
 
 
