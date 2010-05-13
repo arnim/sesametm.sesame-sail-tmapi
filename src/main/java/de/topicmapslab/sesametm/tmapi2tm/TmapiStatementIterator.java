@@ -49,7 +49,6 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 		this.obj = object;
 		this.topicMaps = contexts;
 		
-		System.out.println(" ->itera--  : " + subject + " : " + predicate + " : " + object + " : " + contexts.length +  " " + contexts[0]);
 
 	}
 	

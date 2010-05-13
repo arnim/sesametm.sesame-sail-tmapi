@@ -73,46 +73,45 @@ public class TmapiStoreTest {
 		String queryString = "CONSTRUCT   { ?s <http://www.google.com/Subject> ?o. }  WHERE   { ?s <http://www.google.com/Subject> ?o . }";
 		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
 		GraphQueryResult result = query.evaluate();
-		System.out.println("he");
-		System.out.println(result.hasNext());
-		System.out.println(result.next());
+//		System.out.println(result.hasNext());
+//		System.out.println(result.next());
 	}
 	
-	
-	@Test
-	public final void testSsparqlSelect() throws Exception {
-		SPARQLResultsXMLWriter sparqlWriter = new SPARQLResultsXMLWriter(System.out);
-		String queryString = "PREFIX foaf:    <http://www.google.com/> " +
-				"SELECT ?name ?mbox2 " +
-				"WHERE  { ?name foaf:ObjectROletype ?mbox . ?name2 foaf:assoType ?mbox2 .}";
-		TupleQuery query = _con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
-		query.evaluate(sparqlWriter);
-	}
-
-
-
-
-	@Test
-	public final void testExport() throws Exception {
-		RDFHandler rdfWriter = new N3Writer(System.out);
-		_con.exportStatements(null, _con.getValueFactory().createURI("http://www.google.com/assoType"), null, true, rdfWriter);
-	}
-
-
-	@Test
-	public final void testNothing2BFound() throws Exception {
-		RepositoryResult<Statement> r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicateo"), null, true);
-		assertFalse(r.hasNext());
-		r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/assoType"), null, true);
-		assertTrue(r.hasNext());
-	}
-	
-
-	@Test
-	public final void testGetSPO() throws Exception {
-		RepositoryResult<Statement> r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/assoType"), null, true);
-		System.out.println(r.asList());
-	}
+//	
+//	@Test
+//	public final void testSsparqlSelect() throws Exception {
+//		SPARQLResultsXMLWriter sparqlWriter = new SPARQLResultsXMLWriter(System.out);
+//		String queryString = "PREFIX foaf:    <http://www.google.com/> " +
+//				"SELECT ?name ?mbox2 " +
+//				"WHERE  { ?name foaf:ObjectROletype ?mbox . ?name2 foaf:assoType ?mbox2 .}";
+//		TupleQuery query = _con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
+//		query.evaluate(sparqlWriter);
+//	}
+//
+//
+//
+//
+//	@Test
+//	public final void testExport() throws Exception {
+//		RDFHandler rdfWriter = new N3Writer(System.out);
+//		_con.exportStatements(null, _con.getValueFactory().createURI("http://www.google.com/assoType"), null, true, rdfWriter);
+//	}
+//
+//
+//	@Test
+//	public final void testNothing2BFound() throws Exception {
+//		RepositoryResult<Statement> r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicateo"), null, true);
+//		assertFalse(r.hasNext());
+//		r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/assoType"), null, true);
+//		assertTrue(r.hasNext());
+//	}
+//	
+//
+//	@Test
+//	public final void testGetSPO() throws Exception {
+//		RepositoryResult<Statement> r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/assoType"), null, true);
+//		System.out.println(r.asList());
+//	}
 
 
 

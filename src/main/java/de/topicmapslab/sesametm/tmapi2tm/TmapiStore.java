@@ -32,6 +32,7 @@ import org.tmapi.core.TopicMapSystem;
 import org.tmapi.core.TopicMapSystemFactory;
 
 import de.topicmapslab.sesametm.tmapi2tm.model.SailTopic;
+import de.topicmapslab.sesametm.tmapi2tm.model.TmapiStatementFactory;
 
 /**
  * @author Arnim Bleier
@@ -142,6 +143,9 @@ public class TmapiStore extends SailBase {
 			}
 		}
 
+		
+		TmapiStatementFactory.generateStatements(subject, predicate, object);
+		
 		return new TmapiStatementIterator<X>(this, subject, predicate, object, includeInferred, relevantMSs);
 	}
 	

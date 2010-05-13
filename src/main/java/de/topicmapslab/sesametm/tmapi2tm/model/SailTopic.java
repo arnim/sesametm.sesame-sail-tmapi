@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.openrdf.sail.SailException;
 import org.tmapi.core.Locator;
+import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
 
@@ -86,6 +87,19 @@ public class SailTopic {
 			return values;
 		values = new HashSet<TmapiValue>();
 		return null;
+	}
+	
+	public Set<SailAssociation> getAssociations(){
+		Set<SailAssociation> associations = new HashSet<SailAssociation>();
+		Iterator<Topic> tIterator = topics.iterator();
+		Iterator<Role> roles;
+		while (tIterator.hasNext()) {
+			roles = tIterator.next().getRolesPlayed().iterator();
+			while (roles.hasNext()) {
+				associations.add(new SailAssociation(roles.next().getParent()));
+			}
+		}
+		return associations;
 	}
 
 }
