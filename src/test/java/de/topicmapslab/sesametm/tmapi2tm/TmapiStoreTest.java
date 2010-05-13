@@ -1,6 +1,8 @@
-/**
- * 
+/*
+ * Copyright: Copyright 2010 Topic Maps Lab, University of Leipzig. http://www.topicmapslab.de/
+ * License:   Apache License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html
  */
+
 package de.topicmapslab.sesametm.tmapi2tm;
 
 import static org.junit.Assert.*;
@@ -47,12 +49,12 @@ public class TmapiStoreTest {
 		_tmapiRepository.initialize();
 		_con = _tmapiRepository.getConnection();
 		_tm = _sail.getTmSystem().createTopicMap("http://www.base.com/iri/");
-		Topic t1 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("Sub:ject"));
-		Topic t2 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("http://www.google.com/predicate"));
+		Topic t1 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("http://www.google.com/Subject"));
+		Topic t2 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("http://www.google.com/assoType"));
 		t2.addItemIdentifier(_tm.createLocator("http://www.google.com/predicate-ii"));
-		Topic t3 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("ob:ject"));
-		Topic rt1 =_tm.createTopicBySubjectIdentifier(_tm.createLocator("Sub:jectROletype"));
-		Topic rt2 =_tm.createTopicBySubjectIdentifier(_tm.createLocator("Object:jectROletype"));
+		Topic t3 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("http://www.google.com/Object"));
+		Topic rt1 =_tm.createTopicBySubjectIdentifier(_tm.createLocator("http://www.google.com/SubjectROletype"));
+		Topic rt2 =_tm.createTopicBySubjectIdentifier(_tm.createLocator("http://www.google.com/ObjectROletype"));
 		Association asso = _tm.createAssociation(t2,new HashSet<Topic>());
 		asso.createRole(rt1, t1);
 		asso.createRole(rt2, t3);
@@ -68,10 +70,12 @@ public class TmapiStoreTest {
 
 	@Test
 	public final void testSsparqlGraph() throws Exception {
-		String queryString = "CONSTRUCT   { ?s <http://www.google.com/predicate> ?o }  WHERE   { ?s <http://www.google.com/predicate> ?o.  ?s <http://www.google.com/predicateZwie> ?o}";
+		String queryString = "CONSTRUCT   { ?s <http://www.google.com/Subject> ?o. }  WHERE   { ?s <http://www.google.com/Subject> ?o . }";
 		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
 		GraphQueryResult result = query.evaluate();
-//		System.out.println("Return of graph Q" + result.next());
+		System.out.println("he");
+		System.out.println(result.hasNext());
+		System.out.println(result.next());
 	}
 	
 	
@@ -79,10 +83,10 @@ public class TmapiStoreTest {
 	public final void testSsparqlSelect() throws Exception {
 		SPARQLResultsXMLWriter sparqlWriter = new SPARQLResultsXMLWriter(System.out);
 		String queryString = "PREFIX foaf:    <http://www.google.com/> " +
-				"SELECT ?name ?mbox " +
-				"WHERE  { ?name foaf:mbox ?mbox .}";
+				"SELECT ?name ?mbox2 " +
+				"WHERE  { ?name foaf:ObjectROletype ?mbox . ?name2 foaf:assoType ?mbox2 .}";
 		TupleQuery query = _con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
-//		query.evaluate(sparqlWriter);
+		query.evaluate(sparqlWriter);
 	}
 
 
@@ -91,7 +95,7 @@ public class TmapiStoreTest {
 	@Test
 	public final void testExport() throws Exception {
 		RDFHandler rdfWriter = new N3Writer(System.out);
-//		_con.exportStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true, rdfWriter);
+		_con.exportStatements(null, _con.getValueFactory().createURI("http://www.google.com/assoType"), null, true, rdfWriter);
 	}
 
 
@@ -99,15 +103,15 @@ public class TmapiStoreTest {
 	public final void testNothing2BFound() throws Exception {
 		RepositoryResult<Statement> r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicateo"), null, true);
 		assertFalse(r.hasNext());
-		r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true);
+		r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/assoType"), null, true);
 		assertTrue(r.hasNext());
 	}
 	
 
 	@Test
 	public final void testGetSPO() throws Exception {
-		RepositoryResult<Statement> r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/predicate"), null, true);
-//		System.out.println(r.asList());
+		RepositoryResult<Statement> r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/assoType"), null, true);
+		System.out.println(r.asList());
 	}
 
 

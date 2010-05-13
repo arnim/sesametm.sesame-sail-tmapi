@@ -1,6 +1,8 @@
-/**
- * 
+/*
+ * Copyright: Copyright 2010 Topic Maps Lab, University of Leipzig. http://www.topicmapslab.de/
+ * License:   Apache License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html
  */
+
 package de.topicmapslab.sesametm.tmapi2tm;
 
 import java.util.ArrayList;
@@ -30,14 +32,13 @@ import de.topicmapslab.sesametm.tmapi2tm.model.SailTopic;
  */
 public class TmapiStatementIterator <X extends Exception> extends LookAheadIteration<ContextStatementImpl, X> {
 
-	private int ne = 0;
 	
 	private TmapiStore tmapiStore;
 	private TopicMapSystem tmSystem;
 	private SailTopic subj, pred, obj;
 	boolean explicitOnly;
 	private TopicMap[] topicMaps;
-	
+	private volatile int statementIdx = -1;
 
 	public TmapiStatementIterator(TmapiStore tmapiStore, SailTopic subject, SailTopic predicate,
 			SailTopic object, boolean explicitOnly,TopicMap... contexts) {
@@ -58,9 +59,10 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 
 	@Override
 	protected ContextStatementImpl getNextElement() {
-		if (ne < 1){
-			ne++;
-			return new ContextStatementImpl(new URIImpl("http://www.fixreturn.org/1"), new URIImpl("http://www.fixreturn.org/2"), new URIImpl("http://www.fixreturn.org/3"), new URIImpl("http://www.fixreturn.org/4")) ;
+		statementIdx++;
+		if (statementIdx < 1){
+			System.out.println("isss");
+			return new ContextStatementImpl(new URIImpl("http://www.fixreturn.org/1"), new URIImpl("http://www.google.com/assoType"), new URIImpl("http://www.fixreturn.org/3"), new URIImpl("http://www.fixreturn.org/4")) ;
 		}
 		return null;
 	}

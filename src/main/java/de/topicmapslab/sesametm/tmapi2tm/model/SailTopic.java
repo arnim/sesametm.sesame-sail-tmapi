@@ -1,3 +1,8 @@
+/*
+ * Copyright: Copyright 2010 Topic Maps Lab, University of Leipzig. http://www.topicmapslab.de/
+ * License:   Apache License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html
+ */
+
 package de.topicmapslab.sesametm.tmapi2tm.model;
 
 import java.util.Arrays;
@@ -21,7 +26,8 @@ public class SailTopic {
 	Set<Topic> topics;
 	TopicMap[] topicMaps;
 	Locator locator;
-	Set<Locator> locators;
+	Set<Locator> locators = null;
+	Set<TmapiValue> values = null;
 	
 	public SailTopic(Locator locator, TopicMap[] topicMaps) throws SailException{
 		this.topicMaps = topicMaps;
@@ -44,14 +50,6 @@ public class SailTopic {
 		} // end of getting all the Topics in the Maps
 		if (!existis())
 			throw new SailException("No topics found with the IRI " + locator);
-		locators = new HashSet<Locator>();
-		Iterator<Topic> tIterator = topics.iterator();
-		while (tIterator.hasNext()) {
-			t = tIterator.next();
-			locators.addAll(t.getItemIdentifiers());
-			locators.addAll(t.getSubjectIdentifiers());
-			locators.addAll(t.getSubjectLocators());
-		}
 	}
 
 	private boolean existis(){
@@ -63,18 +61,31 @@ public class SailTopic {
 	}
 	
 	public Set<Locator> getLocators(){
+		if (locators != null)
+			return locators;
+		locators = new HashSet<Locator>();
+		Topic t = null;
+		Iterator<Topic> tIterator = topics.iterator();
+		while (tIterator.hasNext()) {
+			t = tIterator.next();
+			locators.addAll(t.getItemIdentifiers());
+			locators.addAll(t.getSubjectIdentifiers());
+			locators.addAll(t.getSubjectLocators());
+		}
 		return locators;
 	}
 
 	@Override
 	public String toString() {
-		return "SailTopic [locators=" + locators + ", topicMaps="
+		return "SailTopic [locators=" + getLocators() + ", topicMaps="
 				+ Arrays.toString(topicMaps) + "]";
 	}
 	
 	public Set<TmapiValue> getCharacteristics(SailTopic type){
-		Set<TmapiValue> values = new HashSet<TmapiValue>();
-		return values;
+		if (values != null)
+			return values;
+		values = new HashSet<TmapiValue>();
+		return null;
 	}
 
 }

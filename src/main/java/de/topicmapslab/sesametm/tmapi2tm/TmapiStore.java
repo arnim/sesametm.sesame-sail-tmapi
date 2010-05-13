@@ -1,19 +1,20 @@
-/**
- * 
+/*
+ * Copyright: Copyright 2010 Topic Maps Lab, University of Leipzig. http://www.topicmapslab.de/
+ * License:   Apache License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html
  */
-package de.topicmapslab.sesametm.tmapi2tm;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+package de.topicmapslab.sesametm.tmapi2tm;
 
 import info.aduna.concurrent.locks.Lock;
 import info.aduna.concurrent.locks.ReadPrefReadWriteLockManager;
 import info.aduna.concurrent.locks.ReadWriteLockManager;
 import info.aduna.iteration.CloseableIteration;
 import info.aduna.iteration.EmptyIteration;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Set;
 
 import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
@@ -23,7 +24,6 @@ import org.openrdf.model.impl.ContextStatementImpl;
 import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
 import org.openrdf.sail.helpers.SailBase;
-import org.openrdf.sail.memory.model.MemStatement;
 import org.tmapi.core.FactoryConfigurationException;
 import org.tmapi.core.Locator;
 import org.tmapi.core.TMAPIException;
@@ -141,7 +141,6 @@ public class TmapiStore extends SailBase {
 				return new EmptyIteration<ContextStatementImpl, X>();
 			}
 		}
-
 
 		return new TmapiStatementIterator<X>(this, subject, predicate, object, includeInferred, relevantMSs);
 	}

@@ -1,8 +1,8 @@
 /*
- * Copyright Aduna (http://www.aduna-software.com/) (c) 1997-2010.
- *
- * Licensed under the Aduna BSD-style license.
+ * Copyright: Copyright 2010 Topic Maps Lab, University of Leipzig. http://www.topicmapslab.de/
+ * License:   Apache License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html
  */
+
 package de.topicmapslab.sesametm.tmapi2tm;
 
 import org.openrdf.model.BNode;

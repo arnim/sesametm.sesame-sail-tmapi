@@ -1,6 +1,8 @@
-/**
- * 
+/*
+ * Copyright: Copyright 2010 Topic Maps Lab, University of Leipzig. http://www.topicmapslab.de/
+ * License:   Apache License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html
  */
+
 package de.topicmapslab.sesametm.tmapi2tm.model;
 
 import org.tmapi.core.Locator;
@@ -10,6 +12,7 @@ import org.tmapi.core.Locator;
  *
  */
 public class TmapiValue {
+
 
 	private String value;
 	private Locator type;
@@ -53,6 +56,11 @@ public class TmapiValue {
 	 */
 	public Locator getType() {
 		return type;
+	}
+	
+	@Override
+	public String toString() {
+		return "TmapiValue [type=" + type.toExternalForm() + ", value=" + value + "]";
 	}
 
 }
