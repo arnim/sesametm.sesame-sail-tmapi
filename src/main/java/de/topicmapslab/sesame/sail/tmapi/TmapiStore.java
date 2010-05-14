@@ -6,6 +6,12 @@
 package de.topicmapslab.sesame.sail.tmapi;
 
 
+import java.io.File;
+
+import org.openrdf.model.ValueFactory;
+import org.openrdf.sail.NotifyingSailConnection;
+import org.openrdf.sail.Sail;
+import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
 import org.openrdf.sail.memory.MemoryStore;
 import org.tmapi.core.TopicMapSystem;
@@ -14,16 +20,19 @@ import org.tmapi.core.TopicMapSystem;
  * @author Arnim Bleier
  *
  */
-public class TmapiStore extends MemoryStore {
+public class TmapiStore implements Sail {
 
 	final String READ_ONLY_MESSAGE = "sail is read-only";
 	private TopicMapSystem tmSys;
 	private TmapiIndex indexer;
+	private MemoryStore store;
+	private NotifyingSailConnection con;
 	
 	
-	public TmapiStore(TopicMapSystem tmSys){
+	public TmapiStore(TopicMapSystem tmSys) throws SailException{
 		this.tmSys = tmSys;
 		this.indexer = new TmapiIndex(this);
+		this.store = new MemoryStore();
 	}
 	
 	/**
@@ -34,21 +43,41 @@ public class TmapiStore extends MemoryStore {
 	 */
 	protected void index()
 		throws SailException{
-		logger.debug("Indexing TmapiStore...");
-		indexer.index();
+		indexer.index(con);
 	}
 	
-
-	public void setPersist(boolean persist){
-		throw new IllegalStateException(READ_ONLY_MESSAGE);
-	}
-
-
 	/**
 	 * @return {@link TopicMapSystem}
 	 */
 	public TopicMapSystem getTopicMapSystem() {
 		return tmSys;
+	}
+
+	public SailConnection getConnection() throws SailException {
+		return store.getConnection();
+	}
+
+	public File getDataDir() {
+		return null;
+	}
+
+	public ValueFactory getValueFactory() {
+		return store.getValueFactory();
+	}
+
+	public void initialize() throws SailException {
+		store.initialize();
+	}
+
+	public boolean isWritable() throws SailException {
+		return false;
+	}
+
+	public void setDataDir(File arg0) {		
+	}
+
+	public void shutDown() throws SailException {
+		store.shutDown();
 	}
 
 

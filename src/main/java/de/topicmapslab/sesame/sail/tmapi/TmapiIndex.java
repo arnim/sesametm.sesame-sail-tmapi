@@ -8,8 +8,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.openrdf.sail.SailConnection;
+import org.openrdf.sail.SailException;
 import org.tmapi.core.Locator;
-import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
 
 /**
@@ -19,9 +20,12 @@ import org.tmapi.core.TopicMapSystem;
 public class TmapiIndex {
 
 	private TopicMapSystem tmSys;
+	private SailConnection con;
+	private TmapiStore tmapiStore;
 
 	public TmapiIndex(TmapiStore tmapiStore) {
 		this.tmSys = tmapiStore.getTopicMapSystem();
+		this.tmapiStore = tmapiStore;
 	}
 
 	
@@ -33,18 +37,41 @@ public class TmapiIndex {
 		return tmSys;
 	}
 	
-	public void index(){
-		System.out.println(getTopicMaps());
+	public void index(SailConnection con) throws SailException{
+		this.con  = con;
+		index();
 	}
 	
-	private Set<TopicMap> getTopicMaps(){
-		Set<TopicMap> topicMaps = new HashSet<TopicMap>();
+	public void index() throws SailException{
+		Iterator<TopicMapHandler> tmHandlerIterator = getTopicMapHandlers().iterator();
+		TopicMapHandler topicMapHandler; 
+		while (tmHandlerIterator.hasNext()) {
+			topicMapHandler =  tmHandlerIterator.next();
+			topicMapHandler.index();
+		}
+	}
+	
+	private Set<TopicMapHandler> getTopicMapHandlers(){
+		Set<TopicMapHandler> topicMaps = new HashSet<TopicMapHandler>();
 		Set<Locator> knownLocators = tmSys.getLocators();
 		Iterator<Locator> locatorsIterator = knownLocators.iterator();
 		while (locatorsIterator.hasNext()) {
-			topicMaps.add(tmSys.getTopicMap(locatorsIterator.next()));
-		}
+			try {
+				topicMaps.add(new TopicMapHandler(tmapiStore, locatorsIterator.next()));
+			} catch (SailException e) {
+				e.printStackTrace();
+			}
+				}
 		return topicMaps;
+	}
+
+
+	
+	/**
+	 * @return the con
+	 */
+	public SailConnection getCon() {
+		return con;
 	}
 
 }
