@@ -11,6 +11,7 @@ import java.util.Set;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.NotifyingSailConnection;
+import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
 import org.openrdf.sail.memory.model.MemValueFactory;
 import org.tmapi.core.Locator;
@@ -27,7 +28,7 @@ public class TopicMapHandler {
 	private TopicMap tm;
 	private Set<Topic> topics;
 	private TmapiStore tmapiStore;
-	private NotifyingSailConnection con;
+	private SailConnection con;
 	private ValueFactory valueFactory;
 	private URI context;
 
@@ -47,8 +48,8 @@ public class TopicMapHandler {
 		this.topics = tm.getTopics();
 		Iterator<Topic> tIterator = topics.iterator();
 		Topic topic;
-		con.addStatement(valueFactory.createURI("http://www.google.com/1"), valueFactory.createURI("http://www.google.com/1"), valueFactory.createURI("http://www.google.com/1"), valueFactory.createURI("http://www.google.com/3"));
-		System.out.println(2);
+		con.addStatement(valueFactory.createURI("http://www.google.com/1"), valueFactory.createURI("http://www.google.com/1"), valueFactory.createURI("http://www.google.com/1"), context);
+
 		while (tIterator.hasNext()) {
 			topic = tIterator.next();
 //			System.out.println(topic);

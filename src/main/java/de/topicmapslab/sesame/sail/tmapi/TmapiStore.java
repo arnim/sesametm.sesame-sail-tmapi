@@ -26,7 +26,7 @@ public class TmapiStore implements Sail {
 	private TopicMapSystem tmSys;
 	private TmapiIndex indexer;
 	private MemoryStore store;
-	private NotifyingSailConnection con;
+	private NotifyingSailConnection con = null;
 	
 	
 	public TmapiStore(TopicMapSystem tmSys) throws SailException{
@@ -43,7 +43,7 @@ public class TmapiStore implements Sail {
 	 */
 	protected void index()
 		throws SailException{
-		indexer.index(con);
+		indexer.index(getConnection());
 	}
 	
 	/**
@@ -54,7 +54,10 @@ public class TmapiStore implements Sail {
 	}
 
 	public SailConnection getConnection() throws SailException {
-		return store.getConnection();
+		if (con != null)
+			return con;
+		con = store.getConnection();
+		return con;
 	}
 
 	public File getDataDir() {
