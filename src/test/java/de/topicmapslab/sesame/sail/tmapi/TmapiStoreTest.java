@@ -45,7 +45,6 @@ public class TmapiStoreTest {
 		_tmapiRepository = new SailRepository(_sail );
 		_tmapiRepository.initialize();
 		_con = _tmapiRepository.getConnection();
-		System.out.println(0);
 
 		_tm = _sail.getTopicMapSystem().createTopicMap("http://www.base.com/iri/");
 		Topic t1 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("http://www.google.com/Subject"));
@@ -61,7 +60,6 @@ public class TmapiStoreTest {
 		Association asso = _tm.createAssociation(t2,new HashSet<Topic>());
 		asso.createRole(rt1, t1);
 		asso.createRole(rt2, t3);
-		System.out.println("hier");
 		_sail.index();
 
 	}	
@@ -69,13 +67,16 @@ public class TmapiStoreTest {
 
 	@Test
 	public final void testGetContextIDs() throws Exception {
+		assertEquals(1,_con.getContextIDs().asList().size());
+		assertEquals("http://www.base.com/iri/",_con.getContextIDs().next().stringValue());
+	}
+
+	@Test
+	public final void testTest() throws Exception {
 
 		System.out.println(_con.getStatements(null, null, null, true).asList());
-//		assertEquals(1,_con.getContextIDs().asList().size());
-//		assertEquals("http://www.base.com/iri/",_con.getContextIDs().next().stringValue());
+
 	}
-//
-//	
 
 
 

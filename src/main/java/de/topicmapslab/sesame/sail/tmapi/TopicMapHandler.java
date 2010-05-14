@@ -10,14 +10,13 @@ import java.util.Set;
 
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.sail.NotifyingSailConnection;
 import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
-import org.openrdf.sail.memory.model.MemValueFactory;
 import org.tmapi.core.Locator;
+import org.tmapi.core.Name;
+import org.tmapi.core.Occurrence;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
-import org.tmapi.core.TopicMapSystem;
 
 /**
  * @author Arnim Bleier
@@ -31,6 +30,7 @@ public class TopicMapHandler {
 	private SailConnection con;
 	private ValueFactory valueFactory;
 	private URI context;
+	private TmapiStatementHandler statementFactory;
 
 	/**
 	 * @throws SailException 
@@ -42,18 +42,29 @@ public class TopicMapHandler {
 		this.con = tmapiStore.getConnection();
 		this.valueFactory = this.tmapiStore.getValueFactory();
 		this.context = this.valueFactory.createURI(l.toExternalForm());
+		this.statementFactory = new TmapiStatementHandler(valueFactory, con, context);
 	}
 	
 	public void index() throws SailException{
 		this.topics = tm.getTopics();
 		Iterator<Topic> tIterator = topics.iterator();
 		Topic topic;
-		con.addStatement(valueFactory.createURI("http://www.google.com/1"), valueFactory.createURI("http://www.google.com/1"), valueFactory.createURI("http://www.google.com/1"), context);
-
 		while (tIterator.hasNext()) {
 			topic = tIterator.next();
-//			System.out.println(topic);
+			addCharacteristics(topic);
 		}
 	}
+	
+	private void addCharacteristics(Topic t){
+		Iterator<Name> names = t.getNames().iterator();
+		while (names.hasNext()) {
+			statementFactory.add(names.next());
+		}
+		Iterator<Occurrence> occurrences = t.getOccurrences().iterator();
+		while (occurrences.hasNext()) {
+			statementFactory.add(occurrences.next());
+		}
+	}
+	
 
 }
