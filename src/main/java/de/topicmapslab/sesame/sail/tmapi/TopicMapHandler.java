@@ -15,6 +15,7 @@ import org.openrdf.sail.SailException;
 import org.tmapi.core.Locator;
 import org.tmapi.core.Name;
 import org.tmapi.core.Occurrence;
+import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
 
@@ -49,9 +50,22 @@ public class TopicMapHandler {
 		this.topics = tm.getTopics();
 		Iterator<Topic> tIterator = topics.iterator();
 		Topic topic;
+		Iterator<Role> thisRolesIterator, otherRolesIterator;
+		Role thisRole, otherRole;
 		while (tIterator.hasNext()) {
 			topic = tIterator.next();
 			addCharacteristics(topic);
+			thisRolesIterator = topic.getRolesPlayed().iterator();
+			while (thisRolesIterator.hasNext()) {
+				thisRole = thisRolesIterator.next();
+				otherRolesIterator = thisRole.getParent().getRoles().iterator();
+				while (otherRolesIterator.hasNext()) {
+					otherRole = otherRolesIterator.next();
+					if (!thisRole.getType().equals(otherRole.getType())) {
+						statementFactory.add(topic, otherRole.getType(), otherRole.getPlayer());
+					}
+				}
+			}
 		}
 	}
 	

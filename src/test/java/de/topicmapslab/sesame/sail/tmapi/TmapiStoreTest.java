@@ -11,11 +11,11 @@ import java.util.HashSet;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openrdf.model.ValueFactory;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.sail.memory.MemoryStore;
+import org.openrdf.rio.RDFHandler;
+import org.openrdf.rio.n3.N3Writer;
 import org.tmapi.core.Association;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
@@ -61,7 +61,6 @@ public class TmapiStoreTest {
 		asso.createRole(rt1, t1);
 		asso.createRole(rt2, t3);
 		_sail.index();
-
 	}	
 
 
@@ -74,7 +73,9 @@ public class TmapiStoreTest {
 	@Test
 	public final void testTest() throws Exception {
 
-		System.out.println(_con.getStatements(null, null, null, true).asList());
+		RDFHandler rdfWriter = new N3Writer(System.out);
+		_con.exportStatements(null, null, null, true, rdfWriter);
+
 
 	}
 
