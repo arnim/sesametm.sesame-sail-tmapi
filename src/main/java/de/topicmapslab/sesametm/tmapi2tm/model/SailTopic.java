@@ -12,6 +12,8 @@ import java.util.Set;
 
 import org.openrdf.sail.SailException;
 import org.tmapi.core.Locator;
+import org.tmapi.core.Name;
+import org.tmapi.core.Occurrence;
 import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
@@ -73,6 +75,8 @@ public class SailTopic {
 
 
 	private boolean existis() {
+
+
 		return topics.size() > 0;
 	}
 
@@ -101,11 +105,43 @@ public class SailTopic {
 				+ Arrays.toString(topicMaps) + "]";
 	}
 
+	/**
+	 * 
+	 * @param type
+	 * @return
+	 */
 	public Set<TmapiValue> getCharacteristics(SailTopic type) {
 		if (values != null)
 			return values;
 		values = new HashSet<TmapiValue>();
-		return null;
+		Iterator<Topic> topicsIterator = topics.iterator();
+		Iterator<Topic> typesIterator = type.getWrapped().iterator();
+		Iterator<Name> namesIterator;
+		Iterator<Occurrence> occurrenceIterator;
+		Topic t, aWrappedType;
+		while (topicsIterator.hasNext()) {
+			t = topicsIterator.next();
+			while (typesIterator.hasNext()) {
+				aWrappedType = typesIterator.next();
+				namesIterator = t.getNames(aWrappedType).iterator();
+				while (namesIterator.hasNext()) {
+					try {
+						values.add(new TmapiValue(namesIterator.next()));
+					} catch (Exception e) {
+						// topic not existent i the Topic Map
+					}
+				}
+				occurrenceIterator = t.getOccurrences(aWrappedType).iterator();
+				while (occurrenceIterator.hasNext()) {
+					try {
+						values.add(new TmapiValue(occurrenceIterator.next()));
+					} catch (Exception e) {
+						// topic not existent i the Topic Map
+					}
+				}
+			}
+		}
+		return values;
 	}
 
 	public Set<SailAssociation> getAssociations() {

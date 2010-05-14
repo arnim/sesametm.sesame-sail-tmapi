@@ -23,9 +23,12 @@ import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFHandler;
 import org.openrdf.rio.n3.N3Writer;
+import org.openrdf.sail.SailException;
 import org.tmapi.core.Association;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
+
+import de.topicmapslab.sesametm.tmapi2tm.model.SailTopic;
 
 /**
  * @author Arnim Bleier
@@ -55,6 +58,10 @@ public class TmapiStoreTest {
 		Topic t3 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("http://www.google.com/Object"));
 		Topic rt1 =_tm.createTopicBySubjectIdentifier(_tm.createLocator("http://www.google.com/SubjectROletype"));
 		Topic rt2 =_tm.createTopicBySubjectIdentifier(_tm.createLocator("http://www.google.com/ObjectROletype"));
+		t3.createName(rt2,"object name", rt2);
+		t3.createOccurrence(rt2, "object occ", rt2);
+		t3.createOccurrence(rt2, _tm.createLocator("http://www.google.com/someURI"), rt2);
+
 		Association asso = _tm.createAssociation(t2,new HashSet<Topic>());
 		asso.createRole(rt1, t1);
 		asso.createRole(rt2, t3);
@@ -70,7 +77,7 @@ public class TmapiStoreTest {
 
 	@Test
 	public final void testSsparqlGraph() throws Exception {
-		String queryString = "CONSTRUCT   { ?s <http://www.google.com/Subject> ?o. }  WHERE   { ?s <http://www.google.com/Subject> ?o . }";
+		String queryString = "CONSTRUCT   { ?s <http://www.google.com/Subject> <http://www.google.com/Object>. }  WHERE   { ?s <http://www.google.com/Subject> <http://www.google.com/Object> . }";
 		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
 		GraphQueryResult result = query.evaluate();
 //		System.out.println(result.hasNext());
@@ -112,6 +119,10 @@ public class TmapiStoreTest {
 //		RepositoryResult<Statement> r = _con.getStatements(null, _con.getValueFactory().createURI("http://www.google.com/assoType"), null, true);
 //		System.out.println(r.asList());
 //	}
+	
+
+	
+
 
 
 
