@@ -34,6 +34,8 @@ public class TmapiStoreTest {
 	private static Repository _tmapiRepository;
 	private static RepositoryConnection _con;
 	private static TopicMap _tm;
+	
+	final static String baseIRI = "http://www.topicmapslab.de/test/base/";
 
 	/**
 	 * @throws java.lang.Exception
@@ -46,20 +48,32 @@ public class TmapiStoreTest {
 		_tmapiRepository.initialize();
 		_con = _tmapiRepository.getConnection();
 
-		_tm = _sail.getTopicMapSystem().createTopicMap("http://www.base.com/iri/");
-		Topic t1 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("http://www.google.com/Subject"));
-		Topic t2 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("http://www.google.com/assoType"));
-		t2.addItemIdentifier(_tm.createLocator("http://www.google.com/predicate-ii"));
-		Topic t3 = _tm.createTopicBySubjectIdentifier(_tm.createLocator("http://www.google.com/Object"));
-		Topic rt1 =_tm.createTopicBySubjectIdentifier(_tm.createLocator("http://www.google.com/SubjectROletype"));
-		Topic rt2 =_tm.createTopicBySubjectIdentifier(_tm.createLocator("http://www.google.com/ObjectROletype"));
-		t3.createName(rt2,"object name", rt2);
-		t3.createOccurrence(rt2, "object occ", rt2);
-		t3.createOccurrence(rt2, _tm.createLocator("http://www.google.com/someURI"), rt2);
+		_tm = _sail.getTopicMapSystem().createTopicMap(baseIRI);
 
-		Association asso = _tm.createAssociation(t2,new HashSet<Topic>());
-		asso.createRole(rt1, t1);
-		asso.createRole(rt2, t3);
+		Topic alf = _tm.createTopicBySubjectIdentifier(_tm.createLocator(baseIRI + "alf"));
+		Topic bert = _tm.createTopicBySubjectIdentifier(_tm.createLocator(baseIRI + "bert"));
+		Topic xyz = _tm.createTopicBySubjectIdentifier(_tm.createLocator(baseIRI + "xyz"));
+		Topic worksFor = _tm.createTopicBySubjectIdentifier(_tm.createLocator(baseIRI + "worksFor"));
+		Topic employer = _tm.createTopicBySubjectIdentifier(_tm.createLocator(baseIRI + "employer"));
+		Topic employee = _tm.createTopicBySubjectIdentifier(_tm.createLocator(baseIRI + "employee"));
+		Topic hourlyWage = _tm.createTopicBySubjectIdentifier(_tm.createLocator(baseIRI + "hourlyWage"));
+
+
+		alf.createOccurrence(hourlyWage, "14,50",
+				_tm.createLocator("http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/#integer"));
+		alf.createOccurrence(hourlyWage, "25,40",
+				_tm.createLocator("http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/#integer"));
+
+		Association awf = _tm.createAssociation(worksFor);
+		Association bwf = _tm.createAssociation(worksFor);
+		
+		awf.createRole(employee, alf);
+		awf.createRole(employer, xyz);
+		
+		bwf.createRole(employee, bert);
+		bwf.createRole(employer, xyz);
+
+
 		_sail.index();
 	}	
 
@@ -67,7 +81,7 @@ public class TmapiStoreTest {
 	@Test
 	public final void testGetContextIDs() throws Exception {
 		assertEquals(1,_con.getContextIDs().asList().size());
-		assertEquals("http://www.base.com/iri/",_con.getContextIDs().next().stringValue());
+		assertEquals(baseIRI,_con.getContextIDs().next().stringValue());
 	}
 
 	@Test
