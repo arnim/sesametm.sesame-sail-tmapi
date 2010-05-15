@@ -8,8 +8,6 @@ package de.topicmapslab.sesame.sail.tmapi.live;
 import info.aduna.concurrent.locks.Lock;
 import info.aduna.concurrent.locks.ReadPrefReadWriteLockManager;
 import info.aduna.concurrent.locks.ReadWriteLockManager;
-import info.aduna.iteration.CloseableIteration;
-import info.aduna.iteration.EmptyIteration;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -20,32 +18,27 @@ import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.ContextStatementImpl;
 import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
 import org.openrdf.sail.helpers.SailBase;
+import org.openrdf.sail.memory.model.MemValueFactory;
 import org.tmapi.core.Locator;
-import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
 
-
 /**
  * @author Arnim Bleier
- *
+ * 
  */
 public class LiveStore extends SailBase {
-	
-	
-	
+
 	/**
 	 * Factory/cache for TmapiValue objects.
 	 */
-	private TmapiValueFactory valueFactory = new TmapiValueFactory();
-	
+	private MemValueFactory valueFactory = new MemValueFactory();
+
 	private TopicMapSystem tmSystem;
-	
-	
+
 	/**
 	 * Lock manager used to give the snapshot cleanup thread exclusive access to
 	 * the statement list.
@@ -53,35 +46,39 @@ public class LiveStore extends SailBase {
 	private final ReadWriteLockManager statementListLockManager = new ReadPrefReadWriteLockManager(
 			debugEnabled());
 
-	
 	/**
 	 * 
 	 * @param tmSys
 	 */
-	public LiveStore(TopicMapSystem tmSys){
+	public LiveStore(TopicMapSystem tmSys) {
 		this.setTmSystem(tmSys);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.openrdf.sail.helpers.SailBase#getConnectionInternal()
 	 */
 	protected SailConnection getConnectionInternal() throws SailException {
 		return new TmapiSailConnection(this);
 	}
 
-
 	protected void shutDownInternal() throws SailException {
 		System.out.println("shutDownInternal");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.openrdf.sail.Sail#getValueFactory()
 	 */
 	public ValueFactory getValueFactory() {
 		return valueFactory;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.openrdf.sail.Sail#isWritable()
 	 */
 	public boolean isWritable() throws SailException {
@@ -95,39 +92,35 @@ public class LiveStore extends SailBase {
 	public TopicMapSystem getTmSystem() {
 		return tmSystem;
 	}
-	
-	public <X extends Exception> CloseableIteration<ContextStatementImpl, X> createStatementIterator(
-			Class<X> class1, Resource subj, URI pred,
-			Value obj, boolean includeInferred, Resource[] contexts) {
-		
+
+	public <X extends Exception> TmapiStatementIterator<X> createStatementIterator(
+			Class<X> class1, Resource subj, URI pred, Value obj,
+			boolean includeInferred, Resource[] contexts) {
+
 		TopicMap[] relevantMSs = getTopicMaps(contexts);
 		Locator subject = null, predicate = null, object = null;
-		
+
 		subject = getLocator(subj);
 		predicate = getLocator(pred);
 		object = getLocator(obj);
 
-		
-		return new TmapiStatementIterator<X>(this, subject, predicate, object, includeInferred, relevantMSs);
+		return new TmapiStatementIterator<X>(this, subject, predicate, object,
+				includeInferred, relevantMSs);
 	}
-	
 
-	
-
-	
 	/**
 	 * 
 	 * 
 	 * @param contexts
-	 * @return	A List of {@link TopicMap} to be queried.
+	 * @return A List of {@link TopicMap} to be queried.
 	 */
-	private TopicMap[] getTopicMaps(Resource... contexts){
+	private TopicMap[] getTopicMaps(Resource... contexts) {
 		LinkedList<TopicMap> topicMpas = new LinkedList<TopicMap>();
 		Set<Locator> knownLocators = tmSystem.getLocators();
 		Locator l;
-		if (contexts.length > 0){
+		if (contexts.length > 0) {
 			HashSet<Locator> relevantLocators = new HashSet<Locator>();
-			for (Resource context : contexts){
+			for (Resource context : contexts) {
 				l = getLocator(context);
 				if (knownLocators.contains(l))
 					relevantLocators.add(l);
@@ -138,35 +131,29 @@ public class LiveStore extends SailBase {
 		while (locatorsIterator.hasNext()) {
 			topicMpas.add(tmSystem.getTopicMap(locatorsIterator.next()));
 		}
-		return (TopicMap[])topicMpas.toArray(new TopicMap[topicMpas.size()]);
+		return (TopicMap[]) topicMpas.toArray(new TopicMap[topicMpas.size()]);
 	}
-	
+
 	/**
 	 * 
-	 * @param v {@link Value}
+	 * @param v
+	 *            {@link Value}
 	 * @return The {@link Locator} representation of the given {@link Value}
 	 */
-	private Locator getLocator(Value v){
+	private Locator getLocator(Value v) {
 		try {
 			return tmSystem.createLocator(v.stringValue());
 		} catch (Exception e) {
 			return null;
 		}
 	}
-	
 
-	public Lock getStatementsReadLock()
-	throws SailException
-{
-	try {
-		return statementListLockManager.getReadLock();
+	public Lock getStatementsReadLock() throws SailException {
+		try {
+			return statementListLockManager.getReadLock();
+		} catch (InterruptedException e) {
+			throw new SailException(e);
+		}
 	}
-	catch (InterruptedException e) {
-		throw new SailException(e);
-	}
-}
-
-
-	
 
 }

@@ -5,22 +5,11 @@
 
 package de.topicmapslab.sesame.sail.tmapi.live;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 import info.aduna.iteration.LookAheadIteration;
 
-import org.openrdf.model.Resource;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.openrdf.model.impl.ContextStatementImpl;
-import org.openrdf.model.impl.URIImpl;
+import org.openrdf.model.Statement;
+import org.openrdf.model.ValueFactory;
 import org.tmapi.core.Locator;
-import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
 
@@ -29,7 +18,7 @@ import org.tmapi.core.TopicMapSystem;
  * @author Arnim Bleier
  *
  */
-public class TmapiStatementIterator <X extends Exception> extends LookAheadIteration<ContextStatementImpl, X> {
+public class TmapiStatementIterator <X extends Exception> extends LookAheadIteration<Statement, X> {
 
 	
 	private LiveStore tmapiStore;
@@ -40,6 +29,7 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 	private Locator subj;
 	private Locator pred;
 	private Locator obj;
+	private ValueFactory valueFactory;
 
 	public TmapiStatementIterator(LiveStore tmapiStore, Locator subject, Locator predicate,
 			Locator object, boolean explicitOnly,TopicMap... contexts) {
@@ -49,7 +39,7 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 		this.pred = predicate;
 		this.obj = object;
 		this.topicMaps = contexts;
-		
+		this.valueFactory = this.tmapiStore.getValueFactory();
 
 	}
 	
@@ -58,11 +48,14 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 
 
 	@Override
-	protected ContextStatementImpl getNextElement() {
+	protected Statement getNextElement() {
 		statementIdx++;
 		if (statementIdx < 1){
 			System.out.println("isss");
-			return new ContextStatementImpl(new URIImpl("http://www.fixreturn.org/1"), new URIImpl("http://www.google.com/assoType"), new URIImpl("http://www.fixreturn.org/3"), new URIImpl("http://www.fixreturn.org/4")) ;
+			return valueFactory.createStatement(valueFactory.createURI("http://www.fixreturn.org/1"), 
+					valueFactory.createURI("http://www.google.com/assoType"), 
+					valueFactory.createURI("http://www.fixreturn.org/3"));
+
 		}
 		return null;
 	}

@@ -20,7 +20,6 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.ContextStatementImpl;
 import org.openrdf.model.impl.NamespaceImpl;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.Dataset;
@@ -31,8 +30,6 @@ import org.openrdf.query.algebra.evaluation.impl.EvaluationStrategyImpl;
 import org.openrdf.query.impl.EmptyBindingSet;
 import org.openrdf.sail.SailException;
 import org.openrdf.sail.helpers.SailConnectionBase;
-import org.openrdf.sail.memory.model.MemStatement;
-import org.openrdf.sail.memory.model.ReadMode;
 import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMapSystem;
 
