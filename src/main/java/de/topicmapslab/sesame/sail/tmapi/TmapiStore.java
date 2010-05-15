@@ -16,6 +16,8 @@ import org.openrdf.sail.SailException;
 import org.openrdf.sail.memory.MemoryStore;
 import org.tmapi.core.TopicMapSystem;
 
+import de.topicmapslab.sesame.sail.tmapi.indexed.TmapiIndex;
+
 /**
  * @author Arnim Bleier
  *

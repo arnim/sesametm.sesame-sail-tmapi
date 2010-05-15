@@ -50,7 +50,7 @@ public class TmapiStoreTest {
 		_tmapiRepository.initialize();
 		_con = _tmapiRepository.getConnection();
 
-		_tm = _sail.getTopicMapSystem().createTopicMap(baseIRI);
+		_tm = _tms.createTopicMap(baseIRI);
 
 		Topic alf = _tm.createTopicBySubjectIdentifier(_tm.createLocator(baseIRI + "alf"));
 		Topic bert = _tm.createTopicBySubjectIdentifier(_tm.createLocator(baseIRI + "bert"));
@@ -60,7 +60,6 @@ public class TmapiStoreTest {
 		Topic employee = _tm.createTopicBySubjectIdentifier(_tm.createLocator(baseIRI + "employee"));
 		Topic hourlyWage = _tm.createTopicBySubjectIdentifier(_tm.createLocator(baseIRI + "hourlyWage"));
 
-
 		alf.createOccurrence(hourlyWage, "14.50",
 				_tm.createLocator(XMLSchema.FLOAT.stringValue()));
 		bert.createOccurrence(hourlyWage, "25.40",
@@ -68,13 +67,12 @@ public class TmapiStoreTest {
 
 		Association awf = _tm.createAssociation(worksFor);
 		Association bwf = _tm.createAssociation(worksFor);
-		
+
 		awf.createRole(employee, alf);
 		awf.createRole(employer, xyz);
 		
 		bwf.createRole(employee, bert);
 		bwf.createRole(employer, xyz);
-
 
 		_sail.index();
 	}	
@@ -100,16 +98,10 @@ public class TmapiStoreTest {
 				"SELECT ?person ?employer ?wage " +
 				"WHERE  { ?person base:employer ?employer . " +
 				"?person base:hourlyWage ?wage . " +
-				"FILTER (?wage > 20) }";
+				"FILTER (?wage < 20) }";
 		TupleQuery query = _con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
 		query.evaluate(sparqlWriter);
 	}
 	
-	
-	
-
-
-
-
 
 }

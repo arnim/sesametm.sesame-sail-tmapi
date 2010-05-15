@@ -2,7 +2,7 @@
  * Copyright: Copyright 2010 Topic Maps Lab, University of Leipzig. http://www.topicmapslab.de/
  * License:   Apache License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html
  */
-package de.topicmapslab.sesame.sail.tmapi;
+package de.topicmapslab.sesame.sail.tmapi.indexed;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -12,6 +12,8 @@ import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
 import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMapSystem;
+
+import de.topicmapslab.sesame.sail.tmapi.TmapiStore;
 
 /**
  * @author Arnim Bleier

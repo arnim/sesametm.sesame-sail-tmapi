@@ -3,7 +3,7 @@
  * License:   Apache License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html
  */
 
-package de.topicmapslab.sesame.sail.tmapi;
+package de.topicmapslab.sesame.sail.tmapi.indexed;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -18,6 +18,9 @@ import org.tmapi.core.Occurrence;
 import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
+
+import de.topicmapslab.sesame.sail.tmapi.TmapiStore;
+import de.topicmapslab.sesame.sail.tmapi.utils.TmapiStatementHandler;
 
 /**
  * @author Arnim Bleier
