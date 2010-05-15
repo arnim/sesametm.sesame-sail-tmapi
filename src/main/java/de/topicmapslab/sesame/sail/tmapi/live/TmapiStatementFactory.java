@@ -3,7 +3,7 @@
  * License:   Apache License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html
  */
 
-package de.topicmapslab.sesametm.tmapi2tm.model;
+package de.topicmapslab.sesame.sail.tmapi.live;
 
 import java.util.HashSet;
 import java.util.Iterator;

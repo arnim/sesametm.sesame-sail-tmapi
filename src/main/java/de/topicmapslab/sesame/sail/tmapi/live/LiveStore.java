@@ -3,7 +3,7 @@
  * License:   Apache License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html
  */
 
-package de.topicmapslab.sesametm.tmapi2tm;
+package de.topicmapslab.sesame.sail.tmapi.live;
 
 import info.aduna.concurrent.locks.Lock;
 import info.aduna.concurrent.locks.ReadPrefReadWriteLockManager;
@@ -32,8 +32,6 @@ import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
 import org.tmapi.core.TopicMapSystemFactory;
 
-import de.topicmapslab.sesametm.tmapi2tm.model.SailTopic;
-import de.topicmapslab.sesametm.tmapi2tm.model.TmapiStatementFactory;
 
 /**
  * @author Arnim Bleier
@@ -109,7 +107,7 @@ public class LiveStore extends SailBase {
 		return tmSystem;
 	}
 	
-	protected <X extends Exception> CloseableIteration<ContextStatementImpl, X> createStatementIterator(
+	public <X extends Exception> CloseableIteration<ContextStatementImpl, X> createStatementIterator(
 			Class<X> class1, Resource subj, URI pred,
 			Value obj, boolean includeInferred, Resource[] contexts) {
 		
@@ -191,7 +189,7 @@ public class LiveStore extends SailBase {
 	}
 	
 
-	protected Lock getStatementsReadLock()
+	public Lock getStatementsReadLock()
 	throws SailException
 {
 	try {

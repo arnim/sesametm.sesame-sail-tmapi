@@ -28,7 +28,8 @@ import org.tmapi.core.Association;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
 
-import de.topicmapslab.sesametm.tmapi2tm.model.SailTopic;
+import de.topicmapslab.sesame.sail.tmapi.live.LiveStore;
+import de.topicmapslab.sesame.sail.tmapi.live.SailTopic;
 
 /**
  * @author Arnim Bleier
