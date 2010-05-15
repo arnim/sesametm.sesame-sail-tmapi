@@ -64,7 +64,10 @@ public class TmapiStore implements Sail {
 	 */
 	protected void index()
 		throws SailException{
-		indexer.index(getConnection());
+		if (config == CONFIG.INDEXED)
+			indexer.index(getConnection());
+		else
+			throw new SailException();
 	}
 	
 	/**
@@ -91,6 +94,8 @@ public class TmapiStore implements Sail {
 
 	public void initialize() throws SailException {
 		store.initialize();
+		if (config == CONFIG.INDEXED)
+			index();
 	}
 
 	public boolean isWritable() throws SailException {

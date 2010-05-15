@@ -9,12 +9,14 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openrdf.model.Statement;
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
 import org.openrdf.query.resultio.sparqlxml.SPARQLResultsXMLWriter;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
+import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFHandler;
 import org.openrdf.rio.n3.N3Writer;
@@ -46,8 +48,6 @@ public class TmapiStoreTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		_tms = TopicMapSystemFactory.newInstance().newTopicMapSystem();
-
-
 		_tm = _tms.createTopicMap(baseIRI);
 
 		Topic alf = _tm.createTopicBySubjectIdentifier(_tm.createLocator(baseIRI + "alf"));
@@ -71,8 +71,6 @@ public class TmapiStoreTest {
 		
 		bwf.createRole(employee, bert);
 		bwf.createRole(employer, xyz);
-
-
 	}	
 
 
@@ -82,11 +80,6 @@ public class TmapiStoreTest {
 	}
 
 	
-	protected void _testTest() throws Exception {
-		RDFHandler rdfWriter = new N3Writer(System.out);
-		_con.exportStatements(null, null, null, true, rdfWriter);
-
-	}
 	
 
 	protected void _testSELECT() throws Exception {
@@ -107,14 +100,33 @@ public class TmapiStoreTest {
      */
 	@Test
     public void testIndexed() throws Exception {
-        System.out.println("don  ll");
-		_sail = new TmapiStore(_tms);
+		_sail = new TmapiStore(_tms, CONFIG.INDEXED);
 		_tmapiRepository = new SailRepository(_sail );
 		_tmapiRepository.initialize();
 		_con = _tmapiRepository.getConnection();
-		_sail.index();
 		_testGetContextIDs();
 		_testSELECT();
+    }
+
+	
+	protected void _testTest() throws Exception {
+//		RDFHandler rdfWriter = new N3Writer(System.out);
+//		_con.exportStatements(null, null, null, true, rdfWriter);
+		RepositoryResult<Statement> r = _con.getStatements(null, null, null, true);
+		System.out.println(r.next());
+	}	
+	
+	
+    /**
+     * Tests against an indexed store.
+     * @throws Exception 
+     */
+	@Test
+    public void testLive() throws Exception {
+		_sail = new TmapiStore(_tms, CONFIG.LIVE);
+		_tmapiRepository = new SailRepository(_sail );
+		_tmapiRepository.initialize();
+		_con = _tmapiRepository.getConnection();
 		_testTest();
     }
 	

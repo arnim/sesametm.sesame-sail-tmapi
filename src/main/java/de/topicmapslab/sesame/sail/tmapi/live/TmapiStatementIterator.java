@@ -34,13 +34,15 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 	
 	private LiveStore tmapiStore;
 	private TopicMapSystem tmSystem;
-	private SailTopic subj, pred, obj;
 	boolean explicitOnly;
 	private TopicMap[] topicMaps;
 	private volatile int statementIdx = -1;
+	private Locator subj;
+	private Locator pred;
+	private Locator obj;
 
-	public TmapiStatementIterator(LiveStore tmapiStore, SailTopic subject, SailTopic predicate,
-			SailTopic object, boolean explicitOnly,TopicMap... contexts) {
+	public TmapiStatementIterator(LiveStore tmapiStore, Locator subject, Locator predicate,
+			Locator object, boolean explicitOnly,TopicMap... contexts) {
 		this.tmapiStore = tmapiStore;
 		this.tmSystem = tmapiStore.getTmSystem();
 		this.subj = subject;

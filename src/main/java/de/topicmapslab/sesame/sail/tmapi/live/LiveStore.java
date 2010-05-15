@@ -25,6 +25,7 @@ import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
 import org.openrdf.sail.helpers.SailBase;
 import org.tmapi.core.Locator;
+import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
 
@@ -100,40 +101,17 @@ public class LiveStore extends SailBase {
 			Value obj, boolean includeInferred, Resource[] contexts) {
 		
 		TopicMap[] relevantMSs = getTopicMaps(contexts);
-		Locator l;
-		SailTopic subject = null, predicate = null, object = null;
+		Locator subject = null, predicate = null, object = null;
 		
-		l = getLocator(subj);
-		if (l != null) {
-			try {
-				subject = new SailTopic(l, relevantMSs);
-			} catch (SailException e) {
-				return new EmptyIteration<ContextStatementImpl, X>();
-			}
-		}
-		
-		l = getLocator(pred);
-		if (l != null) {
-			try {
-				predicate = new SailTopic(l, relevantMSs);
-			} catch (SailException e) {
-				return new EmptyIteration<ContextStatementImpl, X>();
-			}
-		}
-		
-		l = getLocator(obj);
-		if (l != null) {
-			try {
-				object = new SailTopic(l, relevantMSs);
-			} catch (SailException e) {
-				return new EmptyIteration<ContextStatementImpl, X>();
-			}
-		}
-		
-		new TmapiStatementFactory(subject, predicate, object, relevantMSs).generateStatements();
+		subject = getLocator(subj);
+		predicate = getLocator(pred);
+		object = getLocator(obj);
+
 		
 		return new TmapiStatementIterator<X>(this, subject, predicate, object, includeInferred, relevantMSs);
 	}
+	
+
 	
 
 	
@@ -149,7 +127,7 @@ public class LiveStore extends SailBase {
 		Locator l;
 		if (contexts.length > 0){
 			HashSet<Locator> relevantLocators = new HashSet<Locator>();
-			for (Resource context :contexts){
+			for (Resource context : contexts){
 				l = getLocator(context);
 				if (knownLocators.contains(l))
 					relevantLocators.add(l);
