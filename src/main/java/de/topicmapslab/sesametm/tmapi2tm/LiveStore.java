@@ -39,7 +39,7 @@ import de.topicmapslab.sesametm.tmapi2tm.model.TmapiStatementFactory;
  * @author Arnim Bleier
  *
  */
-public class TmapiStore extends SailBase {
+public class LiveStore extends SailBase {
 	
 	
 	
@@ -63,7 +63,7 @@ public class TmapiStore extends SailBase {
 	 * @throws FactoryConfigurationException 
 	 * 
 	 */
-	public TmapiStore() throws FactoryConfigurationException, TMAPIException {
+	public LiveStore() throws FactoryConfigurationException, TMAPIException {
 		setTmSystem(TopicMapSystemFactory.newInstance().newTopicMapSystem());
 	}
 	
@@ -71,7 +71,7 @@ public class TmapiStore extends SailBase {
 	 * 
 	 * @param tmSys
 	 */
-	public TmapiStore(TopicMapSystem tmSys){
+	public LiveStore(TopicMapSystem tmSys){
 		this.setTmSystem(tmSys);
 	}
 

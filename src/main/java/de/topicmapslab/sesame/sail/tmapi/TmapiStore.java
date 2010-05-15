@@ -29,12 +29,31 @@ public class TmapiStore implements Sail {
 	private TmapiIndex indexer;
 	private MemoryStore store;
 	private NotifyingSailConnection con = null;
+	private String config;
 	
 	
 	public TmapiStore(TopicMapSystem tmSys) throws SailException{
+		this(tmSys, CONFIG.INDEXED);
+	}
+	
+	public TmapiStore(TopicMapSystem tmSys, String config) throws SailException{
 		this.tmSys = tmSys;
-		this.indexer = new TmapiIndex(this);
-		this.store = new MemoryStore();
+		this.config = config;
+		setup();
+	}
+	
+	private void setup(){
+		if (config == CONFIG.INDEXED) {
+			this.indexer = new TmapiIndex(this);
+			this.store = new MemoryStore();
+		}
+		if (config == CONFIG.LIVE) {
+			this.store = new MemoryStore();
+		}
+	}
+	
+	public String getConfiguration(){
+		return config;
 	}
 	
 	/**

@@ -33,14 +33,14 @@ import de.topicmapslab.sesametm.tmapi2tm.model.SailTopic;
 public class TmapiStatementIterator <X extends Exception> extends LookAheadIteration<ContextStatementImpl, X> {
 
 	
-	private TmapiStore tmapiStore;
+	private LiveStore tmapiStore;
 	private TopicMapSystem tmSystem;
 	private SailTopic subj, pred, obj;
 	boolean explicitOnly;
 	private TopicMap[] topicMaps;
 	private volatile int statementIdx = -1;
 
-	public TmapiStatementIterator(TmapiStore tmapiStore, SailTopic subject, SailTopic predicate,
+	public TmapiStatementIterator(LiveStore tmapiStore, SailTopic subject, SailTopic predicate,
 			SailTopic object, boolean explicitOnly,TopicMap... contexts) {
 		this.tmapiStore = tmapiStore;
 		this.tmSystem = tmapiStore.getTmSystem();

@@ -37,7 +37,7 @@ import de.topicmapslab.sesametm.tmapi2tm.model.SailTopic;
 public class TmapiStoreTest {
 
 
-	private static TmapiStore _sail;
+	private static LiveStore _sail;
 	private static Repository _tmapiRepository;
 	private static RepositoryConnection _con;
 	private static TopicMap _tm;
@@ -47,7 +47,7 @@ public class TmapiStoreTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		_sail = new TmapiStore();
+		_sail = new LiveStore();
 		_tmapiRepository = new SailRepository(_sail );
 		_tmapiRepository.initialize();
 		_con = _tmapiRepository.getConnection();
