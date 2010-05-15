@@ -36,6 +36,7 @@ public class TmapiStoreTest {
 	private static Repository _tmapiRepository;
 	private static RepositoryConnection _con;
 	private static TopicMap _tm;
+	private static TopicMapSystem _tms;
 	
 	final static String baseIRI = "http://www.topicmapslab.de/test/base/";
 
@@ -44,11 +45,8 @@ public class TmapiStoreTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		TopicMapSystem _tms = TopicMapSystemFactory.newInstance().newTopicMapSystem();
-		_sail = new TmapiStore(_tms);
-		_tmapiRepository = new SailRepository(_sail );
-		_tmapiRepository.initialize();
-		_con = _tmapiRepository.getConnection();
+		_tms = TopicMapSystemFactory.newInstance().newTopicMapSystem();
+
 
 		_tm = _tms.createTopicMap(baseIRI);
 
@@ -74,25 +72,24 @@ public class TmapiStoreTest {
 		bwf.createRole(employee, bert);
 		bwf.createRole(employer, xyz);
 
-		_sail.index();
+
 	}	
 
 
-	@Test
-	public final void testGetContextIDs() throws Exception {
+	protected void _testGetContextIDs() throws Exception {
 		assertEquals(1,_con.getContextIDs().asList().size());
 		assertEquals(baseIRI,_con.getContextIDs().next().stringValue());
 	}
 
-	@Test
-	public final void testTest() throws Exception {
+	
+	protected void _testTest() throws Exception {
 		RDFHandler rdfWriter = new N3Writer(System.out);
 		_con.exportStatements(null, null, null, true, rdfWriter);
 
 	}
 	
-	@Test
-	public final void testSELECT() throws Exception {
+
+	protected void _testSELECT() throws Exception {
 		SPARQLResultsXMLWriter sparqlWriter = new SPARQLResultsXMLWriter(System.out);
 		String queryString = "PREFIX base:    <" + baseIRI + "> " +
 				"SELECT ?person ?employer ?wage " +
@@ -102,6 +99,24 @@ public class TmapiStoreTest {
 		TupleQuery query = _con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
 		query.evaluate(sparqlWriter);
 	}
+	
+	
+    /**
+     * Tests against an indexed store.
+     * @throws Exception 
+     */
+	@Test
+    public void testIndexed() throws Exception {
+        System.out.println("don  ll");
+		_sail = new TmapiStore(_tms);
+		_tmapiRepository = new SailRepository(_sail );
+		_tmapiRepository.initialize();
+		_con = _tmapiRepository.getConnection();
+		_sail.index();
+		_testGetContextIDs();
+		_testSELECT();
+		_testTest();
+    }
 	
 
 }

@@ -24,13 +24,9 @@ import org.openrdf.model.impl.ContextStatementImpl;
 import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
 import org.openrdf.sail.helpers.SailBase;
-import org.tmapi.core.FactoryConfigurationException;
 import org.tmapi.core.Locator;
-import org.tmapi.core.TMAPIException;
-import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
-import org.tmapi.core.TopicMapSystemFactory;
 
 
 /**
@@ -56,14 +52,6 @@ public class LiveStore extends SailBase {
 	private final ReadWriteLockManager statementListLockManager = new ReadPrefReadWriteLockManager(
 			debugEnabled());
 
-	/**
-	 * @throws TMAPIException 
-	 * @throws FactoryConfigurationException 
-	 * 
-	 */
-	public LiveStore() throws FactoryConfigurationException, TMAPIException {
-		setTmSystem(TopicMapSystemFactory.newInstance().newTopicMapSystem());
-	}
 	
 	/**
 	 * 

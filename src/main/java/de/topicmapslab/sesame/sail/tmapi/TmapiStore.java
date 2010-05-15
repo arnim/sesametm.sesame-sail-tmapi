@@ -9,7 +9,6 @@ package de.topicmapslab.sesame.sail.tmapi;
 import java.io.File;
 
 import org.openrdf.model.ValueFactory;
-import org.openrdf.sail.NotifyingSailConnection;
 import org.openrdf.sail.Sail;
 import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
@@ -17,6 +16,7 @@ import org.openrdf.sail.memory.MemoryStore;
 import org.tmapi.core.TopicMapSystem;
 
 import de.topicmapslab.sesame.sail.tmapi.indexed.TmapiIndex;
+import de.topicmapslab.sesame.sail.tmapi.live.LiveStore;
 
 /**
  * @author Arnim Bleier
@@ -27,8 +27,8 @@ public class TmapiStore implements Sail {
 	final String READ_ONLY_MESSAGE = "sail is read-only";
 	private TopicMapSystem tmSys;
 	private TmapiIndex indexer;
-	private MemoryStore store;
-	private NotifyingSailConnection con = null;
+	private Sail store;
+	private SailConnection con = null;
 	private String config;
 	
 	
@@ -48,7 +48,7 @@ public class TmapiStore implements Sail {
 			this.store = new MemoryStore();
 		}
 		if (config == CONFIG.LIVE) {
-			this.store = new MemoryStore();
+			this.store = new LiveStore(tmSys);
 		}
 	}
 	
