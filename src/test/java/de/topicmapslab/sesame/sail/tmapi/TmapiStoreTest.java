@@ -7,10 +7,12 @@ package de.topicmapslab.sesame.sail.tmapi;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashSet;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openrdf.model.vocabulary.XMLSchema;
+import org.openrdf.query.QueryLanguage;
+import org.openrdf.query.TupleQuery;
+import org.openrdf.query.resultio.sparqlxml.SPARQLResultsXMLWriter;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
@@ -59,10 +61,10 @@ public class TmapiStoreTest {
 		Topic hourlyWage = _tm.createTopicBySubjectIdentifier(_tm.createLocator(baseIRI + "hourlyWage"));
 
 
-		alf.createOccurrence(hourlyWage, "14,50",
-				_tm.createLocator("http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/#integer"));
-		alf.createOccurrence(hourlyWage, "25,40",
-				_tm.createLocator("http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/#integer"));
+		alf.createOccurrence(hourlyWage, "14.50",
+				_tm.createLocator(XMLSchema.FLOAT.stringValue()));
+		bert.createOccurrence(hourlyWage, "25.40",
+				_tm.createLocator(XMLSchema.FLOAT.stringValue()));
 
 		Association awf = _tm.createAssociation(worksFor);
 		Association bwf = _tm.createAssociation(worksFor);
@@ -86,12 +88,26 @@ public class TmapiStoreTest {
 
 	@Test
 	public final void testTest() throws Exception {
-
 		RDFHandler rdfWriter = new N3Writer(System.out);
 		_con.exportStatements(null, null, null, true, rdfWriter);
 
-
 	}
+	
+	@Test
+	public final void testSELECT() throws Exception {
+		SPARQLResultsXMLWriter sparqlWriter = new SPARQLResultsXMLWriter(System.out);
+		String queryString = "PREFIX base:    <" + baseIRI + "> " +
+				"SELECT ?person ?employer ?wage " +
+				"WHERE  { ?person base:employer ?employer . " +
+				"?person base:hourlyWage ?wage . " +
+				"FILTER (?wage > 20) }";
+		TupleQuery query = _con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
+		query.evaluate(sparqlWriter);
+	}
+	
+	
+	
+
 
 
 

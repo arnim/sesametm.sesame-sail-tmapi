@@ -11,6 +11,7 @@ import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
+import org.openrdf.model.vocabulary.XMLSchema;
 import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
 import org.tmapi.core.Locator;
@@ -56,7 +57,7 @@ public class TmapiStatementHandler {
 
 	public void add(Locator subject, Locator predicate, Name object) {
 		add(subject, predicate, valueFactory.createLiteral(object.getValue(),
-			valueFactory.createURI("http://www.w3.org/2001/XMLSchema#string")));
+			valueFactory.createURI(XMLSchema.STRING.stringValue())));
 	}
 
 	public void add(Locator subject, Locator predicate, Occurrence object) {
