@@ -7,9 +7,9 @@ package de.topicmapslab.sesame.sail.tmapi.utils;
 
 import info.aduna.iteration.LookAheadIteration;
 
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
 
 import org.openrdf.model.Statement;
 import org.openrdf.model.ValueFactory;
@@ -30,49 +30,46 @@ import org.tmapi.core.TopicMap;
 public class TmapiStatementIterator <X extends Exception> extends LookAheadIteration<Statement, X> {
 
 	
-	private TopicMap[] topicMaps;
 	private volatile int statementIdx = -1;
-	private Locator subj, pred, obj;
 	private ValueFactory valueFactory;
-	private List<Statement> statements;
+	private Set<Statement> statements;
 	private TmapiStatementFactory statementFactory;
 	private Iterator<Statement> iterator;
 
 	
 
 
-	public TmapiStatementIterator(Sail tmapiStore, Locator resource, Locator uri, Locator value,
-			TopicMap... contexts) {
+	public TmapiStatementIterator(Sail tmapiStore, Locator subj, Locator pred, Locator obj,
+			TopicMap... topicMaps) {
 
-		this.subj = resource;
-		this.pred = uri;
-		this.obj = value;
-		this.topicMaps = contexts;
+
 		this.valueFactory = tmapiStore.getValueFactory();
-		this.statements = new LinkedList<Statement>();
+		this.statements = new HashSet<Statement>();
 		this.statementFactory = new TmapiStatementFactory(valueFactory);
-
-		forTopicMpas();
+		
+		
+		forTopicMpas(subj, pred, obj, topicMaps);
 
 		this.iterator = statements.iterator();
 	}
 
 
-
-
-
-	@Override
-	protected Statement getNextElement() {
-		statementIdx++;
-		if (iterator.hasNext())
-			return iterator.next();
-		return null;
-	}
-	
-	private void forTopicMpas(){
+	private void forTopicMpas(Locator subj, Locator pred, Locator obj,
+			TopicMap... topicMaps){
 		for (TopicMap tm : topicMaps)
 			try {
-				createList(tm);
+				if (subj == null && pred == null && obj == null)
+					createListXXX(tm);
+				else if (subj != null && pred == null && obj == null)
+					createListSXX(subj, tm);
+				else if (subj != null && pred != null && obj == null)
+					createListSPX(subj, pred, tm);
+				else if (subj == null && pred != null && obj == null)
+					createListXPX(pred, tm);
+				else if (subj != null && pred != null && obj == null)
+					createListSPO(subj, pred, obj, tm);
+				else // this code should never be reached
+					throw new RuntimeException();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -80,28 +77,51 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 	}
 	
 	
-	private void createList(TopicMap tm) throws SailException{
+	private void createListXXX(TopicMap tm) throws SailException{
 		Iterator<Topic> tIterator = tm.getTopics().iterator();
-		Topic topic;
-		Iterator<Role> thisRolesIterator, otherRolesIterator;
-		Role thisRole, otherRole;
 
 		while (tIterator.hasNext()) {
-			topic = tIterator.next();
-			addCharacteristics(topic);
-			thisRolesIterator = topic.getRolesPlayed().iterator();
-			while (thisRolesIterator.hasNext()) {
-				thisRole = thisRolesIterator.next();
-				otherRolesIterator = thisRole.getParent().getRoles().iterator();
-				while (otherRolesIterator.hasNext()) {
-					otherRole = otherRolesIterator.next();
-					if (!thisRole.getType().equals(otherRole.getType())) {
-						statements.add(statementFactory.create(topic, otherRole.getType(), otherRole.getPlayer()));
-					}
+			createListSXX(tIterator.next(), tm);
+		}
+	}
+	
+	private void createListSXX(Locator subj , TopicMap tm) throws SailException {
+		Topic t = getTopic(subj, tm);
+		if (t != null)
+			createListSXX(t, tm);
+	}
+	
+	private void createListSXX(Topic subj , TopicMap tm) throws SailException {
+		
+		
+		addCharacteristics(subj);
+		Role thisRole, otherRole;
+		Iterator<Role> thisRolesIterator = subj.getRolesPlayed().iterator(), otherRolesIterator;
+		while (thisRolesIterator.hasNext()) {
+			thisRole = thisRolesIterator.next();
+			otherRolesIterator = thisRole.getParent().getRoles().iterator();
+			while (otherRolesIterator.hasNext()) {
+				otherRole = otherRolesIterator.next();
+				if (!thisRole.getType().equals(otherRole.getType())) {
+					statements.add(statementFactory.create(subj, otherRole.getType(), otherRole.getPlayer()));
 				}
 			}
 		}
+		
 	}
+	
+	private void createListSPX(Locator subj , Locator pred, TopicMap tm) throws SailException {
+		
+	}
+	
+	private void createListXPX(Locator pred , TopicMap tm) throws SailException {
+		
+	}
+	
+	private void createListSPO(Locator subj , Locator pred , Locator obj, TopicMap tm) throws SailException {
+		
+	}
+	
 	
 	private void addCharacteristics(Topic t){
 		Iterator<Name> names = t.getNames().iterator();
@@ -116,5 +136,31 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 	
 	
 
+	@Override
+	protected Statement getNextElement() {
+		statementIdx++;
+		if (iterator.hasNext())
+			return iterator.next();
+		return null;
+	}
+	
+	
+	private Topic getTopic(Locator l, TopicMap tm){
+		if (l == null)
+			return null;
+		Topic t = null;
+		t = tm.getTopicBySubjectIdentifier(l);
+		if (t != null)
+			return t;
+		t = tm.getTopicBySubjectLocator(l);
+		if (t != null)
+			return t;
+		try {
+			t = (Topic) tm.getConstructByItemIdentifier(l);
+		} catch (ClassCastException e) {
+			// Found Construct is not a Topic
+		}
+		return t;
+	}
 
 }

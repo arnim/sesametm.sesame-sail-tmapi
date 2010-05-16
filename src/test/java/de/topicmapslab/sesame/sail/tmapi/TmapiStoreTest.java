@@ -11,6 +11,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openrdf.model.Statement;
 import org.openrdf.model.vocabulary.XMLSchema;
+import org.openrdf.query.GraphQuery;
+import org.openrdf.query.GraphQueryResult;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
 import org.openrdf.query.resultio.sparqlxml.SPARQLResultsXMLWriter;
@@ -93,21 +95,17 @@ public class TmapiStoreTest {
 		query.evaluate(sparqlWriter);
 	}
 	
+	protected void _testSsparqlConstruct() throws Exception {
+        String queryString = "CONSTRUCT   { ?s ?p ?o . }  WHERE   { ?s ?p ?o . ?s <http://www.topicmapslab.de/test/base/hourlyWage> ?o . }";
+        GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
+        GraphQueryResult result = query.evaluate();
+        while (result.hasNext()) {
+        	System.out.println(result.next());
+		}
+}
+
 	
-    /**
-     * Tests against an indexed store.
-     * @throws Exception 
-     */
-	@Test
-    public void testIndexed() throws Exception {
-		_sail = new TmapiStore(_tms, CONFIG.INDEXED);
-		_tmapiRepository = new SailRepository(_sail );
-		_tmapiRepository.initialize();
-		_con = _tmapiRepository.getConnection();
-		_testGetContextIDs();
-		_testSELECT();
-//		_testTest();
-    }
+	
 
 	
 	protected void _testTest() throws Exception {
@@ -118,18 +116,39 @@ public class TmapiStoreTest {
 	}	
 	
 	
-//    /**
-//     * Tests against an indexed store.
-//     * @throws Exception 
-//     */
-//	@Test
-//    public void testLive() throws Exception {
-//		_sail = new TmapiStore(_tms, CONFIG.LIVE);
-//		_tmapiRepository = new SailRepository(_sail );
-//		_tmapiRepository.initialize();
-//		_con = _tmapiRepository.getConnection();
+    /**
+     * Tests against an indexed store.
+     * @throws Exception 
+     */
+	@Test
+    public void testLive() throws Exception {
+		_sail = new TmapiStore(_tms, CONFIG.LIVE);
+		_tmapiRepository = new SailRepository(_sail);
+		_tmapiRepository.initialize();
+		_con = _tmapiRepository.getConnection();
+		_testGetContextIDs();
 //		_testTest();
-//    }
+//		_testSELECT();
+//		_testSsparqlConstruct();
+    }
+	
+	
+    /**
+     * Tests against an indexed store.
+     * @throws Exception 
+     */
+	@Test
+    public void testIndexed() throws Exception {
+		_sail = new TmapiStore(_tms, CONFIG.INDEXED);
+		_tmapiRepository = new SailRepository(_sail);
+		_tmapiRepository.initialize();
+		_con = _tmapiRepository.getConnection();
+		_testGetContextIDs();
+		_testSELECT();
+//		_testTest();
+//		_testSsparqlConstruct();
+    }
+
 	
 
 }
