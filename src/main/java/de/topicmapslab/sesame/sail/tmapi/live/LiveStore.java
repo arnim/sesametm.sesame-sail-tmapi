@@ -26,6 +26,8 @@ import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
 
+import de.topicmapslab.sesame.sail.tmapi.utils.TmapiStatementIterator;
+
 /**
  * @author Arnim Bleier
  * 
@@ -104,8 +106,7 @@ public class LiveStore extends SailBase {
 		predicate = getLocator(pred);
 		object = getLocator(obj);
 
-		return new TmapiStatementIterator<X>(this, subject, predicate, object,
-				includeInferred, relevantMSs);
+		return new TmapiStatementIterator<X>(this, subject, predicate, object, relevantMSs);
 	}
 
 	/**

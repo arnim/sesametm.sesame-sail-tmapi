@@ -106,29 +106,30 @@ public class TmapiStoreTest {
 		_con = _tmapiRepository.getConnection();
 		_testGetContextIDs();
 		_testSELECT();
+//		_testTest();
     }
 
 	
 	protected void _testTest() throws Exception {
-//		RDFHandler rdfWriter = new N3Writer(System.out);
-//		_con.exportStatements(null, null, null, true, rdfWriter);
-		RepositoryResult<Statement> r = _con.getStatements(null, null, null, true);
-		System.out.println(r.next());
+		RDFHandler rdfWriter = new N3Writer(System.out);
+		_con.exportStatements(null, null, null, true, rdfWriter);
+//		RepositoryResult<Statement> r = _con.getStatements(null, null, null, true);
+//		System.out.println(r.next());
 	}	
 	
 	
-    /**
-     * Tests against an indexed store.
-     * @throws Exception 
-     */
-	@Test
-    public void testLive() throws Exception {
-		_sail = new TmapiStore(_tms, CONFIG.LIVE);
-		_tmapiRepository = new SailRepository(_sail );
-		_tmapiRepository.initialize();
-		_con = _tmapiRepository.getConnection();
-		_testTest();
-    }
+//    /**
+//     * Tests against an indexed store.
+//     * @throws Exception 
+//     */
+//	@Test
+//    public void testLive() throws Exception {
+//		_sail = new TmapiStore(_tms, CONFIG.LIVE);
+//		_tmapiRepository = new SailRepository(_sail );
+//		_tmapiRepository.initialize();
+//		_con = _tmapiRepository.getConnection();
+//		_testTest();
+//    }
 	
 
 }

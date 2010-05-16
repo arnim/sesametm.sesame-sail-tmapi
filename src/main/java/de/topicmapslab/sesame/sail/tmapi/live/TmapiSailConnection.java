@@ -41,7 +41,7 @@ import org.tmapi.core.TopicMapSystem;
 public class TmapiSailConnection extends SailConnectionBase {
 
 	private TopicMapSystem tmSystem;
-	protected final LiveStore store;
+	protected LiveStore store;
 
 	/**
 	 * @param sailBase

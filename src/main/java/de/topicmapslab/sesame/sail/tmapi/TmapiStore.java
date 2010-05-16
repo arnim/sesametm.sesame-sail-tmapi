@@ -7,16 +7,19 @@ package de.topicmapslab.sesame.sail.tmapi;
 
 
 import java.io.File;
+import java.util.Iterator;
 
+import org.openrdf.model.Statement;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.Sail;
 import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
 import org.openrdf.sail.memory.MemoryStore;
+import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMapSystem;
 
-import de.topicmapslab.sesame.sail.tmapi.indexed.TmapiIndex;
 import de.topicmapslab.sesame.sail.tmapi.live.LiveStore;
+import de.topicmapslab.sesame.sail.tmapi.utils.TmapiStatementIterator;
 
 /**
  * @author Arnim Bleier
@@ -26,7 +29,6 @@ public class TmapiStore implements Sail {
 
 	final String READ_ONLY_MESSAGE = "sail is read-only";
 	private TopicMapSystem tmSys;
-	private TmapiIndex indexer;
 	private Sail store;
 	private SailConnection con = null;
 	private String config;
@@ -44,7 +46,6 @@ public class TmapiStore implements Sail {
 	
 	private void setup(){
 		if (config == CONFIG.INDEXED) {
-			this.indexer = new TmapiIndex(this);
 			this.store = new MemoryStore();
 		}
 		if (config == CONFIG.LIVE) {
@@ -64,8 +65,26 @@ public class TmapiStore implements Sail {
 	 */
 	protected void index()
 		throws SailException{
-		if (config == CONFIG.INDEXED)
-			indexer.index(getConnection());
+		if (config == CONFIG.INDEXED){
+			
+			Iterator<Locator> locatorsIterator = tmSys.getLocators().iterator();
+			Locator l;
+
+			while (locatorsIterator.hasNext()) {
+				try {
+					l = locatorsIterator.next();
+					TmapiStatementIterator si = new TmapiStatementIterator( this, (Locator) null, (Locator) null, (Locator) null,  tmSys.getTopicMap(l));
+					while (si.hasNext()) {
+						 Statement statement = (Statement) si.next();
+						 getConnection().addStatement(statement.getSubject(), statement.getPredicate(), statement.getObject(), getValueFactory().createURI(l.toExternalForm()));
+					}
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+		}
 		else
 			throw new SailException();
 	}
