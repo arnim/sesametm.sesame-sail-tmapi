@@ -48,52 +48,58 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 		this.statementFactory = new TmapiStatementFactory(valueFactory);
 		
 		
-		forTopicMpas(subj, pred, obj, topicMaps);
+		try {
+			forTopicMpas(subj, pred, obj, topicMaps);
+		} catch (SailException e) {
+			e.printStackTrace();
+		}
 
 		this.iterator = statements.iterator();
 	}
 
 
 	private void forTopicMpas(Locator subj, Locator pred, Locator obj,
-			TopicMap... topicMaps){
-		for (TopicMap tm : topicMaps)
-			try {
-				if (subj == null && pred == null && obj == null)
-					createListXXX(tm);
-				else if (subj != null && pred == null && obj == null)
-					createListSXX(subj, tm);
-				else if (subj != null && pred != null && obj == null)
-					createListSPX(subj, pred, tm);
-				else if (subj == null && pred != null && obj == null)
-					createListXPX(pred, tm);
-				else if (subj != null && pred != null && obj == null)
-					createListSPO(subj, pred, obj, tm);
-				else // this code should never be reached
-					throw new RuntimeException();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			TopicMap... topicMaps) throws SailException{
+		Topic sTopic = null, pTopic = null, oTopic = null;
+		for (TopicMap tm : topicMaps){
 
+			sTopic = getTopic(subj, tm);
+			pTopic = getTopic(pred, tm);
+			oTopic = getTopic(obj, tm);
+			
+			
+			if (	sTopic == null && subj != null ||
+					pTopic == null && pred != null ||
+					oTopic == null && obj != null ) {
+			
+				// Q has no match in this tm
+			} else {
+			
+				if (sTopic == null && pTopic == null && oTopic == null)
+					createListXXX(tm);
+				else if (sTopic != null && pTopic == null && oTopic == null)
+					createListSXX(sTopic, tm);
+				else if (sTopic != null && pTopic != null && oTopic == null)
+					createListSPX(sTopic, pTopic, tm);
+				else if (sTopic == null && pTopic != null && oTopic == null)
+					createListXPX(pTopic, tm);
+				else if (subj != null && pred != null && oTopic == null)
+					createListSPO(sTopic, pTopic, oTopic, tm);
+				
+			}
+		}
 	}
 	
 	
 	private void createListXXX(TopicMap tm) throws SailException{
 		Iterator<Topic> tIterator = tm.getTopics().iterator();
-
 		while (tIterator.hasNext()) {
 			createListSXX(tIterator.next(), tm);
 		}
 	}
 	
-	private void createListSXX(Locator subj , TopicMap tm) throws SailException {
-		Topic t = getTopic(subj, tm);
-		if (t != null)
-			createListSXX(t, tm);
-	}
 	
 	private void createListSXX(Topic subj , TopicMap tm) throws SailException {
-		
-		
 		addCharacteristics(subj);
 		Role thisRole, otherRole;
 		Iterator<Role> thisRolesIterator = subj.getRolesPlayed().iterator(), otherRolesIterator;
@@ -110,15 +116,15 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 		
 	}
 	
-	private void createListSPX(Locator subj , Locator pred, TopicMap tm) throws SailException {
+	private void createListSPX(Topic subj , Topic pred, TopicMap tm) throws SailException {
 		
 	}
 	
-	private void createListXPX(Locator pred , TopicMap tm) throws SailException {
+	private void createListXPX(Topic pred , TopicMap tm) throws SailException {
 		
 	}
 	
-	private void createListSPO(Locator subj , Locator pred , Locator obj, TopicMap tm) throws SailException {
+	private void createListSPO(Topic subj , Topic pred , Topic obj, TopicMap tm) throws SailException {
 		
 	}
 	
