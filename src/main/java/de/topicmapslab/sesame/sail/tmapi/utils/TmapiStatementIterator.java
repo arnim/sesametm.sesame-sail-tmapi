@@ -36,8 +36,6 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 	private TmapiStatementFactory statementFactory;
 	private Iterator<Statement> iterator;
 
-	
-
 
 	public TmapiStatementIterator(Sail tmapiStore, Locator subj, Locator pred, Locator obj,
 			TopicMap... topicMaps) {
@@ -57,12 +55,23 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 		this.iterator = statements.iterator();
 	}
 
+	@Override
+	protected Statement getNextElement() {
+		statementIdx++;
+		if (iterator.hasNext())
+			return iterator.next();
+		return null;
+	}
+	
 
 	private void forTopicMpas(Locator subj, Locator pred, Locator obj,
 			TopicMap... topicMaps) throws SailException{
 		Topic sTopic = null, pTopic = null, oTopic = null;
 		for (TopicMap tm : topicMaps){
 
+			System.out.println("for " + subj + " || " + pred + " || " + obj + " || " );
+
+			
 			sTopic = getTopic(subj, tm);
 			pTopic = getTopic(pred, tm);
 			oTopic = getTopic(obj, tm);
@@ -98,7 +107,7 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 		}
 	}
 	
-	
+
 	private void createListSXX(Topic subj , TopicMap tm) throws SailException {
 		addCharacteristics(subj);
 		Role thisRole, otherRole;
@@ -117,15 +126,46 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 	}
 	
 	private void createListSPX(Topic subj , Topic pred, TopicMap tm) throws SailException {
-		
+		addCharacteristics(subj, pred);
+		Topic thisRoleType;
+		Role thisRole, otherRole;
+		Iterator<Role> thisRolesIterator = subj.getRolesPlayed().iterator(), otherRolesIterator;
+		while (thisRolesIterator.hasNext()) {
+			thisRole = thisRolesIterator.next();			
+			thisRoleType = thisRole.getType();
+			otherRolesIterator = thisRole.getParent().getRoles().iterator();
+			while (otherRolesIterator.hasNext()) {
+				otherRole = otherRolesIterator.next();
+				if (!thisRoleType.equals(otherRole.getType()) && otherRole.getType().equals(pred)) {					
+					statements.add(statementFactory.create(subj, otherRole.getType(), otherRole.getPlayer()));
+				}
+			}
+		}
 	}
 	
 	private void createListXPX(Topic pred , TopicMap tm) throws SailException {
-		
+		Iterator<Topic> tIterator = tm.getTopics().iterator();
+		while (tIterator.hasNext()){
+			createListSPX(tIterator.next(), pred, tm);
+		}
 	}
 	
 	private void createListSPO(Topic subj , Topic pred , Topic obj, TopicMap tm) throws SailException {
-		
+		Role thisRole, otherRole;
+		Iterator<Role> thisRolesIterator = subj.getRolesPlayed().iterator(), otherRolesIterator;
+		while (thisRolesIterator.hasNext()) {
+			thisRole = thisRolesIterator.next();
+			otherRolesIterator = thisRole.getParent().getRoles().iterator();
+			while (otherRolesIterator.hasNext()) {
+				otherRole = otherRolesIterator.next();
+				if (!thisRole.getType().equals(otherRole.getType())
+						&& otherRole.getType().equals(pred)
+						&& otherRole.getPlayer().equals(obj)
+				) {
+					statements.add(statementFactory.create(subj, otherRole.getType(), otherRole.getPlayer()));
+				}
+			}
+		}
 	}
 	
 	
@@ -140,16 +180,16 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 		}
 	}
 	
-	
-
-	@Override
-	protected Statement getNextElement() {
-		statementIdx++;
-		if (iterator.hasNext())
-			return iterator.next();
-		return null;
+	private void addCharacteristics(Topic t, Topic type){
+		Iterator<Name> names = t.getNames(type).iterator();
+		while (names.hasNext()) {
+			statements.add(statementFactory.create(names.next()));
+		}
+		Iterator<Occurrence> occurrences = t.getOccurrences(type).iterator();
+		while (occurrences.hasNext()) {
+			statements.add(statementFactory.create(occurrences.next()));
+		}
 	}
-	
 	
 	private Topic getTopic(Locator l, TopicMap tm){
 		if (l == null)

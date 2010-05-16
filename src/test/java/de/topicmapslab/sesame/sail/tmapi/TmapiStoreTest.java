@@ -18,6 +18,7 @@ import org.openrdf.query.TupleQuery;
 import org.openrdf.query.resultio.sparqlxml.SPARQLResultsXMLWriter;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
+import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFHandler;
@@ -102,15 +103,19 @@ public class TmapiStoreTest {
         while (result.hasNext()) {
         	System.out.println(result.next());
 		}
-}
-
+	}
+	
+	protected void _testGetPredicate() throws RepositoryException{
+		RepositoryResult<Statement> result = _con.getStatements(null, _con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/employer"), null, true);
+		System.out.println(result.asList());
+	}
 	
 	
 
 	
 	protected void _testTest() throws Exception {
 		RDFHandler rdfWriter = new N3Writer(System.out);
-		_con.exportStatements(null, null, null, true, rdfWriter);
+		_con.exportStatements(null, _con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/employer"), null, true, rdfWriter);
 //		RepositoryResult<Statement> r = _con.getStatements(null, null, null, true);
 //		System.out.println(r.next());
 	}	
@@ -126,9 +131,10 @@ public class TmapiStoreTest {
 		_tmapiRepository = new SailRepository(_sail);
 		_tmapiRepository.initialize();
 		_con = _tmapiRepository.getConnection();
-		_testGetContextIDs();
+//		_testGetContextIDs();
 //		_testTest();
-//		_testSELECT();
+//		_testGetPredicate();
+		_testSELECT();
 //		_testSsparqlConstruct();
     }
 	
