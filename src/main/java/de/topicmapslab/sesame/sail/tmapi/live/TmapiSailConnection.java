@@ -74,7 +74,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void clearInternal(Resource... arg0) throws SailException {
-		System.out.println("clearInternal");
+//		System.out.println("clearInternal");
 
 	}
 
@@ -86,7 +86,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void clearNamespacesInternal() throws SailException {
-		System.out.println("clearNamespacesInternal");
+//		System.out.println("clearNamespacesInternal");
 	}
 
 	/*
@@ -96,7 +96,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void closeInternal() throws SailException {
-		System.out.println("closeInternal");
+//		System.out.println("closeInternal");
 	}
 
 	/*
@@ -106,7 +106,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void commitInternal() throws SailException {
-		System.out.println("commitInternal");
+//		System.out.println("commitInternal");
 	}
 
 	/*
@@ -247,7 +247,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	@Override
 	protected void setNamespaceInternal(String arg0, String arg1)
 			throws SailException {
-		System.out.println("setNamespaceInternal");
+//		System.out.println("setNamespaceInternal");
 
 	}
 

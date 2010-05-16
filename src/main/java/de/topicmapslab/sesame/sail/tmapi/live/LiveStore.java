@@ -157,4 +157,9 @@ public class LiveStore extends SailBase {
 		}
 	}
 
+	public void initialize() throws SailException {
+		
+		
+	}
+
 }

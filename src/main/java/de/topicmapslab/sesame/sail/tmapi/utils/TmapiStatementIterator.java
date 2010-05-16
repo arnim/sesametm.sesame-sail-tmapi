@@ -68,9 +68,6 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 			TopicMap... topicMaps) throws SailException{
 		Topic sTopic = null, pTopic = null, oTopic = null;
 		for (TopicMap tm : topicMaps){
-
-			System.out.println("for " + subj + " || " + pred + " || " + obj + " || " );
-
 			
 			sTopic = getTopic(subj, tm);
 			pTopic = getTopic(pred, tm);
