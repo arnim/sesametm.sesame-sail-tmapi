@@ -156,9 +156,9 @@ public class TmapiStatementIterator<X extends Exception> extends
 
 	private void createListSPO(Topic subj, Topic pred, Topic obj, TopicMap tm)
 			throws SailException {
-		System.out.println();
+//		System.out.println();
 //		System.out.println("" + subj + pred + obj);
-		System.out.println();
+//		System.out.println();
 		Role subjectRole, objectRole;
 		Iterator<Role> subjectRolesIterator, objectRolesIterator = obj.getRolesPlayed().iterator();
 		while (objectRolesIterator.hasNext()) {
