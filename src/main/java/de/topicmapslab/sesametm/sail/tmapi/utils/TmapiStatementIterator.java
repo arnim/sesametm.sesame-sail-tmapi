@@ -98,9 +98,10 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 					createListSPO(sTopic, pTopic, oTopic, tm);
 				else if (sTopic == null && pTopic == null && oTopic != null)
 					createListXXO(oTopic, tm);
-				
-				
-				
+				else if (sTopic == null && pTopic != null && oTopic != null)
+					createListXPO(pTopic, oTopic, tm);
+				else
+					System.err.println("You should never read this! TmapiStatementIterator:104");
 				
 			}
 		}
@@ -184,6 +185,9 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 		while (objectRolesIterator.hasNext()) {
 			objectRole = objectRolesIterator.next();
 			objectRoleType = objectRole.getType();
+			
+			
+			
 			subjectRoleIterator = objectRole.getParent().getRoles().iterator();
 			while (subjectRoleIterator.hasNext()) {
 				subjectRole = subjectRoleIterator.next();
@@ -191,6 +195,25 @@ public class TmapiStatementIterator <X extends Exception> extends LookAheadItera
 					statements.add(statementFactory.create(subjectRole.getPlayer(), objectRoleType, obj));
 				}
 			}
+			
+			
+			
+		}
+	}
+	
+	
+	private void createListXPO(Topic pred , Topic obj, TopicMap tm) throws SailException {
+		Iterator<Role> objectRolesIterator = obj.getRolesPlayed(pred).iterator(), sbjectRolesIterator;
+		Role objectRole, subjectRole;
+		while (objectRolesIterator.hasNext()) {
+			objectRole = objectRolesIterator.next();
+			sbjectRolesIterator = objectRole.getParent().getRoles().iterator();
+			while (sbjectRolesIterator.hasNext()) {
+				subjectRole = sbjectRolesIterator.next();
+				if(!subjectRole.getType().equals(pred))
+					statements.add(statementFactory.create(subjectRole.getPlayer(), pred, obj));
+			}
+			
 		}
 	}
 	
