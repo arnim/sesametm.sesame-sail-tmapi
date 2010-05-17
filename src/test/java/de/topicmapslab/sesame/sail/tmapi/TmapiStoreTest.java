@@ -3,7 +3,7 @@
  * License:   Apache License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html
  */
 
-package de.topicmapslab.sesametm.sail.tmapi;
+package de.topicmapslab.sesame.sail.tmapi;
 
 import static org.junit.Assert.assertEquals;
 
@@ -187,7 +187,7 @@ public class TmapiStoreTest {
 		_tmapiRepository.initialize();
 		_con = _tmapiRepository.getConnection();
 		_testGetContextIDs();
-		_testSELECT();
+//		_testSELECT();
 //		_testGetGetObject();
 //		_testTest();
 //		_testSsparqlConstruct();

@@ -3,7 +3,7 @@
  * License:   Apache License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html
  */
 
-package de.topicmapslab.sesametm.sail.tmapi.live;
+package de.topicmapslab.sesame.sail.tmapi.live;
 
 import info.aduna.concurrent.locks.Lock;
 import info.aduna.concurrent.locks.ReadPrefReadWriteLockManager;
@@ -26,8 +26,8 @@ import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
 
-import de.topicmapslab.sesametm.sail.tmapi.CONFIG;
-import de.topicmapslab.sesametm.sail.tmapi.utils.TmapiStatementIterator;
+import de.topicmapslab.sesame.sail.tmapi.CONFIG;
+import de.topicmapslab.sesame.sail.tmapi.utils.TmapiStatementIterator;
 
 /**
  * @author Arnim Bleier
