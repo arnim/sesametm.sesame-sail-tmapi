@@ -111,6 +111,12 @@ public class TmapiStoreTest {
 	}
 	
 	
+	protected void _testGetGetObject() throws RepositoryException{
+		RepositoryResult<Statement> result = _con.getStatements(null, null, _con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/bert"),  true);
+		System.out.println(result.asList());
+	}
+	
+
 
 	
 	protected void _testTest() throws Exception {
@@ -133,8 +139,12 @@ public class TmapiStoreTest {
 		_con = _tmapiRepository.getConnection();
 //		_testGetContextIDs();
 //		_testTest();
+		_testGetGetObject();
 //		_testGetPredicate();
-		_testSELECT();
+//		_testGetSubject();
+
+
+//		_testSELECT();
 //		_testSsparqlConstruct();
     }
 	
@@ -150,7 +160,8 @@ public class TmapiStoreTest {
 		_tmapiRepository.initialize();
 		_con = _tmapiRepository.getConnection();
 		_testGetContextIDs();
-		_testSELECT();
+//		_testSELECT();
+//		_testGetGetObject();
 //		_testTest();
 //		_testSsparqlConstruct();
     }
