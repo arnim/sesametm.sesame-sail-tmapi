@@ -5,7 +5,6 @@
 	<groupId>de.topicmapslab</groupId>
 	<artifactId>sesame-sail-tmapi</artifactId>
 
-	<packaging>pom</packaging>
 	<name>OpenRDF Sesame: TMAPI</name>
 	<version>0.0.1-SNAPSHOT</version>
 	<description>Sail implementation that stores data in TMAPI</description>
