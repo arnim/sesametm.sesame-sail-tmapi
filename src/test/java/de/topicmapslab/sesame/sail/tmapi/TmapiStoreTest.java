@@ -118,7 +118,6 @@ public class TmapiStoreTest {
 		RepositoryResult<Statement> result = _con.getStatements(null, 
 				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/employee"), 
 				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/bert"),  true);
-//		System.out.println(result.asList());
 	}
 	
 
@@ -165,6 +164,65 @@ public class TmapiStoreTest {
 		assertFalse(result.hasNext());
 	}
 	
+	protected void _testSxx() throws Exception{
+		RepositoryResult<Statement> result = _con.getStatements(
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/bert"), 
+				null, 
+				null, 
+				true);
+		assertTrue(result.hasNext());
+		Statement statement = result.next();
+		assertEquals("http://www.topicmapslab.de/test/base/bert", statement.getSubject().stringValue());
+		assertTrue(result.hasNext());
+		statement = result.next();
+		assertEquals("http://www.topicmapslab.de/test/base/bert", statement.getSubject().stringValue());
+		assertFalse(result.hasNext());
+		result = _con.getStatements(
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/wrong"), 
+				null, 
+				null, 
+				true);
+		assertFalse(result.hasNext());
+	}
+	
+	protected void _testSPx() throws Exception{
+		RepositoryResult<Statement> result = _con.getStatements(
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/bert"), 
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/hourlyWage"), 
+				null, 
+				true);
+		assertTrue(result.hasNext());
+		Statement statement = result.next();
+		assertEquals("http://www.topicmapslab.de/test/base/hourlyWage", statement.getPredicate().stringValue());
+		assertEquals("25.40", statement.getObject().stringValue());
+		assertEquals("\"25.40\"^^<http://www.w3.org/2001/XMLSchema#float>", statement.getObject().toString());
+		assertFalse(result.hasNext());
+		
+		result = _con.getStatements(
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/bert"), 
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/employer"), 
+				null, 
+				true);
+		assertTrue(result.hasNext());
+		statement = result.next();
+		assertEquals("http://www.topicmapslab.de/test/base/xyz", statement.getObject().stringValue());
+		assertFalse(result.hasNext());
+				
+		result = _con.getStatements(
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/wrong"), 
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/employer"), 
+				null, 
+				true);
+		assertFalse(result.hasNext());
+		
+		result = _con.getStatements(
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/bert"), 
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/wrong"), 
+				null, 
+				true);
+		assertFalse(result.hasNext());
+
+	}
 	
     /**
      * Tests against an indexed store.
@@ -176,8 +234,10 @@ public class TmapiStoreTest {
 		_tmapiRepository = new SailRepository(_sail);
 		_tmapiRepository.initialize();
 		_con = _tmapiRepository.getConnection();
+		_testGetContextIDs();
 		_testSPO();
-//		_testGetContextIDs();
+		_testSxx();
+		_testSPx();
 //		_testTest();
 //		_testGetGetObject();
 //		_testGetPredicate();
@@ -200,10 +260,13 @@ public class TmapiStoreTest {
 		_tmapiRepository.initialize();
 		_con = _tmapiRepository.getConnection();
 		_testGetContextIDs();
-//		_testSPO();
+		_testSPO();
+		_testSxx();
+		_testSPx();
+
 //		_testSELECT();
 //		_testGetGetObject();
-		_testTEST();
+//		_testTEST();
 //		_testSsparqlConstruct();
     }
 	
