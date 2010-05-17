@@ -7,7 +7,7 @@
 
 	<packaging>pom</packaging>
 	<name>OpenRDF Sesame: TMAPI</name>
-	<version>0.0.1</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<description>Sail implementation that stores data in TMAPI</description>
 
 	<dependencies>
@@ -115,5 +115,14 @@
 			<url>http://repo.aduna-software.org/maven2/releases</url>
 		</repository>
 	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>topicmapslab-public</id>
+			<name>Topic Maps Lab Repositiory</name>
+			<url>scp://maven@topicmapslab.de/home/maven/webdir/maven.topicmapslab.de/public/public</url>
+		</repository>
+	</distributionManagement>
+
 </project>
 
