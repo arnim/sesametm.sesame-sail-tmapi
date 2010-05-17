@@ -3,7 +3,7 @@
  * License:   Apache License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html
  */
 
-package de.topicmapslab.sesame.sail.tmapi;
+package de.topicmapslab.sesametm.sail.tmapi;
 
 
 import java.io.File;
@@ -18,8 +18,8 @@ import org.openrdf.sail.memory.MemoryStore;
 import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMapSystem;
 
-import de.topicmapslab.sesame.sail.tmapi.live.LiveStore;
-import de.topicmapslab.sesame.sail.tmapi.utils.TmapiStatementIterator;
+import de.topicmapslab.sesametm.sail.tmapi.live.LiveStore;
+import de.topicmapslab.sesametm.sail.tmapi.utils.TmapiStatementIterator;
 
 /**
  * @author Arnim Bleier
