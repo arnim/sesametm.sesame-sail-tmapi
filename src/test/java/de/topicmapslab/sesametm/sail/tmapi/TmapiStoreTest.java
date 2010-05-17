@@ -122,7 +122,7 @@ public class TmapiStoreTest {
 		RepositoryResult<Statement> result = _con.getStatements(null, 
 				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/employee"), 
 				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/bert"),  true);
-		System.out.println(result.asList());
+//		System.out.println(result.asList());
 	}
 	
 
@@ -170,6 +170,24 @@ public class TmapiStoreTest {
 		_con = _tmapiRepository.getConnection();
 		_testGetContextIDs();
 //		_testSELECT();
+//		_testGetGetObject();
+//		_testTest();
+//		_testSsparqlConstruct();
+    }
+	
+	
+    /**
+     * Tests against an indexed store.
+     * @throws Exception 
+     */
+	@Test
+    public void testTMQL() throws Exception {
+		_sail = new TmapiStore(_tms, CONFIG.TMQL);
+		_tmapiRepository = new SailRepository(_sail);
+		_tmapiRepository.initialize();
+		_con = _tmapiRepository.getConnection();
+		_testGetContextIDs();
+		_testSELECT();
 //		_testGetGetObject();
 //		_testTest();
 //		_testSsparqlConstruct();

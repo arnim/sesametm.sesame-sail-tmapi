@@ -48,8 +48,11 @@ public class TmapiStore implements Sail {
 		if (config == CONFIG.INDEXED) {
 			this.store = new MemoryStore();
 		}
-		if (config == CONFIG.LIVE) {
-			this.store = new LiveStore(tmSys);
+		else if (config == CONFIG.LIVE) {
+			this.store = new LiveStore(tmSys, config);
+		}
+		else if (config == CONFIG.TMQL) {
+			this.store = new LiveStore(tmSys, config);
 		}
 	}
 	

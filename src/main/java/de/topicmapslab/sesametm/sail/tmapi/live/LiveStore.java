@@ -26,6 +26,7 @@ import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
 
+import de.topicmapslab.sesametm.sail.tmapi.CONFIG;
 import de.topicmapslab.sesametm.sail.tmapi.utils.TmapiStatementIterator;
 
 /**
@@ -48,12 +49,16 @@ public class LiveStore extends SailBase {
 	private final ReadWriteLockManager statementListLockManager = new ReadPrefReadWriteLockManager(
 			debugEnabled());
 
+	private String config;
+
 	/**
 	 * 
 	 * @param tmSys
+	 * @param config 
 	 */
-	public LiveStore(TopicMapSystem tmSys) {
+	public LiveStore(TopicMapSystem tmSys, String config) {
 		this.setTmSystem(tmSys);
+		this.setConfig(config);
 	}
 
 	/*
@@ -105,8 +110,12 @@ public class LiveStore extends SailBase {
 		subject = getLocator(subj);
 		predicate = getLocator(pred);
 		object = getLocator(obj);
-
-		return new TmapiStatementIterator<X>(this, subject, predicate, object, relevantMSs);
+		
+		if (config == CONFIG.LIVE)
+			return new TmapiStatementIterator<X>(this, subject, predicate, object, relevantMSs);
+		else if (config == CONFIG.TMQL)
+			return null;	// the TMQLStatementIterator goes here
+		return null;
 	}
 
 	/**
@@ -160,6 +169,20 @@ public class LiveStore extends SailBase {
 	public void initialize() throws SailException {
 		
 		
+	}
+
+	/**
+	 * @param config the config to set
+	 */
+	public void setConfig(String config) {
+		this.config = config;
+	}
+
+	/**
+	 * @return the config
+	 */
+	public String getConfig() {
+		return config;
 	}
 
 }
