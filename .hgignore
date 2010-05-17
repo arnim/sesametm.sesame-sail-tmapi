@@ -17,3 +17,6 @@ target
 bin
 *~
 *.orig
+.classpath
+.project
+.settings
