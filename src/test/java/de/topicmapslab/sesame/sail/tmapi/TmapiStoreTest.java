@@ -5,7 +5,8 @@
 
 package de.topicmapslab.sesame.sail.tmapi;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
+
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -45,9 +46,7 @@ public class TmapiStoreTest {
 	
 	final static String baseIRI = "http://www.topicmapslab.de/test/base/";
 
-	/**
-	 * @throws java.lang.Exception
-	 */
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		_tms = TopicMapSystemFactory.newInstance().newTopicMapSystem();
@@ -84,7 +83,6 @@ public class TmapiStoreTest {
 	}
 
 	
-	
 
 	protected void _testSELECT() throws Exception {
 		SPARQLResultsXMLWriter sparqlWriter = new SPARQLResultsXMLWriter(System.out);
@@ -111,12 +109,10 @@ public class TmapiStoreTest {
 		System.out.println(result.asList());
 	}
 	
-	
 	protected void _testGetGetObject() throws RepositoryException{
 		RepositoryResult<Statement> result = _con.getStatements(null, null, _con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/bert"),  true);
 		System.out.println(result.asList());
 	}
-	
 	
 	protected void _testGetGetSubjectObject() throws RepositoryException{
 		RepositoryResult<Statement> result = _con.getStatements(null, 
@@ -128,12 +124,46 @@ public class TmapiStoreTest {
 
 
 	
-	protected void _testTest() throws Exception {
+	protected void _testTEST() throws Exception {
 		RDFHandler rdfWriter = new N3Writer(System.out);
-		_con.exportStatements(null, _con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/employer"), null, true, rdfWriter);
-//		RepositoryResult<Statement> r = _con.getStatements(null, null, null, true);
-//		System.out.println(r.next());
-	}	
+		_con.exportStatements(null, null, null, true, rdfWriter);
+	}
+	
+	
+	protected void _testSPO() throws Exception {
+		RepositoryResult<Statement> result = _con.getStatements(
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/bert"), 
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/employer"), 
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/xyz"), 
+				true);
+		assertTrue(result.hasNext());
+		Statement statement = result.next();
+		assertEquals("http://www.topicmapslab.de/test/base/bert", statement.getSubject().stringValue());
+		assertEquals("http://www.topicmapslab.de/test/base/employer", statement.getPredicate().stringValue());
+		assertEquals("http://www.topicmapslab.de/test/base/xyz", statement.getObject().stringValue());
+		assertFalse(result.hasNext());
+		
+		result = _con.getStatements(
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/wrong"), 
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/employer"), 
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/xyz"), 
+				true);
+		assertFalse(result.hasNext());
+		
+		result = _con.getStatements(
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/bert"), 
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/wrong"), 
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/xyz"), 
+				true);
+		assertFalse(result.hasNext());
+		
+		result = _con.getStatements(
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/bert"), 
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/employer"), 
+				_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/wrong"), 
+				true);
+		assertFalse(result.hasNext());
+	}
 	
 	
     /**
@@ -146,13 +176,14 @@ public class TmapiStoreTest {
 		_tmapiRepository = new SailRepository(_sail);
 		_tmapiRepository.initialize();
 		_con = _tmapiRepository.getConnection();
+		_testSPO();
 //		_testGetContextIDs();
 //		_testTest();
 //		_testGetGetObject();
 //		_testGetPredicate();
 //		_testGetSubject();
 
-		_testGetGetSubjectObject();
+//		_testGetGetSubjectObject();
 //		_testSELECT();
 //		_testSsparqlConstruct();
     }
@@ -169,9 +200,10 @@ public class TmapiStoreTest {
 		_tmapiRepository.initialize();
 		_con = _tmapiRepository.getConnection();
 		_testGetContextIDs();
+//		_testSPO();
 //		_testSELECT();
 //		_testGetGetObject();
-//		_testTest();
+		_testTEST();
 //		_testSsparqlConstruct();
     }
 	

@@ -76,7 +76,7 @@ public class TmapiStore implements Sail {
 			while (locatorsIterator.hasNext()) {
 				try {
 					l = locatorsIterator.next();
-					TmapiStatementIterator si = new TmapiStatementIterator( this, (Locator) null, (Locator) null, (Locator) null,  tmSys.getTopicMap(l));
+					TmapiStatementIterator<SailException> si = new TmapiStatementIterator<SailException>( this, (Locator) null, (Locator) null, (Locator) null,  tmSys.getTopicMap(l));
 					while (si.hasNext()) {
 						 Statement statement = (Statement) si.next();
 						 getConnection().addStatement(statement.getSubject(), statement.getPredicate(), statement.getObject(), getValueFactory().createURI(l.toExternalForm()));

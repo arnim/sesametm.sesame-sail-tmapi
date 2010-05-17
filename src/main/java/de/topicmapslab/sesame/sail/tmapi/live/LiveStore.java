@@ -54,7 +54,7 @@ public class LiveStore extends SailBase {
 	/**
 	 * 
 	 * @param tmSys
-	 * @param config 
+	 * @param config
 	 */
 	public LiveStore(TopicMapSystem tmSys, String config) {
 		this.setTmSystem(tmSys);
@@ -110,12 +110,11 @@ public class LiveStore extends SailBase {
 		subject = getLocator(subj);
 		predicate = getLocator(pred);
 		object = getLocator(obj);
-		
-		if (config == CONFIG.LIVE)
-			return new TmapiStatementIterator<X>(this, subject, predicate, object, relevantMSs);
-		else if (config == CONFIG.TMQL)
-			return null;	// the TMQLStatementIterator goes here
-		return null;
+
+		if (config == CONFIG.TMQL)
+			return null; // the TMQLStatementIterator goes here
+		return new TmapiStatementIterator<X>(this, subject, predicate, object,
+				relevantMSs);
 	}
 
 	/**
@@ -167,12 +166,12 @@ public class LiveStore extends SailBase {
 	}
 
 	public void initialize() throws SailException {
-		
-		
+
 	}
 
 	/**
-	 * @param config the config to set
+	 * @param config
+	 *            the config to set
 	 */
 	public void setConfig(String config) {
 		this.config = config;
