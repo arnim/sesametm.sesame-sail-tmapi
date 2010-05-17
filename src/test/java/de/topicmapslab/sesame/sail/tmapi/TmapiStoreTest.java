@@ -52,6 +52,7 @@ public class TmapiStoreTest {
 	public static void setUpBeforeClass() throws Exception {
 		_tms = TopicMapSystemFactory.newInstance().newTopicMapSystem();
 		_tm = _tms.createTopicMap(baseIRI);
+		
 
 		Topic alf = _tm.createTopicBySubjectIdentifier(_tm.createLocator(baseIRI + "alf"));
 		Topic bert = _tm.createTopicBySubjectIdentifier(_tm.createLocator(baseIRI + "bert"));
@@ -139,12 +140,12 @@ public class TmapiStoreTest {
 		_con = _tmapiRepository.getConnection();
 //		_testGetContextIDs();
 //		_testTest();
-		_testGetGetObject();
+//		_testGetGetObject();
 //		_testGetPredicate();
 //		_testGetSubject();
 
 
-//		_testSELECT();
+		_testSELECT();
 //		_testSsparqlConstruct();
     }
 	
@@ -161,7 +162,7 @@ public class TmapiStoreTest {
 		_con = _tmapiRepository.getConnection();
 		_testGetContextIDs();
 //		_testSELECT();
-//		_testGetGetObject();
+		_testGetGetObject();
 //		_testTest();
 //		_testSsparqlConstruct();
     }
