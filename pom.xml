@@ -8,7 +8,6 @@
 	<name>OpenRDF Sesame: TMAPI</name>
 	<version>0.0.1-SNAPSHOT</version>
 	<description>Sail implementation that stores data in TMAPI</description>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -68,6 +67,11 @@
 			<version>4.7</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>de.topicmapslab</groupId>
+			<artifactId>tmql4j</artifactId>
+			<version>2.6.2-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<organization>
 		<name>Topic Maps Lab</name>
@@ -102,8 +106,8 @@
 	</build>
 	<repositories>
 		<repository>
-			<id>Topic Maps Lab third_party</id>
-			<url>http://maven.topicmapslab.de/third_party</url>
+			<id>Topic Maps Lab public</id>
+			<url>http://maven.topicmapslab.de/public</url>
 		</repository>
 		<repository>
 			<id>org.tmapi</id>

@@ -28,20 +28,34 @@ public class TmapiStatementFactory {
 	public TmapiStatementFactory(ValueFactory valueFactory) {
 		this.valueFactory = valueFactory;
 	}
-	
-	public Statement create(Topic subject, Topic predicate, Topic object){
+
+	public Statement create(Topic subject, Topic predicate, Topic object) {
 		return create(getBestLocator(subject), getBestLocator(predicate),
 				getBestLocator(object));
 	}
 
+	public Statement create(Topic subject, Topic predicate, Object object) {
+		if (object instanceof Name) {
+			return create(getBestLocator(subject), getBestLocator(predicate),
+					(Name) object);
+		} else if (object instanceof Occurrence) {
+			return create(getBestLocator(subject), getBestLocator(predicate),
+					(Occurrence) object);
+		} else if (object instanceof Topic) {
+			return create(getBestLocator(subject), getBestLocator(predicate),
+					getBestLocator((Topic) object));
+		}
+		throw new RuntimeException();
+	}
+
 	public Statement create(Name name) {
-		return create(getBestLocator(name.getParent()), getBestLocator(name.getType()),
-				name);
+		return create(getBestLocator(name.getParent()), getBestLocator(name
+				.getType()), name);
 	}
 
 	public Statement create(Occurrence occurrence) {
-		return create(getBestLocator(occurrence.getParent()), getBestLocator(occurrence
-				.getType()), occurrence);
+		return create(getBestLocator(occurrence.getParent()),
+				getBestLocator(occurrence.getType()), occurrence);
 	}
 
 	private Statement create(Locator subject, Locator predicate, Locator object) {
@@ -49,19 +63,21 @@ public class TmapiStatementFactory {
 	}
 
 	private Statement create(Locator subject, Locator predicate, Name object) {
-		return create(subject, predicate, valueFactory.createLiteral(object.getValue(),
-			valueFactory.createURI(XMLSchema.STRING.stringValue())));
+		return create(subject, predicate, valueFactory.createLiteral(object
+				.getValue(), valueFactory.createURI(XMLSchema.STRING
+				.stringValue())));
 	}
 
-	private Statement create(Locator subject, Locator predicate, Occurrence object) {
-		return create(subject, predicate, valueFactory.createLiteral(object.getValue(),
-				locator2URI(object.getDatatype())));
+	private Statement create(Locator subject, Locator predicate,
+			Occurrence object) {
+		return create(subject, predicate, valueFactory.createLiteral(object
+				.getValue(), locator2URI(object.getDatatype())));
 	}
 
 	private Statement create(Locator subject, Locator predicate, Value object) {
-		return valueFactory.createStatement(locator2URI(subject), locator2URI(predicate), object);
+		return valueFactory.createStatement(locator2URI(subject),
+				locator2URI(predicate), object);
 	}
-
 
 	private URI locator2URI(Locator l) {
 		return valueFactory.createURI(l.toExternalForm());
