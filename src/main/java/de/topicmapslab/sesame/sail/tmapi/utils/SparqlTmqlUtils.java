@@ -14,7 +14,7 @@ import org.tmapi.core.Locator;
  */
 public class SparqlTmqlUtils {
 
-	private static final String template = "SELECT %subj / tm:name, %pred / tm:name, %obj / tm:name "
+	private static final String template = "SELECT %subj, %pred, %obj "
 			+ "WHERE tm:subject ( tm:subject : %subj , %pred : %obj , ...) ";
 
 	public static String toPredicateQuery(Locator subj, Locator pred,

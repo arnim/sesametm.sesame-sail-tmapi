@@ -51,7 +51,7 @@ public class TmqlStatementIterator<X extends Exception> extends
 		try {
 			forTopicMaps(subj, pred, obj, topicMaps);
 		} catch (SailException e) {
-			e.printStackTrace();
+			//NOTHING TO DO
 		}
 
 		this.iterator = statements.iterator();
@@ -73,6 +73,7 @@ public class TmqlStatementIterator<X extends Exception> extends
 						.newRuntime(tm);
 				IQuery query = runtime.run(SparqlTmqlUtils.toPredicateQuery(
 						subj, pred, obj));
+				System.out.println(query.toString());
 				for (IResult result : query.getResults()) {
 					Iterator<Object> iterator = result.iterator();
 					Object s = iterator.next();
@@ -87,12 +88,15 @@ public class TmqlStatementIterator<X extends Exception> extends
 					if (o instanceof Collection<?>) {
 						o = ((Collection<?>) o).iterator().next();
 					}
-					statements.add(statementFactory.create((Topic) s,
-							(Topic) p, o));
+					Statement statement = statementFactory.create((Topic) s,
+							(Topic) p, o);
+					System.out.println(statement);
+					statements.add(statement);
 				}
 
 				query = runtime.run(SparqlTmqlUtils.toCharacteristicsQuery(
 						subj, pred, obj));
+				System.out.println(query.toString());
 				for (IResult result : query.getResults()) {
 					Iterator<Object> iterator = result.iterator();
 					Object s = iterator.next();
@@ -107,8 +111,10 @@ public class TmqlStatementIterator<X extends Exception> extends
 					if (o instanceof Collection<?>) {
 						o = ((Collection<?>) o).iterator().next();
 					}
-					statements.add(statementFactory.create((Topic) s,
-							(Topic) p, o));
+					Statement statement = statementFactory.create((Topic) s,
+							(Topic) p, o);
+					System.out.println(statement);
+					statements.add(statement);
 				}
 
 			} catch (TMQLRuntimeException e) {
