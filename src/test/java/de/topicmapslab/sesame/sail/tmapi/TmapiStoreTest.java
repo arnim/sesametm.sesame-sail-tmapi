@@ -412,13 +412,13 @@ public class TmapiStoreTest {
 		_con = _tmapiRepository.getConnection();
 		_testGetContextIDs();
 
-//		_testSPO();
-//		_testSxx();
-//		_testSPx();
-//		_testxPx();
-//		_testxPO();
-//		_testxxO();
-//		_testSELECT();
+		_testSPO();
+		_testSxx();
+		_testSPx();
+		_testxPx();
+		_testxPO();
+		_testxxO();
+		_testSELECT();
 		
 //		_testGetGetObject();
 //		_testTEST();

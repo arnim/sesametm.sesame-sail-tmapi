@@ -8,6 +8,7 @@ package de.topicmapslab.sesame.sail.tmapi.live;
 import info.aduna.concurrent.locks.Lock;
 import info.aduna.concurrent.locks.ReadPrefReadWriteLockManager;
 import info.aduna.concurrent.locks.ReadWriteLockManager;
+import info.aduna.iteration.LookAheadIteration;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,6 +16,7 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import org.openrdf.model.Resource;
+import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
@@ -28,6 +30,7 @@ import org.tmapi.core.TopicMapSystem;
 
 import de.topicmapslab.sesame.sail.tmapi.CONFIG;
 import de.topicmapslab.sesame.sail.tmapi.utils.TmapiStatementIterator;
+import de.topicmapslab.sesame.sail.tmapi.utils.TmqlStatementIterator;
 
 /**
  * @author Arnim Bleier
@@ -100,7 +103,7 @@ public class LiveStore extends SailBase {
 		return tmSystem;
 	}
 
-	public <X extends Exception> TmapiStatementIterator<X> createStatementIterator(
+	public <X extends Exception> LookAheadIteration<Statement, X> createStatementIterator(
 			Class<X> class1, Resource subj, URI pred, Value obj,
 			boolean includeInferred, Resource[] contexts) {
 
@@ -112,7 +115,8 @@ public class LiveStore extends SailBase {
 		object = getLocator(obj);
 
 		if (config == CONFIG.TMQL)
-			return null; // the TMQLStatementIterator goes here
+			return new TmqlStatementIterator<X>(this, subject, predicate, object,
+					relevantMSs);
 		return new TmapiStatementIterator<X>(this, subject, predicate, object,
 				relevantMSs);
 	}
