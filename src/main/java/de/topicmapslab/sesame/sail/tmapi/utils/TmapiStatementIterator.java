@@ -68,9 +68,9 @@ public class TmapiStatementIterator<X extends Exception> extends
 			pTopic = getTopic(pred, tm);
 			oTopic = getTopic(obj, tm);
 
-			//			
-			// System.out.println(" forTMs " + sTopic + " - "+ pTopic + " - "+
-			// oTopic + " - ");
+						
+//			 System.out.println(" forTMs " + sTopic + " - "+ pTopic + " - "+
+//			 oTopic + " - ");
 
 			if (sTopic == null && subj != null || pTopic == null
 					&& pred != null || oTopic == null && obj != null) {
@@ -156,16 +156,12 @@ public class TmapiStatementIterator<X extends Exception> extends
 
 	private void createListSPO(Topic subj, Topic pred, Topic obj, TopicMap tm)
 			throws SailException {
-//		System.out.println();
-//		System.out.println("" + subj + pred + obj);
-//		System.out.println();
+
 		Role subjectRole, objectRole;
 		Iterator<Role> subjectRolesIterator, objectRolesIterator = obj.getRolesPlayed().iterator();
 		while (objectRolesIterator.hasNext()) {
 			objectRole = objectRolesIterator.next();
-//			System.out.println(" " +objectRole.getType().equals(pred) + objectRole.getType() + " dd" +pred);
 			if (objectRole.getType().equals(pred)){
-//				System.out.println(2);
 				subjectRolesIterator = objectRole.getParent().getRoles().iterator();
 				while (subjectRolesIterator.hasNext()) {
 					subjectRole = subjectRolesIterator.next();
