@@ -464,15 +464,15 @@ public class TmapiStoreTest {
 		_con = _tmapiRepository.getConnection();
 		_testGetContextIDs();
 
-		 _testSPO();
-//		 _testSxx();
-		 _testSPx();
-		 _testxPx();
-//		 _testxPO();
-		 _testxxO();
-//		 _testxxx();
-//		 _testSELECT();
-		 _testSsparqlConstruct();
+//		 _testSPO();
+////		 _testSxx();
+//		 _testSPx();
+//		 _testxPx();
+////		 _testxPO();
+//		 _testxxO();
+////		 _testxxx();
+////		 _testSELECT();
+//		 _testSsparqlConstruct();
 		 _testPerformance();
 	}
 
