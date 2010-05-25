@@ -95,10 +95,6 @@ public class TmapiStoreTest {
 	}
 
 	
-	protected void populateTM(TopicMap tm, int count){
-		
-	}
-	
 	
 	protected void _toN3() throws Exception {
 		RDFHandler rdfWriter = new N3Writer(System.out);
@@ -374,7 +370,7 @@ public class TmapiStoreTest {
 	
 	protected void _testPerformance() throws Exception {
 		for (int i = 1; i < 100; i++) {
-			populateMap(i,50);
+			populateMap(i,500);
 			
 		}
 		System.out.println("Query performance on 100 Topic Maps with 500 indufidual sets " +
