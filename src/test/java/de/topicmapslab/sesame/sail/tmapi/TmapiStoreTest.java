@@ -401,55 +401,55 @@ public class TmapiStoreTest {
 
 	}
 	
-
-	/**
-	 * Tests against an indexed store.
-	 * 
-	 */
-	@Test
-	public void testLive() throws Exception {
-		_sail = new TmapiStore(_tms, CONFIG.LIVE);
-		_tmapiRepository = new SailRepository(_sail);
-		_tmapiRepository.initialize();
-		_con = _tmapiRepository.getConnection();
-		_testGetContextIDs();
-		_testSPO();
-		_testSxx();
-		_testSPx();
-		_testxPx();
-		_testxPO();
-		_testxxO();
-		_testxxx();
-		_testSELECT();
-		_testSsparqlConstruct();
-		_testPerformance();
-		
-	}
-
-		
-	 /**
-	 * Tests against an indexed store.
-	 * @throws Exception
-	 */
-	 @Test
-	 public void testIndexed() throws Exception {
-	 _sail = new TmapiStore(_tms, CONFIG.INDEXED);
-	 _tmapiRepository = new SailRepository(_sail);
-	 _tmapiRepository.initialize();
-	 _con = _tmapiRepository.getConnection();
-	 _testGetContextIDs();
-	  _testSPO();
-	  _testSxx();
-	  _testSPx();
-	  _testxPx();
-	  _testxPO();
-	  _testxxO();
-	  _testxxx();
-	  _testSELECT();
-	  _testSsparqlConstruct();
-      _testPerformance();
-
-	 }
+//
+//	/**
+//	 * Tests against an indexed store.
+//	 * 
+//	 */
+//	@Test
+//	public void testLive() throws Exception {
+//		_sail = new TmapiStore(_tms, CONFIG.LIVE);
+//		_tmapiRepository = new SailRepository(_sail);
+//		_tmapiRepository.initialize();
+//		_con = _tmapiRepository.getConnection();
+//		_testGetContextIDs();
+//		_testSPO();
+//		_testSxx();
+//		_testSPx();
+//		_testxPx();
+//		_testxPO();
+//		_testxxO();
+//		_testxxx();
+//		_testSELECT();
+//		_testSsparqlConstruct();
+//		_testPerformance();
+//		
+//	}
+//
+//		
+//	 /**
+//	 * Tests against an indexed store.
+//	 * @throws Exception
+//	 */
+//	 @Test
+//	 public void testIndexed() throws Exception {
+//	 _sail = new TmapiStore(_tms, CONFIG.INDEXED);
+//	 _tmapiRepository = new SailRepository(_sail);
+//	 _tmapiRepository.initialize();
+//	 _con = _tmapiRepository.getConnection();
+//	 _testGetContextIDs();
+//	  _testSPO();
+//	  _testSxx();
+//	  _testSPx();
+//	  _testxPx();
+//	  _testxPO();
+//	  _testxxO();
+//	  _testxxx();
+//	  _testSELECT();
+//	  _testSsparqlConstruct();
+//      _testPerformance();
+//
+//	 }
 
 	/**
 	 * Tests against the TMQL engine.
