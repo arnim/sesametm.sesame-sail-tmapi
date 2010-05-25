@@ -374,7 +374,7 @@ public class TmapiStoreTest {
 	
 	protected void _testPerformance() throws Exception {
 		for (int i = 1; i < 100; i++) {
-			populateMap(i,500);
+			populateMap(i,50);
 			
 		}
 		System.out.println("Query performance on 100 Topic Maps with 500 indufidual sets " +
@@ -472,7 +472,7 @@ public class TmapiStoreTest {
 		 _testxxO();
 //		 _testxxx();
 //		 _testSELECT();
-		 _testSsparqlConstruct();
+//		 _testSsparqlConstruct();
 //		 _testPerformance();
 	}
 
