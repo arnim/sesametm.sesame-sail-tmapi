@@ -122,7 +122,6 @@ public class TmapiSailConnection extends SailConnectionBase {
 			TupleExpr tupleExpr, Dataset dataset, BindingSet arg2, boolean includeInferred)
 			throws SailException {
 		tupleExpr = tupleExpr.clone();
-		System.out.println(tupleExpr.toString());
 		TripleSource tripleSource = new TmapiTripleSource(includeInferred);
 		EvaluationStrategyImpl strategy = new EvaluationStrategyImpl(tripleSource, dataset);
 		Lock stLock = store.getStatementsReadLock();
