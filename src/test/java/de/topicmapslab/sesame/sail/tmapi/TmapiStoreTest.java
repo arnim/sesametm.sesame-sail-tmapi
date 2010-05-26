@@ -378,8 +378,8 @@ public class TmapiStoreTest {
 	}
 
 	protected void _testPerformance() throws Exception {
-		for (int i = 1; i < 10; i++) {
-			populateMap(i, 50);
+		for (int i = 1; i < 100; i++) {
+			populateMap(i, 500);
 
 		}
 		System.out
@@ -464,8 +464,6 @@ public class TmapiStoreTest {
 	 */
 	@Test
 	public void testIndexed() throws Exception {
-		System.out
-				.println("Java Version " + System.getProperty("java.version"));
 		_sail = new TmapiStore(_tms, CONFIG.INDEXED);
 		_tmapiRepository = new SailRepository(_sail);
 		_tmapiRepository.initialize();
