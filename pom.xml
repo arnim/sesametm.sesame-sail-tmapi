@@ -79,29 +79,6 @@
 	</organization>
 	<build>
 		<plugins>
-		
-		<plugin>
-			<groupId>org.apache.jmeter</groupId>
-			<artifactId>maven-jmeter-plugin</artifactId>
-			<version>1.0</version>
-			<executions>
-				<execution>
-					<id>jmeter-tests</id>
-					<phase>integration-test</phase>
-					<goals>
-						<goal>jmeter</goal>
-					</goals>
-				</execution>
-			</executions>
-			<configuration>
-				<reportDir>
-					${project.build.directory}/jmeter-reports
-				</reportDir>
-				<jmeterUserProperties>
-       	  	  	  	</jmeterUserProperties>
-			</configuration>
-		</plugin>
-		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
