@@ -39,10 +39,10 @@ public class SparqlTmqlUtils {
 		return t;
 	}
 
-	private static final String template2 = "FOR $sub IN %subj " + " RETURN {"
+	private static final String template2 = "FOR $subj IN %subj " + " RETURN {"
 			+ " FOR $pred IN %pred " + " RETURN { "
-			+ " FOR $obj IN $sub >> characteristics $pred %obj"
-			+ " RETURN $sub, $pred, $obj" + " }" + " }";
+			+ " FOR $obj IN $subj >> characteristics $pred %obj"
+			+ " RETURN $subj, $pred, $obj" + " }" + " }";
 
 	public static String toCharacteristicsQuery(Locator subj, Locator pred,
 			Locator obj) {
