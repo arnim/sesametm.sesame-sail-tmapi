@@ -5,14 +5,18 @@
 
 package de.topicmapslab.sesame.sail.tmapi;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Timer;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openrdf.model.Statement;
 import org.openrdf.model.vocabulary.XMLSchema;
@@ -34,6 +38,7 @@ import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapExistsException;
 import org.tmapi.core.TopicMapSystem;
 import org.tmapi.core.TopicMapSystemFactory;
+import org.tmapix.io.XTM20TopicMapWriter;
 
 /**
  * @author Arnim Bleier
@@ -87,6 +92,20 @@ public class TmapiStoreTest {
 
 			bwf.createRole(employee, bert);
 			bwf.createRole(employer, xyz);
+		}
+
+		File file = new File("src/test/resources/out.xtm");
+		if (!file.exists()) {
+			try {
+				XTM20TopicMapWriter writer = new XTM20TopicMapWriter(new FileOutputStream(file), baseIRI + "_" + count);
+				writer.write(tm);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -445,7 +464,8 @@ public class TmapiStoreTest {
 	 */
 	@Test
 	public void testIndexed() throws Exception {
-		System.out.println("Java Version " + System.getProperty( "java.version" ));
+		System.out
+				.println("Java Version " + System.getProperty("java.version"));
 		_sail = new TmapiStore(_tms, CONFIG.INDEXED);
 		_tmapiRepository = new SailRepository(_sail);
 		_tmapiRepository.initialize();
@@ -476,18 +496,18 @@ public class TmapiStoreTest {
 		_tmapiRepository = new SailRepository(_sail);
 		_tmapiRepository.initialize();
 		_con = _tmapiRepository.getConnection();
-		_testGetContextIDs();
-		_testContextDependency();
-		_testSPO();
-		// _testSxx();
-		_testSPx();
-		_testxPx();
-		// _testxPO();
-		_testxxO();
-		// _testxxx();
-		// _testSELECT();
-		// _testSsparqlConstruct();
-		// _testPerformance();
+		 _testGetContextIDs();
+		 _testContextDependency();
+		 _testSPO();
+		_testSxx();
+		 _testSPx();
+		 _testxPx();
+		 _testxPO();
+		 _testxxO();
+		 _testxxx();
+		 _testSELECT();
+		 _testSsparqlConstruct();
+		 _testPerformance();
 	}
 
 }
