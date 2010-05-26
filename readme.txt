@@ -6,11 +6,13 @@ and follows the the mapping approach developed by NetworkedPlanet [4].
 Running the following m2 command generates configuration files for your IDE:
 Eclipse: 		mvn eclipse:eclipse
 Netbeans: 		mvn netbeans-freeform:generate-netbeans-project
-IntelliJ IDEA: 	mvn idea:idea
+IntelliJ IDEA:	mvn idea:idea
 
 
 To build the project, run the unit tests and install it locally to your repository execute:
 mvn clean install
+
+For further information see http://code.google.com/p/sesametm
 
 1) http://www.openrdf.org/
 2) http://www.isotopicmaps.org/
