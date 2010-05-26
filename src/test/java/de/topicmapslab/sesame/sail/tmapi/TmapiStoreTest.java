@@ -94,19 +94,19 @@ public class TmapiStoreTest {
 			bwf.createRole(employer, xyz);
 		}
 
-		File file = new File("src/test/resources/out.xtm");
-		if (!file.exists()) {
-			try {
-				XTM20TopicMapWriter writer = new XTM20TopicMapWriter(new FileOutputStream(file), baseIRI + "_" + count);
-				writer.write(tm);
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+//		File file = new File("src/test/resources/out.xtm");
+//		if (!file.exists()) {
+//			try {
+//				XTM20TopicMapWriter writer = new XTM20TopicMapWriter(new FileOutputStream(file), baseIRI + "_" + count);
+//				writer.write(tm);
+//			} catch (FileNotFoundException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
 
 	}
 
