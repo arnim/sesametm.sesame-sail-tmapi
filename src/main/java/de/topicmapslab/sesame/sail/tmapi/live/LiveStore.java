@@ -114,7 +114,7 @@ public class LiveStore extends SailBase {
 		predicate = getLocator(pred);
 		object = getLocator(obj);
 
-		if (config == CONFIG.TMQL)
+		if (config.equals(CONFIG.TMQL))
 			return new TmqlStatementIterator<X>(this, subject, predicate, object,
 					relevantMSs);
 		return new TmapiStatementIterator<X>(this, subject, predicate, object,

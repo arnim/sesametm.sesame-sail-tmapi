@@ -45,13 +45,13 @@ public class TmapiStore implements Sail {
 	}
 	
 	private void setup(){
-		if (config == CONFIG.INDEXED) {
+		if (config.equals(CONFIG.INDEXED)) {
 			this.store = new MemoryStore();
 		}
-		else if (config == CONFIG.LIVE) {
+		else if (config.equals(CONFIG.LIVE)) {
 			this.store = new LiveStore(tmSys, config);
 		}
-		else if (config == CONFIG.TMQL) {
+		else if (config.equals(CONFIG.TMQL)) {
 			this.store = new LiveStore(tmSys, config);
 		}
 	}
@@ -68,7 +68,7 @@ public class TmapiStore implements Sail {
 	 */
 	protected void index()
 		throws SailException{
-		if (config == CONFIG.INDEXED){
+		if (config.equals(CONFIG.INDEXED)){
 			
 			Iterator<Locator> locatorsIterator = tmSys.getLocators().iterator();
 			Locator l;
