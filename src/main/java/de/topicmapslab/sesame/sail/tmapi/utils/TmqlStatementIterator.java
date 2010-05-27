@@ -73,7 +73,7 @@ public class TmqlStatementIterator<X extends Exception> extends
 						.newRuntime(tm);
 				IQuery query = runtime.run(SparqlTmqlUtils.toPredicateQuery(
 						subj, pred, obj));
-				System.out.println(query.toString());
+//				System.out.println(query.toString());
 				for (IResult result : query.getResults()) {
 					Iterator<Object> iterator = result.iterator();
 					Object s = iterator.next();
@@ -90,13 +90,13 @@ public class TmqlStatementIterator<X extends Exception> extends
 					}
 					Statement statement = statementFactory.create((Topic) s,
 							(Topic) p, o);
-					System.out.println(statement);
+//					System.out.println(statement);
 					statements.add(statement);
 				}
 
 				query = runtime.run(SparqlTmqlUtils.toCharacteristicsQuery(
 						subj, pred, obj));
-				System.out.println(query.toString());
+//				System.out.println(query.toString());
 				for (IResult result : query.getResults()) {
 					Iterator<Object> iterator = result.iterator();
 					Object s = iterator.next();
@@ -113,7 +113,7 @@ public class TmqlStatementIterator<X extends Exception> extends
 					}
 					Statement statement = statementFactory.create((Topic) s,
 							(Topic) p, o);
-					System.out.println(statement);
+//					System.out.println(statement);
 					statements.add(statement);
 				}
 
