@@ -453,8 +453,7 @@ public class TmapiStoreTest {
 		_testxxx();
 		_testSELECT();
 		_testSsparqlConstruct();
-		_testPerformance();
-
+//		_testPerformance(); //not resource friendly
 	}
 
 	/**
@@ -479,8 +478,7 @@ public class TmapiStoreTest {
 		_testxxx();
 		_testSELECT();
 		_testSsparqlConstruct();
-		_testPerformance();
-
+//		_testPerformance(); not resource friendly
 	}
 
 	/**
@@ -497,7 +495,7 @@ public class TmapiStoreTest {
 		 _testGetContextIDs();
 		 _testContextDependency();
 		 _testSPO();
-		_testSxx();
+		 _testSxx();
 		 _testSPx();
 		 _testxPx();
 		 _testxPO();
@@ -505,7 +503,7 @@ public class TmapiStoreTest {
 		 _testxxx();
 		 _testSELECT();
 		 _testSsparqlConstruct();
-		 _testPerformance();
+//		 _testPerformance(); not resource friendly
 	}
 
 }
