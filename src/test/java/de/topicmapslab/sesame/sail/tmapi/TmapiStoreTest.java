@@ -94,20 +94,6 @@ public class TmapiStoreTest {
 			bwf.createRole(employer, xyz);
 		}
 
-//		File file = new File("src/test/resources/out.xtm");
-//		if (!file.exists()) {
-//			try {
-//				XTM20TopicMapWriter writer = new XTM20TopicMapWriter(new FileOutputStream(file), baseIRI + "_" + count);
-//				writer.write(tm);
-//			} catch (FileNotFoundException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-
 	}
 
 	protected void _toN3() throws Exception {
@@ -453,7 +439,7 @@ public class TmapiStoreTest {
 		_testxxx();
 		_testSELECT();
 		_testSsparqlConstruct();
-//		_testPerformance(); //not resource friendly
+		_testPerformance(); //not resource friendly
 	}
 
 	/**
@@ -478,7 +464,7 @@ public class TmapiStoreTest {
 		_testxxx();
 		_testSELECT();
 		_testSsparqlConstruct();
-//		_testPerformance(); not resource friendly
+		_testPerformance(); // not resource friendly
 	}
 
 	/**
@@ -503,7 +489,7 @@ public class TmapiStoreTest {
 		 _testxxx();
 		 _testSELECT();
 		 _testSsparqlConstruct();
-//		 _testPerformance(); not resource friendly
+		 _testPerformance(); //not resource friendly
 	}
 
 }
