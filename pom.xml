@@ -6,7 +6,7 @@
 	<artifactId>sesame-sail-tmapi</artifactId>
 
 	<name>OpenRDF Sesame: TMAPI</name>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<description>Sail implementation that stores data in TMAPI</description>
 	<dependencies>
 		<dependency>
@@ -25,12 +25,6 @@
 			<groupId>org.tmapi</groupId>
 			<artifactId>tmapi</artifactId>
 			<version>2.0.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>1.5.10</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
@@ -71,6 +65,12 @@
 			<groupId>de.topicmapslab</groupId>
 			<artifactId>tmql4j</artifactId>
 			<version>2.6.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>de.topicmapslab</groupId>
+			<artifactId>slf4j-atrappe</artifactId>
+			<version>1.5.1</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<organization>

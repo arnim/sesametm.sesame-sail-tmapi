@@ -35,7 +35,7 @@ public class TmapiStore implements Sail {
 	
 	
 	public TmapiStore(TopicMapSystem tmSys) throws SailException{
-		this(tmSys, CONFIG.INDEXED);
+		this(tmSys, CONFIG.LIVE);
 	}
 	
 	public TmapiStore(TopicMapSystem tmSys, String config) throws SailException{

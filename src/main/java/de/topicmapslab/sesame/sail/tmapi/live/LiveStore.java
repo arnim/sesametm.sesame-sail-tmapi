@@ -108,7 +108,7 @@ public class LiveStore extends SailBase {
 			boolean includeInferred, Resource[] contexts) {
 
 		TopicMap[] relevantMSs = getTopicMaps(contexts);
-		Locator subject = null, predicate = null, object = null;
+		Locator subject, predicate, object;
 
 		subject = getLocator(subj);
 		predicate = getLocator(pred);
