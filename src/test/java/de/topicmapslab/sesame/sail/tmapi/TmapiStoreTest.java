@@ -424,6 +424,10 @@ public class TmapiStoreTest {
 	 */
 	@Test
 	public void testLive() throws Exception {
+		
+		
+		System.out.println(Runtime.getRuntime().availableProcessors());
+		
 		_sail = new TmapiStore(_tms, CONFIG.LIVE);
 		_tmapiRepository = new SailRepository(_sail);
 		_tmapiRepository.initialize();
@@ -450,8 +454,6 @@ public class TmapiStoreTest {
 	@Test
 	public void testIndexed() throws Exception {
 		
-		System.out.println(Runtime.getRuntime().availableProcessors());
-
 		
 		_sail = new TmapiStore(_tms, CONFIG.INDEXED);
 		_tmapiRepository = new SailRepository(_sail);
