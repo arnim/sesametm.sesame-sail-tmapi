@@ -10,6 +10,9 @@ import info.aduna.iteration.LookAheadIteration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.openrdf.model.Statement;
 import org.openrdf.model.ValueFactory;
@@ -46,6 +49,9 @@ public class TmapiStatementIterator<X extends Exception> extends
 			forTopicMpas(subj, pred, obj, topicMaps);
 		} catch (SailException e) {
 			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		this.iterator = statements.iterator();
@@ -60,8 +66,9 @@ public class TmapiStatementIterator<X extends Exception> extends
 	}
 
 	private void forTopicMpas(Locator subj, Locator pred, Locator obj,
-			TopicMap... topicMaps) throws SailException {
+			TopicMap... topicMaps) throws SailException, InterruptedException {
 		Topic sTopic = null, pTopic = null, oTopic = null;
+		ExecutorService executor = Executors.newFixedThreadPool(3);
 		for (TopicMap tm : topicMaps) {
 
 			sTopic = getTopic(subj, tm);
@@ -74,167 +81,14 @@ public class TmapiStatementIterator<X extends Exception> extends
 
 				// Q has no match in this tm
 			} else {
-
-				if (sTopic == null && pTopic == null && oTopic == null)
-					createListXXX(tm);
-				else if (sTopic != null && pTopic == null && oTopic == null)
-					createListSXX(sTopic, tm);
-				else if (sTopic != null && pTopic != null && oTopic == null)
-					createListSPX(sTopic, pTopic, tm);
-				else if (sTopic == null && pTopic != null && oTopic == null)
-					createListXPX(pTopic, tm);
-				else if (sTopic != null && pTopic != null && oTopic != null)
-					createListSPO(sTopic, pTopic, oTopic, tm);
-				else if (sTopic == null && pTopic == null && oTopic != null)
-					createListXXO(oTopic, tm);
-				else if (sTopic == null && pTopic != null && oTopic != null)
-					createListXPO(pTopic, oTopic, tm);
-				else
-					System.err
-							.println("You should never read this! TmapiStatementIterator:104 "
-									+ subj + " " + pred + " " + obj);
-
+				executor.execute(new MapSpider(statements, statementFactory, tm, sTopic, pTopic, oTopic));
 			}
-		}
-	}
-
-	private void createListXXX(TopicMap tm) throws SailException {
-		Iterator<Topic> tIterator = tm.getTopics().iterator();
-		while (tIterator.hasNext()) {
-			createListSXX(tIterator.next(), tm);
-		}
-	}
-
-	private void createListSXX(Topic subj, TopicMap tm) throws SailException {
-		addCharacteristics(subj);
-		Role thisRole, otherRole;
-		Iterator<Role> thisRolesIterator = subj.getRolesPlayed().iterator(), otherRolesIterator;
-		while (thisRolesIterator.hasNext()) {
-			thisRole = thisRolesIterator.next();
-			otherRolesIterator = thisRole.getParent().getRoles().iterator();
-			while (otherRolesIterator.hasNext()) {
-				otherRole = otherRolesIterator.next();
-				if (!thisRole.getType().equals(otherRole.getType())) {
-					statements.add(statementFactory.create(subj, otherRole
-							.getType(), otherRole.getPlayer()));
-				}
-			}
-		}
-
-	}
-
-	private void createListSPX(Topic subj, Topic pred, TopicMap tm)
-			throws SailException {
-		addCharacteristics(subj, pred);
-		Topic thisRoleType;
-		Role thisRole, otherRole;
-		Iterator<Role> thisRolesIterator = subj.getRolesPlayed().iterator(), otherRolesIterator;
-		while (thisRolesIterator.hasNext()) {
-			thisRole = thisRolesIterator.next();
-			thisRoleType = thisRole.getType();
-			otherRolesIterator = thisRole.getParent().getRoles().iterator();
-			while (otherRolesIterator.hasNext()) {
-				otherRole = otherRolesIterator.next();
-				if (!thisRoleType.equals(otherRole.getType())
-						&& otherRole.getType().equals(pred)) {
-					statements.add(statementFactory.create(subj, otherRole
-							.getType(), otherRole.getPlayer()));
-				}
-			}
-		}
-	}
-
-	private void createListXPX(Topic pred, TopicMap tm) throws SailException {
-		Iterator<Topic> tIterator = tm.getTopics().iterator();
-		while (tIterator.hasNext()) {
-			createListSPX(tIterator.next(), pred, tm);
-		}
-	}
-
-	private void createListSPO(Topic subj, Topic pred, Topic obj, TopicMap tm)
-			throws SailException {
-
-		Role subjectRole, objectRole;
-		Iterator<Role> subjectRolesIterator, objectRolesIterator = obj.getRolesPlayed().iterator();
-		while (objectRolesIterator.hasNext()) {
-			objectRole = objectRolesIterator.next();
-			if (objectRole.getType().equals(pred)){
-				subjectRolesIterator = objectRole.getParent().getRoles().iterator();
-				while (subjectRolesIterator.hasNext()) {
-					subjectRole = subjectRolesIterator.next();
-					if (subjectRole.getPlayer().equals(subj))
-						statements.add(statementFactory.create(subj, pred, obj));
-				}
-			}
-			
-			
 		}
 		
-		
-		
-		
+		executor.shutdown();
+		executor.awaitTermination(1, TimeUnit.HOURS);
 	}
 
-	private void createListXXO(Topic obj, TopicMap tm) throws SailException {
-		Role objectRole, subjectRole;
-		Topic objectRoleType;
-		Iterator<Role> subjectRoleIterator;
-		Iterator<Role> objectRolesIterator = obj.getRolesPlayed().iterator();
-		while (objectRolesIterator.hasNext()) {
-			objectRole = objectRolesIterator.next();
-			objectRoleType = objectRole.getType();
-
-			subjectRoleIterator = objectRole.getParent().getRoles().iterator();
-			while (subjectRoleIterator.hasNext()) {
-				subjectRole = subjectRoleIterator.next();
-				if (!subjectRole.getType().equals(objectRoleType)) {
-					statements.add(statementFactory.create(subjectRole
-							.getPlayer(), objectRoleType, obj));
-				}
-			}
-
-		}
-	}
-
-	private void createListXPO(Topic pred, Topic obj, TopicMap tm)
-			throws SailException {
-		Iterator<Role> objectRolesIterator = obj.getRolesPlayed(pred)
-				.iterator(), sbjectRolesIterator;
-		Role objectRole, subjectRole;
-		while (objectRolesIterator.hasNext()) {
-			objectRole = objectRolesIterator.next();
-			sbjectRolesIterator = objectRole.getParent().getRoles().iterator();
-			while (sbjectRolesIterator.hasNext()) {
-				subjectRole = sbjectRolesIterator.next();
-				if (!subjectRole.getType().equals(pred))
-					statements.add(statementFactory.create(subjectRole
-							.getPlayer(), pred, obj));
-			}
-
-		}
-	}
-
-	private void addCharacteristics(Topic t) {
-		Iterator<Name> names = t.getNames().iterator();
-		while (names.hasNext()) {
-			statements.add(statementFactory.create(names.next()));
-		}
-		Iterator<Occurrence> occurrences = t.getOccurrences().iterator();
-		while (occurrences.hasNext()) {
-			statements.add(statementFactory.create(occurrences.next()));
-		}
-	}
-
-	private void addCharacteristics(Topic t, Topic type) {
-		Iterator<Name> names = t.getNames(type).iterator();
-		while (names.hasNext()) {
-			statements.add(statementFactory.create(names.next()));
-		}
-		Iterator<Occurrence> occurrences = t.getOccurrences(type).iterator();
-		while (occurrences.hasNext()) {
-			statements.add(statementFactory.create(occurrences.next()));
-		}
-	}
 
 	private Topic getTopic(Locator l, TopicMap tm) {
 		if (l == null)
