@@ -68,9 +68,6 @@ public class TmapiStatementIterator<X extends Exception> extends
 			pTopic = getTopic(pred, tm);
 			oTopic = getTopic(obj, tm);
 
-						
-//			 System.out.println(" forTMs " + sTopic + " - "+ pTopic + " - "+
-//			 oTopic + " - ");
 
 			if (sTopic == null && subj != null || pTopic == null
 					&& pred != null || oTopic == null && obj != null) {

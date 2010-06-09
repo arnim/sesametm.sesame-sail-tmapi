@@ -439,7 +439,7 @@ public class TmapiStoreTest {
 		_testxxx();
 		_testSELECT();
 		_testSsparqlConstruct();
-		_testPerformance(); //not resource friendly
+//		_testPerformance(); //not resource friendly
 	}
 
 	/**
@@ -464,7 +464,7 @@ public class TmapiStoreTest {
 		_testxxx();
 		_testSELECT();
 		_testSsparqlConstruct();
-		_testPerformance(); // not resource friendly
+//		_testPerformance(); // not resource friendly
 	}
 
 	/**
@@ -489,7 +489,7 @@ public class TmapiStoreTest {
 		 _testxxx();
 		 _testSELECT();
 		 _testSsparqlConstruct();
-		 _testPerformance(); //not resource friendly
+//		 _testPerformance(); //not resource friendly
 	}
 
 }
