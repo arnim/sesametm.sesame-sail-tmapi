@@ -67,8 +67,8 @@ public class TmapiStatementIterator<X extends Exception> extends
 
 	private void forTopicMpas(Locator subj, Locator pred, Locator obj,
 			TopicMap... topicMaps) throws SailException, InterruptedException {
-		Topic sTopic = null, pTopic = null, oTopic = null;
-		ExecutorService executor = Executors.newFixedThreadPool(3);
+		Topic sTopic = null, pTopic = null, oTopic = null;		
+		ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 		for (TopicMap tm : topicMaps) {
 
 			sTopic = getTopic(subj, tm);
@@ -84,7 +84,6 @@ public class TmapiStatementIterator<X extends Exception> extends
 				executor.execute(new MapSpider(statements, statementFactory, tm, sTopic, pTopic, oTopic));
 			}
 		}
-		
 		executor.shutdown();
 		executor.awaitTermination(1, TimeUnit.HOURS);
 	}

@@ -439,7 +439,7 @@ public class TmapiStoreTest {
 		_testxxx();
 		_testSELECT();
 		_testSsparqlConstruct();
-//		_testPerformance(); //not resource friendly
+		_testPerformance(); //not resource friendly
 	}
 
 	/**
@@ -449,6 +449,10 @@ public class TmapiStoreTest {
 	 */
 	@Test
 	public void testIndexed() throws Exception {
+		
+		System.out.println(Runtime.getRuntime().availableProcessors());
+
+		
 		_sail = new TmapiStore(_tms, CONFIG.INDEXED);
 		_tmapiRepository = new SailRepository(_sail);
 		_tmapiRepository.initialize();
@@ -464,32 +468,32 @@ public class TmapiStoreTest {
 		_testxxx();
 		_testSELECT();
 		_testSsparqlConstruct();
-//		_testPerformance(); // not resource friendly
+		_testPerformance(); // not resource friendly
 	}
 
-	/**
-	 * Tests against the TMQL engine.
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	public void testTMQL() throws Exception {
-		_sail = new TmapiStore(_tms, CONFIG.TMQL);
-		_tmapiRepository = new SailRepository(_sail);
-		_tmapiRepository.initialize();
-		_con = _tmapiRepository.getConnection();
-		 _testGetContextIDs();
-		 _testContextDependency();
-		 _testSPO();
-		 _testSxx();
-		 _testSPx();
-		 _testxPx();
-		 _testxPO();
-		 _testxxO();
-		 _testxxx();
-		 _testSELECT();
-		 _testSsparqlConstruct();
-//		 _testPerformance(); //not resource friendly
-	}
+//	/**
+//	 * Tests against the TMQL engine.
+//	 * 
+//	 * @throws Exception
+//	 */
+//	@Test
+//	public void testTMQL() throws Exception {
+//		_sail = new TmapiStore(_tms, CONFIG.TMQL);
+//		_tmapiRepository = new SailRepository(_sail);
+//		_tmapiRepository.initialize();
+//		_con = _tmapiRepository.getConnection();
+//		 _testGetContextIDs();
+//		 _testContextDependency();
+//		 _testSPO();
+//		 _testSxx();
+//		 _testSPx();
+//		 _testxPx();
+//		 _testxPO();
+//		 _testxxO();
+//		 _testxxx();
+//		 _testSELECT();
+//		 _testSsparqlConstruct();
+////		 _testPerformance(); //not resource friendly
+//	}
 
 }
