@@ -123,21 +123,19 @@ public class TmapiStatementIterator<X extends Exception> extends
 	}
 	
 	private void createTypeListxPx(TopicMap tm){
-		Topic subjectTopic, objectTopic;
-		TypeInstanceIndex index = tm.getIndex(TypeInstanceIndex.class);
-		Iterator<Topic> topicsIterator = tm.getTopics().iterator(), typesIterator;
+		Iterator<Topic> topicsIterator = tm.getTopics().iterator();
 		while (topicsIterator.hasNext()) {
-			subjectTopic = topicsIterator.next();
-			typesIterator = subjectTopic.getTypes().iterator();
-			while (typesIterator.hasNext()) {
-				objectTopic = (Topic) typesIterator.next();
-				statements.add(statementFactory.create(subjectTopic, RDF.TYPE, objectTopic));
-			}
+			createListSPX(topicsIterator.next(), tm);
 		}
 	}
 	
 	private void createListSPX(Topic sTopic, TopicMap tm){
-		
+		Topic objectTopic;
+		Iterator<Topic> typesIterator = sTopic.getTypes().iterator();
+		while (typesIterator.hasNext()) {
+			objectTopic =  typesIterator.next();
+			statements.add(statementFactory.create(sTopic, RDF.TYPE, objectTopic));
+		}
 	}
 	
 	private void createListXPO(Topic sTopic, TopicMap tm){
