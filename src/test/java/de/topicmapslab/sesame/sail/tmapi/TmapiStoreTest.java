@@ -424,10 +424,6 @@ public class TmapiStoreTest {
 	 */
 	@Test
 	public void testLive() throws Exception {
-		
-		
-		System.out.println(Runtime.getRuntime().availableProcessors());
-		
 		_sail = new TmapiStore(_tms, CONFIG.LIVE);
 		_tmapiRepository = new SailRepository(_sail);
 		_tmapiRepository.initialize();
@@ -443,7 +439,7 @@ public class TmapiStoreTest {
 		_testxxx();
 		_testSELECT();
 		_testSsparqlConstruct();
-		_testPerformance(); //not resource friendly
+//		_testPerformance(); //not resource friendly
 	}
 
 	/**
@@ -470,7 +466,7 @@ public class TmapiStoreTest {
 		_testxxx();
 		_testSELECT();
 		_testSsparqlConstruct();
-		_testPerformance(); // not resource friendly
+//		_testPerformance(); // not resource friendly
 	}
 
 //	/**
