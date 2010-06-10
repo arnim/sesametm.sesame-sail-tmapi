@@ -5,16 +5,10 @@
 
 package de.topicmapslab.sesame.sail.tmapi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import junit.framework.TestCase;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,14 +32,12 @@ import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapExistsException;
 import org.tmapi.core.TopicMapSystem;
 import org.tmapi.core.TopicMapSystemFactory;
-import org.tmapix.io.XTM20TopicMapWriter;
 
 /**
  * @author Arnim Bleier
  * 
  */
-@SuppressWarnings("unused")
-public class TmapiStoreTest {
+public class TmapiStoreTest extends TestCase {
 
 	private static TmapiStore _sail;
 	private static Repository _tmapiRepository;
@@ -386,7 +378,6 @@ public class TmapiStoreTest {
 		while (result.hasNext()) {
 			statement = result.next();
 		}
-		long iteratingResult = System.currentTimeMillis();
 		System.out.println("Iterating Result: "
 				+ (System.currentTimeMillis() - repositoryResultTime) + "ms");
 		System.out.println("Total time elapsed: "

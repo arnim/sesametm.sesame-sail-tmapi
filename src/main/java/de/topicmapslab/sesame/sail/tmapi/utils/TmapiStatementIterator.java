@@ -47,7 +47,6 @@ public class TmapiStatementIterator<X extends Exception> extends
 		} catch (SailException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -168,8 +167,6 @@ public class TmapiStatementIterator<X extends Exception> extends
 				while (subjectRolesIterator.hasNext()) {
 					subjectRole = subjectRolesIterator.next();
 					if (subjectRole.getPlayer().equals(subj))
-						
-						
 						statements.add(statementFactory.create(subj, pred, obj));
 				}
 			}
