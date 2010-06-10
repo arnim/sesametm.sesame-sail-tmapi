@@ -111,7 +111,7 @@ public class TmapiStatementIterator<X extends Exception> extends
 		else if (sTopic != null && oTopic == null )
 			createListSPX(sTopic, tm);
 		else if (sTopic == null && oTopic != null)
-			createListXPO(sTopic, tm);
+			createListXPO(oTopic, tm);
 		else if (sTopic != null && oTopic != null)
 			createListSPO(sTopic, oTopic, tm);
 		else
@@ -130,20 +130,27 @@ public class TmapiStatementIterator<X extends Exception> extends
 	}
 	
 	private void createListSPX(Topic sTopic, TopicMap tm){
+		Iterator<Topic> typesIterator = sTopic.getTypes().iterator();
+		while (typesIterator.hasNext()) {
+			statements.add(statementFactory.create(sTopic, RDF.TYPE, typesIterator.next()));
+		}
+	}
+	
+	private void createListXPO(Topic oTopic, TopicMap tm){
+		Iterator<Topic> subjectIterator = tm.getIndex(TypeInstanceIndex.class).getTopics(oTopic).iterator();
+		while (subjectIterator.hasNext()) {
+			statements.add(statementFactory.create(subjectIterator.next(), RDF.TYPE, oTopic));	
+		}
+	}
+	
+	private void createListSPO(Topic sTopic, Topic oTopic, TopicMap tm){
 		Topic objectTopic;
 		Iterator<Topic> typesIterator = sTopic.getTypes().iterator();
 		while (typesIterator.hasNext()) {
 			objectTopic =  typesIterator.next();
-			statements.add(statementFactory.create(sTopic, RDF.TYPE, objectTopic));
+			if (objectTopic.equals(oTopic))
+				statements.add(statementFactory.create(sTopic, RDF.TYPE, objectTopic));
 		}
-	}
-	
-	private void createListXPO(Topic sTopic, TopicMap tm){
-		
-	}
-	
-	private void createListSPO(Topic sTopic, Topic oTopic, TopicMap tm){
-		
 	}
 	
 	
