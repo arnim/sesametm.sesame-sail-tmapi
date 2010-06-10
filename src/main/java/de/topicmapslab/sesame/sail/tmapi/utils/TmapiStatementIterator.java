@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.openrdf.model.Statement;
 import org.openrdf.model.ValueFactory;
+import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.sail.Sail;
 import org.openrdf.sail.SailException;
 import org.tmapi.core.Locator;
@@ -21,6 +22,7 @@ import org.tmapi.core.Occurrence;
 import org.tmapi.core.Role;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
+import org.tmapi.index.TypeInstanceIndex;
 
 /**
  * @author Arnim Bleier
@@ -71,12 +73,15 @@ public class TmapiStatementIterator<X extends Exception> extends
 			oTopic = getTopic(obj, tm);
 
 
-			if (sTopic == null && subj != null || pTopic == null
-					&& pred != null || oTopic == null && obj != null) {
+			
+			if (sTopic == null && subj != null || pred != null && (pTopic == null && !RDF.TYPE.toString().equals(pred.toExternalForm()) )
+				 || oTopic == null && obj != null) {
 
 				// Q has no match in this tm
 			} else {
-				if (sTopic == null && pTopic == null && oTopic == null)
+				if (pTopic == null && pred != null && RDF.TYPE.toString().equals(pred.toExternalForm()))
+					createTypeList(sTopic, oTopic, tm);
+				else if (sTopic == null && pTopic == null && oTopic == null)
 					createListXXX(tm);
 				else if (sTopic != null && pTopic == null && oTopic == null)
 					createListSXX(sTopic, tm);
@@ -96,6 +101,21 @@ public class TmapiStatementIterator<X extends Exception> extends
 			}
 		}
 
+	}
+	
+	
+	private void createTypeList(Topic sTopic, Topic oTopic, TopicMap tm){
+		Topic subjectTopic, objectTopic;
+		TypeInstanceIndex index = tm.getIndex(TypeInstanceIndex.class);
+		Iterator<Topic> topicsIterator = tm.getTopics().iterator(), typesIterator;
+		while (topicsIterator.hasNext()) {
+			subjectTopic = topicsIterator.next();
+			typesIterator = subjectTopic.getTypes().iterator();
+			while (typesIterator.hasNext()) {
+				objectTopic = (Topic) typesIterator.next();
+				statements.add(statementFactory.create(subjectTopic, RDF.TYPE, objectTopic));
+			}
+		}
 	}
 	
 	
@@ -130,19 +150,19 @@ public class TmapiStatementIterator<X extends Exception> extends
 	private void createListSPX(Topic subj, Topic pred, TopicMap tm)
 			throws SailException {
 		addCharacteristics(subj, pred);
-		Topic thisRoleType;
-		Role thisRole, otherRole;
-		Iterator<Role> thisRolesIterator = subj.getRolesPlayed().iterator(), otherRolesIterator;
-		while (thisRolesIterator.hasNext()) {
-			thisRole = thisRolesIterator.next();
-			thisRoleType = thisRole.getType();
-			otherRolesIterator = thisRole.getParent().getRoles().iterator();
-			while (otherRolesIterator.hasNext()) {
-				otherRole = otherRolesIterator.next();
-				if (!thisRoleType.equals(otherRole.getType())
-						&& otherRole.getType().equals(pred)) {
-					statements.add(statementFactory.create(subj, otherRole
-							.getType(), otherRole.getPlayer()));
+		Topic subjectRoleType;
+		Role subjectRole, objectRole;
+		Iterator<Role> subjectRolesIterator = subj.getRolesPlayed().iterator(), ojectRolesIterator;
+		while (subjectRolesIterator.hasNext()) {
+			subjectRole = subjectRolesIterator.next();
+			subjectRoleType = subjectRole.getType();
+			ojectRolesIterator = subjectRole.getParent().getRoles().iterator();
+			while (ojectRolesIterator.hasNext()) {
+				objectRole = ojectRolesIterator.next();
+				if (!subjectRoleType.equals(objectRole.getType())
+						&& objectRole.getType().equals(pred)) {
+					statements.add(statementFactory.create(subj, objectRole
+							.getType(), objectRole.getPlayer()));
 				}
 			}
 		}
