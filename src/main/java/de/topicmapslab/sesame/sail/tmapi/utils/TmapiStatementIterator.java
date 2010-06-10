@@ -105,6 +105,24 @@ public class TmapiStatementIterator<X extends Exception> extends
 	
 	
 	private void createTypeList(Topic sTopic, Topic oTopic, TopicMap tm){
+		
+		if (sTopic == null && oTopic == null)
+			createTypeListxPx(tm);
+		else if (sTopic != null && oTopic == null )
+			createListSPX(sTopic, tm);
+		else if (sTopic == null && oTopic != null)
+			createListXPO(sTopic, tm);
+		else if (sTopic != null && oTopic != null)
+			createListSPO(sTopic, oTopic, tm);
+		else
+			System.err
+					.println("You should never read this! TmapiStatementIterator:104 ");
+		
+		
+
+	}
+	
+	private void createTypeListxPx(TopicMap tm){
 		Topic subjectTopic, objectTopic;
 		TypeInstanceIndex index = tm.getIndex(TypeInstanceIndex.class);
 		Iterator<Topic> topicsIterator = tm.getTopics().iterator(), typesIterator;
@@ -116,6 +134,18 @@ public class TmapiStatementIterator<X extends Exception> extends
 				statements.add(statementFactory.create(subjectTopic, RDF.TYPE, objectTopic));
 			}
 		}
+	}
+	
+	private void createListSPX(Topic sTopic, TopicMap tm){
+		
+	}
+	
+	private void createListXPO(Topic sTopic, TopicMap tm){
+		
+	}
+	
+	private void createListSPO(Topic sTopic, Topic oTopic, TopicMap tm){
+		
 	}
 	
 	
