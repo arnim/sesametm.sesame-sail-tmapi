@@ -109,11 +109,11 @@ public class TmapiStatementIterator<X extends Exception> extends
 		if (sTopic == null && oTopic == null)
 			createTypeListxPx(tm);
 		else if (sTopic != null && oTopic == null )
-			createListSPX(sTopic, tm);
+			createTypeListSPX(sTopic, tm);
 		else if (sTopic == null && oTopic != null)
-			createListXPO(oTopic, tm);
+			createTypeListXPO(oTopic, tm);
 		else if (sTopic != null && oTopic != null)
-			createListSPO(sTopic, oTopic, tm);
+			createTypeListSPO(sTopic, oTopic, tm);
 		else
 			System.err
 					.println("You should never read this! TmapiStatementIterator:104 ");
@@ -125,25 +125,25 @@ public class TmapiStatementIterator<X extends Exception> extends
 	private void createTypeListxPx(TopicMap tm){
 		Iterator<Topic> topicsIterator = tm.getTopics().iterator();
 		while (topicsIterator.hasNext()) {
-			createListSPX(topicsIterator.next(), tm);
+			createTypeListSPX(topicsIterator.next(), tm);
 		}
 	}
 	
-	private void createListSPX(Topic sTopic, TopicMap tm){
+	private void createTypeListSPX(Topic sTopic, TopicMap tm){
 		Iterator<Topic> typesIterator = sTopic.getTypes().iterator();
 		while (typesIterator.hasNext()) {
 			statements.add(statementFactory.create(sTopic, RDF.TYPE, typesIterator.next()));
 		}
 	}
 	
-	private void createListXPO(Topic oTopic, TopicMap tm){
+	private void createTypeListXPO(Topic oTopic, TopicMap tm){
 		Iterator<Topic> subjectIterator = tm.getIndex(TypeInstanceIndex.class).getTopics(oTopic).iterator();
 		while (subjectIterator.hasNext()) {
 			statements.add(statementFactory.create(subjectIterator.next(), RDF.TYPE, oTopic));	
 		}
 	}
 	
-	private void createListSPO(Topic sTopic, Topic oTopic, TopicMap tm){
+	private void createTypeListSPO(Topic sTopic, Topic oTopic, TopicMap tm){
 		Topic objectTopic;
 		Iterator<Topic> typesIterator = sTopic.getTypes().iterator();
 		while (typesIterator.hasNext()) {
@@ -166,6 +166,7 @@ public class TmapiStatementIterator<X extends Exception> extends
 
 	private void createListSXX(Topic subj, TopicMap tm) throws SailException {
 		addCharacteristics(subj);
+		createTypeListSPX(subj, tm);
 		Role thisRole, otherRole;
 		Iterator<Role> thisRolesIterator = subj.getRolesPlayed().iterator(), otherRolesIterator;
 		while (thisRolesIterator.hasNext()) {
@@ -212,7 +213,6 @@ public class TmapiStatementIterator<X extends Exception> extends
 
 	private void createListSPO(Topic subj, Topic pred, Topic obj, TopicMap tm)
 			throws SailException {
-
 		Role subjectRole, objectRole;
 		Iterator<Role> subjectRolesIterator, objectRolesIterator = obj.getRolesPlayed().iterator();
 		while (objectRolesIterator.hasNext()) {
@@ -235,6 +235,7 @@ public class TmapiStatementIterator<X extends Exception> extends
 	}
 
 	private void createListXXO(Topic obj, TopicMap tm) throws SailException {
+		createTypeListXPO(obj, tm);
 		Role objectRole, subjectRole;
 		Topic objectRoleType;
 		Iterator<Role> subjectRoleIterator;
