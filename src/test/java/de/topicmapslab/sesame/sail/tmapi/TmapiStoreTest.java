@@ -440,8 +440,6 @@ public class TmapiStoreTest extends TestCase {
 	 */
 	@Test
 	public void testIndexed() throws Exception {
-		
-		
 		_sail = new TmapiStore(_tms, CONFIG.INDEXED);
 		_tmapiRepository = new SailRepository(_sail);
 		_tmapiRepository.initialize();
