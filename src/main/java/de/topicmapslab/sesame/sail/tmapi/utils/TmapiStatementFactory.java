@@ -95,4 +95,9 @@ public class TmapiStatementFactory {
 		return l.iterator().next();
 	}
 
+	public Statement create(Topic subject, URI type, Topic object) {
+		 return valueFactory.createStatement(locator2URI(getBestLocator(subject)),
+				type, locator2URI(getBestLocator(object)));
+	}
+
 }
