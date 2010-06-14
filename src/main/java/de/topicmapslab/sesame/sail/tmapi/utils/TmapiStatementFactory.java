@@ -5,6 +5,7 @@
 
 package de.topicmapslab.sesame.sail.tmapi.utils;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.openrdf.model.Statement;
@@ -83,7 +84,7 @@ public class TmapiStatementFactory {
 		return valueFactory.createURI(l.toExternalForm());
 	}
 
-	private Locator getBestLocator(Topic t) {
+	public Locator getBestLocator(Topic t) {
 		Set<Locator> l;
 		l = t.getSubjectLocators();
 		if (!l.isEmpty())
@@ -94,10 +95,22 @@ public class TmapiStatementFactory {
 		l = t.getItemIdentifiers();
 		return l.iterator().next();
 	}
+	
+	public Set<Locator> getAllLocators(Topic t){
+		HashSet<Locator> all = new HashSet<Locator>();
+		all.addAll(t.getSubjectLocators());
+		all.addAll(t.getSubjectIdentifiers());
+		return all;
+	}
 
 	public Statement create(Topic subject, URI type, Topic object) {
 		 return valueFactory.createStatement(locator2URI(getBestLocator(subject)),
 				type, locator2URI(getBestLocator(object)));
+	}
+
+	public Statement create(Topic sTopic, URI predicate, Locator object) {
+		return valueFactory.createStatement(locator2URI(getBestLocator(sTopic)),
+				predicate, locator2URI(object));
 	}
 
 }
