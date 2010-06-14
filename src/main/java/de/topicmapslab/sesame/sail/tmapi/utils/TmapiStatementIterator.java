@@ -7,6 +7,7 @@ package de.topicmapslab.sesame.sail.tmapi.utils;
 
 import info.aduna.iteration.LookAheadIteration;
 
+import java.io.ObjectInputStream.GetField;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -62,6 +63,14 @@ public class TmapiStatementIterator<X extends Exception> extends
 			return iterator.next();
 		return null;
 	}
+	
+	public Set<Statement> getStatements(){
+		return statements;
+	}
+	
+	public TmapiStatementFactory getStatementFactory(){
+		return statementFactory;
+	}
 
 	private void forTopicMpas(Locator subj, Locator pred, Locator obj,
 			TopicMap... topicMaps) throws SailException, InterruptedException {
@@ -72,7 +81,8 @@ public class TmapiStatementIterator<X extends Exception> extends
 			pTopic = getTopic(pred, tm);
 			oTopic = getTopic(obj, tm);
 
-
+			new MultiLocatorHandler(subj, pred, obj, tm, this).evaluate();
+		
 			
 			if (sTopic == null && subj != null || pred != null && (pTopic == null && !RDF.TYPE.toString().equals(pred.toExternalForm()) )
 				 || oTopic == null && obj != null) {
@@ -297,7 +307,7 @@ public class TmapiStatementIterator<X extends Exception> extends
 	}
 
 
-	private Topic getTopic(Locator l, TopicMap tm) {
+	Topic getTopic(Locator l, TopicMap tm) {
 		if (l == null)
 			return null;
 		Topic t = null;

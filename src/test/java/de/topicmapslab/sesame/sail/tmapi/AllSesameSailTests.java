@@ -19,6 +19,9 @@ public class AllSesameSailTests {
     suite.addTestSuite(TmapiStoreTest.class);
     
     suite.addTestSuite(TmdmStoreTest.class);
+    
+    suite.addTestSuite(MultiLocatorTest.class);
+
 
     
 
