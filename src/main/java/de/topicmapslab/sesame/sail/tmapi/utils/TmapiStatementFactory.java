@@ -85,13 +85,13 @@ public class TmapiStatementFactory {
 
 	private Locator getBestLocator(Topic t) {
 		Set<Locator> l;
-		l = t.getItemIdentifiers();
+		l = t.getSubjectLocators();
 		if (!l.isEmpty())
 			return l.iterator().next();
 		l = t.getSubjectIdentifiers();
 		if (!l.isEmpty())
 			return l.iterator().next();
-		l = t.getSubjectLocators();
+		l = t.getItemIdentifiers();
 		return l.iterator().next();
 	}
 

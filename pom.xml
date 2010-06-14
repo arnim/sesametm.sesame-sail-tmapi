@@ -6,19 +6,13 @@
 	<artifactId>sesame-sail-tmapi</artifactId>
 
 	<name>OpenRDF Sesame: TMAPI</name>
-	<version>0.0.3</version>
+	<version>0.0.4-SNAPSHOT</version>
 	<description>Sail implementation that stores data in TMAPI</description>
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.5.10</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.tinytim</groupId>
-			<artifactId>tinytim</artifactId>
-			<version>2.0.0a6</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -72,6 +66,14 @@
 			<version>1.5.1</version>
 			<scope>test</scope>
 		</dependency>
+		
+        <dependency>
+            <groupId>org.tinytim</groupId>
+            <artifactId>tinytim</artifactId>
+            <version>2.0.1-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+		
 	</dependencies>
 	<organization>
 		<name>Topic Maps Lab</name>
@@ -117,6 +119,10 @@
 			<id>Aduna</id>
 			<url>http://repo.aduna-software.org/maven2/releases</url>
 		</repository>
+		<repository>
+            <id>TinyTiM snapshot</id>
+            <url>http://tinytim.sourceforge.net/maven-repository/snapshots/</url>
+        </repository>
 	</repositories>
 
 	<distributionManagement>
