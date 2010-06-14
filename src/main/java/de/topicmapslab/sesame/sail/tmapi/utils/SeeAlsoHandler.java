@@ -54,22 +54,26 @@ public class SeeAlsoHandler {
 
 		
 		if (sTopic == null && subj != null || pred != null && (pTopic == null && !RDFS.SEEALSO.toString().equals(pred.toExternalForm()) )
-				 || oTopic == null && obj != null) {
+				 ||  obj != null && (oTopic == null && !obj.toExternalForm().contains(tm.getLocator().toExternalForm()))) {
+
 
 				// Q has no match in this tm
 			} else {
+			
 				
-				if (sTopic == null && oTopic == null)
+				if (sTopic == null && oTopic == null && (obj == null || !obj.toExternalForm().contains(tm.getLocator().toExternalForm())))
 					createSameAsListxPx();
-				else if (sTopic != null && oTopic == null )
+				else if (sTopic != null && oTopic == null && (obj == null || !obj.toExternalForm().contains(tm.getLocator().toExternalForm())))
 					createSameAsListSPX(sTopic);
-				else if (sTopic == null && oTopic != null)
-					createSameAsListXPO(oTopic);
-				else if (sTopic != null && oTopic != null)
-					createTypeSameAsSPO(sTopic, oTopic);
+				else if (sTopic == null && (obj != null && obj.toExternalForm().contains(tm.getLocator().toExternalForm()))){
+					createSameAsListXPO(obj);
+				}
+					
+//				else if (sTopic != null && oTopic != null)
+//					createTypeSameAsSPO(sTopic, oTopic);
 				else
 					System.err
-							.println("You should never read this! TmapiStatementIterator:10 ");	
+							.println("You should never read this! TmapiStatementIterator:13 ");	
 			}
 
 	}
@@ -88,11 +92,15 @@ public class SeeAlsoHandler {
 	}
 	
 	private void createSameAsListSPX(Topic sTopic){
-		statements.add(statementFactory.create(sTopic, RDFS.SEEALSO, tm.getLocator().toExternalForm() + "/t/" + statementFactory.getBestLocator(sTopic).toExternalForm()));
+		statements.add(statementFactory.create(sTopic, RDFS.SEEALSO, tm.getLocator().toExternalForm() + "t/" + statementFactory.getBestLocator(sTopic).toExternalForm()));
 	}
 	
-	private void createSameAsListXPO(Topic oTopic){
-		createSameAsListSPX(oTopic);
+	private void createSameAsListXPO(Locator obj){
+		String s = obj.toExternalForm();
+		int i = s.lastIndexOf(tm.getLocator().toExternalForm());
+		Topic t = other.getTopic(tm.createLocator(s.substring(i)), tm);
+		if (t != null)
+			statements.add(statementFactory.create(t, RDFS.SEEALSO, s));
 	}
 	
 	private void createTypeSameAsSPO(Topic sTopic, Topic oTopic){
@@ -100,11 +108,7 @@ public class SeeAlsoHandler {
 	}
 	
 	
-	private Set<Locator> getOtherLocaters(Topic t){
-		Set<Locator> resutl = statementFactory.getAllLocators(t);
-		resutl.remove(statementFactory.getBestLocator(t));
-		return resutl;
-	}
+
 	
 
 }

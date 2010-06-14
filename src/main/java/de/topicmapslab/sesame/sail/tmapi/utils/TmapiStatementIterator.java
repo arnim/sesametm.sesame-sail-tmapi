@@ -88,6 +88,7 @@ public class TmapiStatementIterator<X extends Exception> extends
 			
 			if (sTopic == null && subj != null || pred != null && (pTopic == null && !RDF.TYPE.toString().equals(pred.toExternalForm()) )
 				 || oTopic == null && obj != null) {
+				
 
 				// Q has no match in this tm
 			} else {
