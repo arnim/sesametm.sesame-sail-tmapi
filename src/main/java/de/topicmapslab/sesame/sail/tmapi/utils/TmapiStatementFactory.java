@@ -113,4 +113,9 @@ public class TmapiStatementFactory {
 				predicate, locator2URI(object));
 	}
 
+	public Statement create(Topic sTopic, URI predicate, String object) {
+		return valueFactory.createStatement(locator2URI(getBestLocator(sTopic)),
+				predicate, valueFactory.createURI(object));
+	}
+
 }

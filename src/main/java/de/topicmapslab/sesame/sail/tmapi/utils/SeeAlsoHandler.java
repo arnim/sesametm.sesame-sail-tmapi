@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.openrdf.model.Statement;
-import org.openrdf.model.vocabulary.OWL;
+import org.openrdf.model.vocabulary.RDFS;
 import org.tmapi.core.Locator;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
@@ -19,7 +19,7 @@ import org.tmapi.core.TopicMap;
  * @author Arnim Bleier
  * 
  */
-public class MultiLocatorHandler {
+public class SeeAlsoHandler {
 	
 	private Locator subj;
 	private Locator pred;
@@ -29,7 +29,7 @@ public class MultiLocatorHandler {
 	private TmapiStatementFactory statementFactory;
 	private TmapiStatementIterator<?> other;
 
-	public MultiLocatorHandler(Locator subj, Locator pred, Locator obj, TopicMap tm, TmapiStatementIterator<?> other ){
+	public SeeAlsoHandler(Locator subj, Locator pred, Locator obj, TopicMap tm, TmapiStatementIterator<?> other ){
 		this.subj = subj;
 		this.pred = pred;
 		this.obj = obj;
@@ -49,14 +49,16 @@ public class MultiLocatorHandler {
 		pTopic = other.getTopic(pred, tm);
 		oTopic = other.getTopic(obj, tm);
 		
+		
+
 
 		
-		if (sTopic == null && subj != null || pred != null && (pTopic == null && !OWL.SAMEAS.toString().equals(pred.toExternalForm()) )
+		if (sTopic == null && subj != null || pred != null && (pTopic == null && !RDFS.SEEALSO.toString().equals(pred.toExternalForm()) )
 				 || oTopic == null && obj != null) {
-
 
 				// Q has no match in this tm
 			} else {
+				
 				if (sTopic == null && oTopic == null)
 					createSameAsListxPx();
 				else if (sTopic != null && oTopic == null )
@@ -86,10 +88,7 @@ public class MultiLocatorHandler {
 	}
 	
 	private void createSameAsListSPX(Topic sTopic){
-		Iterator<Locator> otherLotatorsiterator = getOtherLocaters(sTopic).iterator(); 
-		while (otherLotatorsiterator.hasNext()) {
-			statements.add(statementFactory.create(sTopic, OWL.SAMEAS, otherLotatorsiterator.next()));
-		}
+		statements.add(statementFactory.create(sTopic, RDFS.SEEALSO, tm.getLocator().toExternalForm() + "/t/" + statementFactory.getBestLocator(sTopic).toExternalForm()));
 	}
 	
 	private void createSameAsListXPO(Topic oTopic){

@@ -22,8 +22,8 @@ public class AllSesameSailTests {
     
     suite.addTestSuite(MultiLocatorTest.class);
 
+    suite.addTestSuite(SeeAlsoTest.class);
 
-    
 
     
     return suite;
