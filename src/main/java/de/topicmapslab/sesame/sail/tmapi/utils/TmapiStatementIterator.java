@@ -7,7 +7,6 @@ package de.topicmapslab.sesame.sail.tmapi.utils;
 
 import info.aduna.iteration.LookAheadIteration;
 
-import java.io.ObjectInputStream.GetField;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -82,6 +81,9 @@ public class TmapiStatementIterator<X extends Exception> extends
 			oTopic = getTopic(obj, tm);
 
 			new MultiLocatorHandler(subj, pred, obj, tm, this).evaluate();
+			
+			new SeeAlsoHandler(subj, pred, obj, tm, this).evaluate();
+
 		
 			
 			if (sTopic == null && subj != null || pred != null && (pTopic == null && !RDF.TYPE.toString().equals(pred.toExternalForm()) )
