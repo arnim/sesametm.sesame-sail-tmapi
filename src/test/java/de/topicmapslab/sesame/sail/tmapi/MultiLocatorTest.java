@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.openrdf.model.Statement;
 import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.query.GraphQuery;
+import org.openrdf.query.GraphQueryResult;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
@@ -53,9 +54,9 @@ public class MultiLocatorTest extends TestCase {
 				.createLocator(baseIRI + "employee"));
 
 		Topic alf = tm.createTopicBySubjectIdentifier(tm.createLocator(baseIRI
-				+ "alf"));
+				+ "alfsi1"));
 		Topic bert = tm.createTopicBySubjectIdentifier(tm.createLocator(baseIRI
-				+ "bert"));
+				+ "bertsi1"));
 
 		Association awf = tm.createAssociation(worksFor);
 		Association bwf = tm.createAssociation(worksFor);
@@ -70,14 +71,14 @@ public class MultiLocatorTest extends TestCase {
 		
 		
 		alf.addSubjectIdentifier(tm.createLocator(baseIRI
-				+ "alf2"));
+				+ "alfsi2"));
 		alf.addSubjectIdentifier(tm.createLocator(baseIRI
-				+ "alf3"));
+				+ "alfsi3"));
 
 		bert.addSubjectIdentifier(tm.createLocator(baseIRI
-				+ "bert2"));
+				+ "bertsi2"));
 		bert.addSubjectLocator(tm.createLocator(baseIRI
-				+ "bert3"));
+				+ "bertsl3"));
 		
 		_sail = new TmapiStore(_tms, CONFIG.LIVE);
 		_tmapiRepository = new SailRepository(_sail);
@@ -85,6 +86,41 @@ public class MultiLocatorTest extends TestCase {
 		_con = _tmapiRepository.getConnection();
 	}
 
+	
+	
+//	
+//	/**
+//	 * Test.
+//	 * 
+//	 */
+//	@Test
+//	public void testConstruct() throws Exception {
+//		_sail = new TmapiStore(_tms, CONFIG.LIVE);
+//		_tmapiRepository = new SailRepository(_sail);
+//		_tmapiRepository.initialize();
+//		_con = _tmapiRepository.getConnection();
+//		RDFHandler rdfWriter = new N3Writer(System.out);
+//
+//		String queryString = "CONSTRUCT   { ?s a ?o . }  WHERE   {  ?s a ?o .  }";
+//	
+//		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL,
+//				queryString);
+//		
+//
+//		
+//		_con.exportStatements(null, null, null, true, rdfWriter);
+//		
+//		query.evaluate(rdfWriter);
+//		
+////		GraphQueryResult result = query.evaluate();
+////		assertTrue(result.hasNext());
+////		Statement statement = result.next();
+//
+//
+//	}
+//	
+//	
+//	
 	
 	
 	
@@ -93,220 +129,153 @@ public class MultiLocatorTest extends TestCase {
 	 * 
 	 */
 	@Test
-	public void testConstruct() throws Exception {
-		_sail = new TmapiStore(_tms, CONFIG.LIVE);
-		_tmapiRepository = new SailRepository(_sail);
-		_tmapiRepository.initialize();
-		_con = _tmapiRepository.getConnection();
-		RDFHandler rdfWriter = new N3Writer(System.out);
-
-		String queryString = "CONSTRUCT   { ?s a ?o . }  WHERE   {  ?s a ?o .  }";
-	
+	public void testSTO() throws Exception {
+		String queryString = "CONSTRUCT   { ?s <http://www.w3.org/2002/07/owl#sameAs> <http://www.topicmapslab.de/test/base/bertsi1> .  }  WHERE   { ?s <http://www.w3.org/2002/07/owl#sameAs> <http://www.topicmapslab.de/test/base/bertsi1> . }";
 		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL,
 				queryString);
-		
-
-		
-		_con.exportStatements(null, null, null, true, rdfWriter);
-		
-		query.evaluate(rdfWriter);
-		
-//		GraphQueryResult result = query.evaluate();
-//		assertTrue(result.hasNext());
-//		Statement statement = result.next();
-
-
+		GraphQueryResult result = query.evaluate();
+		assertTrue(result.hasNext());
+		Statement statement = result.next();
+		assertEquals(OWL.SAMEAS, statement.getPredicate());
+		assertFalse(result.hasNext());
 	}
 	
 	
 	
-//	
-//	
-//	
-//	/**
-//	 * Test.
-//	 * 
-//	 */
-//	@Test
-//	public void testSTO() throws Exception {
-//		String queryString = "CONSTRUCT   { <http://www.topicmapslab.de/test/base/alf> a <http://xmlns.com/foaf/0.1/Person> .  }  WHERE   { <http://www.topicmapslab.de/test/base/alf> a <http://xmlns.com/foaf/0.1/Person> . }";
-//		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL,
-//				queryString);
-//		GraphQueryResult result = query.evaluate();
-////		assertTrue(result.hasNext());
-////		Statement statement = result.next();
-////		assertEquals(RDF.TYPE, statement.getPredicate());
-////		assertEquals(_con.getValueFactory().createURI("http://xmlns.com/foaf/0.1/Person"), statement.getObject());
-////		assertEquals(_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/alf"), statement.getSubject());
-////		assertFalse(result.hasNext());
-//	}
-//	
-//	
-//	
-//	
-//	/**
-//	 * Test.
-//	 * 
-//	 */
-//	@Test
-//	public void testSTx() throws Exception {
-//		String queryString = "CONSTRUCT   { ?s a ?o . }  WHERE   { ?s a ?o . }";
-//		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL,
-//				queryString);
-//		GraphQueryResult result = query.evaluate();
-//		assertTrue(result.hasNext());
-//		Statement statement = result.next();
-//		assertEquals(RDF.TYPE, statement.getPredicate());
-//		assertEquals(_con.getValueFactory().createURI("http://xmlns.com/foaf/0.1/Person"), statement.getObject());
-//		Value firstObject = statement.getObject();
-//		assertTrue(result.hasNext());
-//		statement = result.next();
-//		assertEquals(RDF.TYPE, statement.getPredicate());
-//		assertEquals(_con.getValueFactory().createURI("http://xmlns.com/foaf/0.1/Person"), statement.getObject());
-//		assertFalse(firstObject.equals(statement.getSubject()));
-//		assertFalse(result.hasNext());
-//	}
-//	
-//	
-//	/**
-//	 * Test.
-//	 * 
-//	 */
-//	@Test
-//	public void testxTx() throws Exception {
-//		String queryString = "CONSTRUCT   { <http://www.topicmapslab.de/test/base/alf> a ?o . }  WHERE   { <http://www.topicmapslab.de/test/base/alf> a ?o . }";
-//		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL,
-//				queryString);
-//		GraphQueryResult result = query.evaluate();
-//		assertTrue(result.hasNext());
-//		Statement statement = result.next();
-//		assertEquals(RDF.TYPE, statement.getPredicate());
-//		assertEquals(_con.getValueFactory().createURI("http://xmlns.com/foaf/0.1/Person"), statement.getObject());
-//		assertEquals(_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/alf"), statement.getSubject());
-//		assertFalse(result.hasNext());
-//	}
-//	
-//	
-//	/**
-//	 * Test.
-//	 * 
-//	 */
-//	@Test
-//	public void testxTO() throws Exception {
-//		String queryString = "CONSTRUCT   { ?s a <http://xmlns.com/foaf/0.1/Person> . }  WHERE   { ?s a <http://xmlns.com/foaf/0.1/Person> . }";
-//		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL,
-//				queryString);
-//		GraphQueryResult result = query.evaluate();
-//		assertTrue(result.hasNext());
-//		Statement statement = result.next();
-//		assertEquals(RDF.TYPE, statement.getPredicate());
-//		assertEquals(_con.getValueFactory().createURI("http://xmlns.com/foaf/0.1/Person"), statement.getObject());
-//		Value firstObject = statement.getObject();
-//		assertTrue(result.hasNext());
-//		statement = result.next();
-//		assertEquals(RDF.TYPE, statement.getPredicate());
-//		assertEquals(_con.getValueFactory().createURI("http://xmlns.com/foaf/0.1/Person"), statement.getObject());
-//		assertFalse(firstObject.equals(statement.getSubject()));
-//		assertFalse(result.hasNext());
-//	}
-//	
-//
-//	
-//
-//	@Test
-//	public void testSxx() throws Exception {
-//		RepositoryResult<Statement> result = _con.getStatements(_con
-//				.getValueFactory().createURI(
-//						"http://www.topicmapslab.de/test/base/bert"), null,
-//				null, true);
-//		assertTrue(result.hasNext());
-//		Statement statement = result.next();
-//		assertEquals("http://www.topicmapslab.de/test/base/bert", statement
-//				.getSubject().stringValue());
-//		assertTrue(result.hasNext());
-//		statement = result.next();
-//		assertEquals("http://www.topicmapslab.de/test/base/bert", statement
-//				.getSubject().stringValue());
-//		assertTrue(result.hasNext());
-//		statement = result.next();
-//		assertEquals("http://www.topicmapslab.de/test/base/bert", statement
-//				.getSubject().stringValue());
-//		assertFalse(result.hasNext());
-//		result = _con
-//				.getStatements(_con.getValueFactory().createURI(
-//						"http://www.topicmapslab.de/test/base/wrong"), null,
-//						null, true);
-//		assertFalse(result.hasNext());
-//	}
-//
-//	@Test
-//	public void testSPx() throws Exception {
-//		RepositoryResult<Statement> result = _con.getStatements(_con
-//				.getValueFactory().createURI(
-//						"http://www.topicmapslab.de/test/base/bert"), _con
-//				.getValueFactory().createURI(
-//						"http://www.topicmapslab.de/test/base/hourlyWage"),
-//				null, true);
-//		assertTrue(result.hasNext());
-//		Statement statement = result.next();
-//		assertEquals("http://www.topicmapslab.de/test/base/hourlyWage",
-//				statement.getPredicate().stringValue());
-//		assertEquals("25.40", statement.getObject().stringValue());
-//		assertEquals("\"25.40\"^^<http://www.w3.org/2001/XMLSchema#float>",
-//				statement.getObject().toString());
-//		assertFalse(result.hasNext());
-//
-//		result = _con.getStatements(_con.getValueFactory().createURI(
-//				"http://www.topicmapslab.de/test/base/bert"), _con
-//				.getValueFactory().createURI(
-//						"http://www.topicmapslab.de/test/base/employer"), null,
-//				true);
-//		assertTrue(result.hasNext());
-//		statement = result.next();
-//		assertEquals("http://www.topicmapslab.de/test/base/xyz", statement
-//				.getObject().stringValue());
-//		assertFalse(result.hasNext());
-//
-//		result = _con.getStatements(_con.getValueFactory().createURI(
-//				"http://www.topicmapslab.de/test/base/wrong"), _con
-//				.getValueFactory().createURI(
-//						"http://www.topicmapslab.de/test/base/employer"), null,
-//				true);
-//		assertFalse(result.hasNext());
-//
-//		result = _con.getStatements(_con.getValueFactory().createURI(
-//				"http://www.topicmapslab.de/test/base/bert"), _con
-//				.getValueFactory().createURI(
-//						"http://www.topicmapslab.de/test/base/wrong"), null,
-//				true);
-//		assertFalse(result.hasNext());
-//
-//	}
-//
-//
-//
-//	@Test
-//	public void testxxO() throws Exception {
-//		RepositoryResult<Statement> result = _con.getStatements(null, null,
-//				_con.getValueFactory().createURI(
-//						"http://xmlns.com/foaf/0.1/Person"), true);
-//		
-//		assertTrue(result.hasNext());
-//		Statement statement = result.next();
-//		assertEquals("http://xmlns.com/foaf/0.1/Person", statement
-//				.getObject().stringValue());
-//		assertTrue(result.hasNext());
-//		statement = result.next();
-//		assertEquals("http://xmlns.com/foaf/0.1/Person", statement
-//				.getObject().stringValue());
-//		assertFalse(result.hasNext());
-//
-//		result = _con.getStatements(null, null, _con.getValueFactory()
-//				.createURI("http://www.topicmapslab.de/test/base/wrong"), true);
-//		assertFalse(result.hasNext());
-//	}
-//
-//
+	
+
+	/**
+	 * Test.
+	 * 
+	 */
+	@Test
+	public void testxPx() throws Exception {
+		String queryString = "CONSTRUCT   { ?s <"+ OWL.SAMEAS.stringValue() + "> ?o . }  WHERE   { ?s <"+ OWL.SAMEAS.stringValue() + "> ?o . }";
+		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL,
+				queryString);
+		GraphQueryResult result = query.evaluate();
+		assertTrue(result.hasNext());
+		Statement statement = result.next();
+		assertEquals(OWL.SAMEAS, statement.getPredicate());
+		assertTrue(result.hasNext());
+		statement = result.next();
+		assertEquals(OWL.SAMEAS, statement.getPredicate());
+		assertTrue(result.hasNext());
+		statement = result.next();
+		assertEquals(OWL.SAMEAS, statement.getPredicate());
+		assertTrue(result.hasNext());
+		statement = result.next();
+		assertEquals(OWL.SAMEAS, statement.getPredicate());
+		assertFalse(result.hasNext());
+	}
+	
+	
+	/**
+	 * Test.
+	 * 
+	 */
+	@Test
+	public void testxTO() throws Exception {
+		String queryString = "CONSTRUCT   { ?s <"+ OWL.SAMEAS.stringValue() + "> <http://www.topicmapslab.de/test/base/bertsi2> . }  WHERE   { ?s <"+ OWL.SAMEAS.stringValue() + "> <http://www.topicmapslab.de/test/base/bertsi2> . }";
+		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL,
+				queryString);
+		GraphQueryResult result = query.evaluate();
+		assertTrue(result.hasNext());
+		Statement statement = result.next();
+		assertEquals(OWL.SAMEAS, statement.getPredicate());
+		assertEquals(_con.getValueFactory().createURI("http://www.topicmapslab.de/test/base/bertsl3"), statement.getSubject());
+		assertFalse(result.hasNext());
+	}
+	
+
+	
+
+	@Test
+	public void testSxx() throws Exception {
+		int i = 0;
+		RepositoryResult<Statement> result = _con.getStatements(_con
+				.getValueFactory().createURI(
+						"http://www.topicmapslab.de/test/base/bertsi2"), null,
+				null, true);
+		assertTrue(result.hasNext());
+		Statement statement = result.next();
+		if (statement.getPredicate().equals(OWL.SAMEAS))
+			i++;
+		assertEquals("http://www.topicmapslab.de/test/base/bertsl3", statement
+				.getSubject().stringValue());
+		assertTrue(result.hasNext());
+		statement = result.next();
+		if (statement.getPredicate().equals(OWL.SAMEAS))
+			i++;
+		assertEquals("http://www.topicmapslab.de/test/base/bertsl3", statement
+				.getSubject().stringValue());
+		assertTrue(result.hasNext());
+		statement = result.next();
+		if (statement.getPredicate().equals(OWL.SAMEAS))
+			i++;
+		assertEquals("http://www.topicmapslab.de/test/base/bertsl3", statement
+				.getSubject().stringValue());
+		assertFalse(result.hasNext());
+		result = _con
+				.getStatements(_con.getValueFactory().createURI(
+						"http://www.topicmapslab.de/test/base/wrong"), null,
+						null, true);
+		assertFalse(result.hasNext());
+		assertEquals(2, i);
+	}
+
+	@Test
+	public void testSPx() throws Exception {
+		RepositoryResult<Statement> result = _con.getStatements(_con
+				.getValueFactory().createURI(
+						"http://www.topicmapslab.de/test/base/bertsi1"), OWL.SAMEAS,
+				null, true);
+		assertTrue(result.hasNext());
+		Statement statement = result.next();
+		assertEquals(OWL.SAMEAS,
+		statement.getPredicate());
+		assertTrue(result.hasNext());
+
+		statement = result.next();
+		assertEquals(OWL.SAMEAS,
+		statement.getPredicate());
+		
+		assertFalse(result.hasNext());
+	}
+
+
+
+	@Test
+	public void testxxO() throws Exception {
+		int i = 0;
+		RepositoryResult<Statement> result = _con.getStatements(null, null,
+				_con
+				.getValueFactory().createURI(
+						"http://www.topicmapslab.de/test/base/bertsi2"), true);
+		assertTrue(result.hasNext());
+		Statement statement = result.next();
+		if (statement.getPredicate().equals(OWL.SAMEAS))
+			i++;
+		assertEquals("http://www.topicmapslab.de/test/base/bertsl3", statement
+				.getObject().stringValue());
+		assertTrue(result.hasNext());
+		statement = result.next();
+		if (statement.getPredicate().equals(OWL.SAMEAS))
+			i++;
+		assertTrue(result.hasNext());
+		statement = result.next();
+		if (statement.getPredicate().equals(OWL.SAMEAS))
+			i++;
+		assertFalse(result.hasNext());
+		result = _con
+				.getStatements(_con.getValueFactory().createURI(
+						"http://www.topicmapslab.de/test/base/wrong"), null,
+						null, true);
+		assertFalse(result.hasNext());
+		assertEquals(2, i);
+	}
+
+
 	@Test
 	public void testxxx() throws Exception {
 		RepositoryResult<Statement> result = _con.getStatements(null, null,
