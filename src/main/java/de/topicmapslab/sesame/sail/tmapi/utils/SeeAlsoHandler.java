@@ -14,13 +14,12 @@ import org.tmapi.core.Locator;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
 
-
 /**
  * @author Arnim Bleier
  * 
  */
 public class SeeAlsoHandler {
-	
+
 	private Locator subj;
 	private Locator pred;
 	private Locator obj;
@@ -29,7 +28,8 @@ public class SeeAlsoHandler {
 	private TmapiStatementFactory statementFactory;
 	private TmapiStatementIterator<?> other;
 
-	public SeeAlsoHandler(Locator subj, Locator pred, Locator obj, TopicMap tm, TmapiStatementIterator<?> other ){
+	public SeeAlsoHandler(Locator subj, Locator pred, Locator obj, TopicMap tm,
+			TmapiStatementIterator<?> other) {
 		this.subj = subj;
 		this.pred = pred;
 		this.obj = obj;
@@ -39,76 +39,81 @@ public class SeeAlsoHandler {
 		this.other = other;
 
 	}
-	
 
+	public void evaluate() {
 
-	public void evaluate(){
-
-		Topic sTopic = null, pTopic = null, oTopic = null;	
+		Topic sTopic = null, pTopic = null, oTopic = null;
 		sTopic = other.getTopic(subj, tm);
 		pTopic = other.getTopic(pred, tm);
 		oTopic = other.getTopic(obj, tm);
-		
-		
 
+		if (sTopic == null
+				&& subj != null
+				|| pred != null
+				&& (pTopic == null && !RDFS.SEEALSO.toString().equals(
+						pred.toExternalForm()))
+				|| obj != null
+				&& (oTopic == null && !obj.toExternalForm().contains(
+						tm.getLocator().toExternalForm()))) {
 
-		
-		if (sTopic == null && subj != null || pred != null && (pTopic == null && !RDFS.SEEALSO.toString().equals(pred.toExternalForm()) )
-				 ||  obj != null && (oTopic == null && !obj.toExternalForm().contains(tm.getLocator().toExternalForm()))) {
+			// Q has no match in this tm
+		} else {
 
-
-				// Q has no match in this tm
-			} else {
+			if (sTopic == null
+					&& oTopic == null
+					&& sTopic == null
+					&& (pred != null && pred.toExternalForm().equals(RDFS.SEEALSO.stringValue())))
+				createSameAsListxPx();
+			else if (sTopic != null
+					&& oTopic == null
+					&& (obj == null || !obj.toExternalForm().contains(
+							tm.getLocator().toExternalForm())))
+				createSameAsListSPX(sTopic);
+			else if (sTopic == null
+					&& (obj != null && obj.toExternalForm().contains(
+							tm.getLocator().toExternalForm() 
+							+ "t/"))) {
+				createSameAsListXPO(obj);
+			} else if (sTopic != null
+					&& (obj != null && obj.toExternalForm().contains(
+							tm.getLocator().toExternalForm())))
+				createTypeSameAsSPO(sTopic, obj);
 			
-				
-				if (sTopic == null && oTopic == null && (obj == null || !obj.toExternalForm().contains(tm.getLocator().toExternalForm())))
-					createSameAsListxPx();
-				else if (sTopic != null && oTopic == null && (obj == null || !obj.toExternalForm().contains(tm.getLocator().toExternalForm())))
-					createSameAsListSPX(sTopic);
-				else if (sTopic == null && (obj != null && obj.toExternalForm().contains(tm.getLocator().toExternalForm()))){
-					createSameAsListXPO(obj);
-				}
-					
-//				else if (sTopic != null && oTopic != null)
-//					createTypeSameAsSPO(sTopic, oTopic);
-				else
-					System.err
-							.println("You should never read this! TmapiStatementIterator:13 ");	
-			}
+			else if (subj == null
+					&& obj == null
+					&& pred == null)
+				createSameAsListxPx();
+
+		}
 
 	}
-	
-	
-	
-	
 
-	
-	
-	private void createSameAsListxPx(){
+	private void createSameAsListxPx() {
 		Iterator<Topic> topicsIterator = tm.getTopics().iterator();
-		while (topicsIterator.hasNext()) {		
+		while (topicsIterator.hasNext()) {
 			createSameAsListSPX(topicsIterator.next());
 		}
 	}
-	
-	private void createSameAsListSPX(Topic sTopic){
-		statements.add(statementFactory.create(sTopic, RDFS.SEEALSO, tm.getLocator().toExternalForm() + "t/" + statementFactory.getBestLocator(sTopic).toExternalForm()));
+
+	private void createSameAsListSPX(Topic sTopic) {
+		statements.add(statementFactory.create(sTopic, RDFS.SEEALSO, tm
+				.getLocator().toExternalForm()
+				+ "t/"
+				+ statementFactory.getBestLocator(sTopic).toExternalForm()));
 	}
-	
-	private void createSameAsListXPO(Locator obj){
+
+	private void createSameAsListXPO(Locator obj) {
+		
 		String s = obj.toExternalForm();
 		int i = s.lastIndexOf(tm.getLocator().toExternalForm());
 		Topic t = other.getTopic(tm.createLocator(s.substring(i)), tm);
 		if (t != null)
 			statements.add(statementFactory.create(t, RDFS.SEEALSO, s));
 	}
-	
-	private void createTypeSameAsSPO(Topic sTopic, Topic oTopic){
-//		System.out.println(statementFactory.getBestLocator(sTopic) + "mit " + statementFactory.getBestLocator(oTopic));
-	}
-	
-	
 
-	
+	private void createTypeSameAsSPO(Topic sTopic, Locator l) {
+		// System.out.println(statementFactory.getBestLocator(sTopic) + "mit " +
+		// statementFactory.getBestLocator(oTopic));
+	}
 
 }

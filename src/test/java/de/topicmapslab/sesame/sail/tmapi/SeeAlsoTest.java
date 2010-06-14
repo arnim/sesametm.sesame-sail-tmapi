@@ -76,7 +76,10 @@ public class SeeAlsoTest extends TestCase {
 	@Test
 	public void testxxO() throws Exception {
 		int i = 0;
-		RepositoryResult<Statement> result = _con.getStatements( null,
+		RepositoryResult<Statement> result;
+		
+		
+		result = _con.getStatements( null,
 				null, 
 				_con
 				.getValueFactory().createURI(
@@ -92,6 +95,32 @@ public class SeeAlsoTest extends TestCase {
 				.getObject().stringValue());
 		assertFalse(result.hasNext());
 		assertEquals(1, i);
+		
+		result = _con.getStatements( null,
+				null, 
+				_con
+				.getValueFactory().createURI(
+						"http://www.topicmapslab.de/test/base/t/http://www.topicmapslab.de/test/base/bertsi_wrong"),
+						true);
+		assertFalse(result.hasNext());
+		
+		result = _con.getStatements( null,
+				null, 
+				_con
+				.getValueFactory().createURI(
+						"http://www.topicmapslab.de/test_wrong/base/t/http://www.topicmapslab.de/test/base/bertsi"),
+						true);
+		assertFalse(result.hasNext());
+		
+		
+		result = _con.getStatements( null,
+				null, 
+				_con
+				.getValueFactory().createURI(
+						"http://www.topicmapslab.de/test/base/bertsi1"),
+						true);
+		assertEquals(1, result.asList().size());
+
 	}
 	
 	
@@ -99,7 +128,10 @@ public class SeeAlsoTest extends TestCase {
 	
 	@Test
 	public void testxPx() throws Exception {
-		RepositoryResult<Statement> result = _con.getStatements(null, RDFS.SEEALSO,
+		RepositoryResult<Statement> result;
+		
+		
+		result = _con.getStatements(null, RDFS.SEEALSO,
 				null, true);
 		assertTrue(result.hasNext());
 		assertEquals(RDFS.SEEALSO, result.next().getPredicate());
@@ -120,6 +152,17 @@ public class SeeAlsoTest extends TestCase {
 		assertEquals(RDFS.SEEALSO, result.next().getPredicate());
 
 		assertFalse(result.hasNext());
+		
+		result = _con.getStatements(null, RDFS.LABEL,
+				null, true);
+		assertFalse(result.hasNext());
+		
+		
+		result = _con.getStatements(null, _con.getValueFactory().createURI(baseIRI + "employee"),
+				null, true);
+		
+		assertEquals(2, result.asList().size());
+
 	}
 	
 	
@@ -137,6 +180,7 @@ public class SeeAlsoTest extends TestCase {
 			assertEquals("http://www.topicmapslab.de/test/base/t/http://www.topicmapslab.de/test/base/bertsi1", statement
 					.getObject().stringValue());
 			i++;
+			
 		}
 
 		assertEquals("http://www.topicmapslab.de/test/base/bertsi1", statement
@@ -150,6 +194,13 @@ public class SeeAlsoTest extends TestCase {
 				.getSubject().stringValue());
 		assertFalse(result.hasNext());
 		assertEquals(1, i);
+		
+		result = _con.getStatements(_con
+				.getValueFactory().createURI(
+						"http://www.topicmapslab.de/test/base/bertsi_wrong"), null,
+				null, true);
+		assertFalse(result.hasNext());
+
 	}
 
 	@Test
