@@ -213,6 +213,16 @@ public class SeeAlsoTest extends TestCase {
 		Statement statement = result.next();
 		assertEquals(RDFS.SEEALSO, statement.getPredicate());
 		assertFalse(result.hasNext());
+		result = _con.getStatements(_con
+				.getValueFactory().createURI(
+						"http://www.topicmapslab.de/test/base/bertsi6"), RDFS.SEEALSO,
+				null, true);
+		assertFalse(result.hasNext());
+		_con.getStatements(_con
+				.getValueFactory().createURI(
+						"http://www.topicmapslab.de/test/base/bertsi1"), RDFS.CONTAINER,
+				null, true);
+		assertFalse(result.hasNext());
 	}
 
 

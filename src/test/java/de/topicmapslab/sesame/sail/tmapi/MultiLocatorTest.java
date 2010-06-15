@@ -18,8 +18,6 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.rio.RDFHandler;
-import org.openrdf.rio.n3.N3Writer;
 import org.tmapi.core.Association;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
@@ -150,10 +148,14 @@ public class MultiLocatorTest extends TestCase {
 	 */
 	@Test
 	public void testxPx() throws Exception {
-		String queryString = "CONSTRUCT   { ?s <"+ OWL.SAMEAS.stringValue() + "> ?o . }  WHERE   { ?s <"+ OWL.SAMEAS.stringValue() + "> ?o . }";
-		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL,
+		String queryString;
+		GraphQuery query;
+		GraphQueryResult result;
+		
+		queryString = "CONSTRUCT   { ?s <"+ OWL.SAMEAS.stringValue() + "> ?o . }  WHERE   { ?s <"+ OWL.SAMEAS.stringValue() + "> ?o . }";
+		query = _con.prepareGraphQuery(QueryLanguage.SPARQL,
 				queryString);
-		GraphQueryResult result = query.evaluate();
+		result = query.evaluate();
 		assertTrue(result.hasNext());
 		Statement statement = result.next();
 		assertEquals(OWL.SAMEAS, statement.getPredicate());
@@ -166,6 +168,19 @@ public class MultiLocatorTest extends TestCase {
 		assertTrue(result.hasNext());
 		statement = result.next();
 		assertEquals(OWL.SAMEAS, statement.getPredicate());
+		assertFalse(result.hasNext());
+		queryString = "CONSTRUCT   { ?s <"+ OWL.CLASS.stringValue() + "> ?o . }  WHERE   { ?s <"+ OWL.CLASS.stringValue() + "> ?o . }";
+		query = _con.prepareGraphQuery(QueryLanguage.SPARQL,
+				queryString);
+		result = query.evaluate();
+		assertFalse(result.hasNext());
+
+		
+		queryString = "CONSTRUCT   { ?s <http://www.topicmapslab.de/test/base/bertsi2> ?o . }  WHERE   { ?s <http://www.topicmapslab.de/test/base/bertsi2> ?o . }";
+		query = _con.prepareGraphQuery(QueryLanguage.SPARQL,
+				queryString);
+		result = query.evaluate();
+//		System.out.println(result.next());
 		assertFalse(result.hasNext());
 	}
 	
@@ -273,6 +288,16 @@ public class MultiLocatorTest extends TestCase {
 						null, true);
 		assertFalse(result.hasNext());
 		assertEquals(2, i);
+		
+		
+		
+		result = _con.getStatements(null, null,
+				_con
+				.getValueFactory().createURI(
+						"http://www.topicmapslab.de/test/base/alfsi1"), true);
+		assertEquals(3, result.asList().size());
+		assertFalse(result.hasNext());
+
 	}
 
 
@@ -280,6 +305,9 @@ public class MultiLocatorTest extends TestCase {
 	public void testxxx() throws Exception {
 		RepositoryResult<Statement> result = _con.getStatements(null, null,
 				null, true);
+		
+//		System.out.println(result.asList());
+		
 		assertEquals(8, result.asList().size());
 		result = _con.getStatements(null, null,
 				null, true);

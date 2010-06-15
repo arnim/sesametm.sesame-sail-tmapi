@@ -57,7 +57,7 @@ public class MultiLocatorHandler {
 
 				// Q has no match in this tm
 			} else {
-				if (sTopic == null && oTopic == null)
+				if (sTopic == null && oTopic == null && pTopic == null && pred != null && pred.toExternalForm().equals(OWL.SAMEAS.stringValue()))
 					createSameAsListxPx();
 				else if (sTopic != null && oTopic == null )
 					createSameAsListSPX(sTopic);
@@ -65,9 +65,8 @@ public class MultiLocatorHandler {
 					createSameAsListXPO(oTopic);
 				else if (sTopic != null && oTopic != null)
 					createTypeSameAsSPO(sTopic, oTopic);
-				else
-					System.err
-							.println("You should never read this! TmapiStatementIterator:10 ");	
+				else if (sTopic == null && oTopic == null &&  pred == null )
+					createSameAsListxPx();
 			}
 
 	}
@@ -79,6 +78,7 @@ public class MultiLocatorHandler {
 	
 	
 	private void createSameAsListxPx(){
+		
 		Iterator<Topic> topicsIterator = tm.getTopics().iterator();
 		while (topicsIterator.hasNext()) {		
 			createSameAsListSPX(topicsIterator.next());
