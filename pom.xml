@@ -73,6 +73,32 @@
             <version>2.0.1-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
+        
+        
+        		 <dependency>
+                       <groupId>org.tmapix</groupId>
+                       <artifactId>tmapix-core</artifactId>
+                       <version>0.1.0</version>
+                       <scope>test</scope>
+               </dependency>
+               <dependency>
+                       <groupId>org.tmapix</groupId>
+                       <artifactId>tmapix-io</artifactId>
+                       <version>0.3.0</version>
+                       <scope>test</scope>
+               </dependency>
+               <dependency>
+                       <groupId>semagia</groupId>
+                       <artifactId>semagia-mio</artifactId>
+                       <version>0.9.5</version>
+                       <scope>test</scope>
+               </dependency>
+               <dependency>
+                       <groupId>semagia</groupId>
+                       <artifactId>semagia-mio-xtm</artifactId>
+                       <version>0.9.4</version>
+                       <scope>test</scope>
+               </dependency>
 		
 	</dependencies>
 	<organization>
