@@ -205,6 +205,15 @@ public class TmapiStoreTest extends TestCase {
 						"http://www.topicmapslab.de/test/base/wrong"), null,
 						null, true);
 		assertFalse(result.hasNext());
+		
+//		
+//		result = _con
+//		.getStatements(_con.getValueFactory().createURI(
+//				"http://www.topicmapslab.de/test/base/xyz"), null,
+//				null, true);
+//		
+//		System.out.println(result.asList());
+		
 	}
 
 	protected void _testSPx() throws Exception {

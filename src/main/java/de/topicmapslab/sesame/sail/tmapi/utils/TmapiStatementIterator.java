@@ -82,7 +82,7 @@ public class TmapiStatementIterator<X extends Exception> extends
 
 			new MultiLocatorHandler(subj, pred, obj, tm, this).evaluate();
 			
-			new SeeAlsoHandler(subj, pred, obj, tm, this).evaluate();
+//			new SeeAlsoHandler(subj, pred, obj, tm, this).evaluate();
 
 		
 			
@@ -180,16 +180,16 @@ public class TmapiStatementIterator<X extends Exception> extends
 	private void createListSXX(Topic subj, TopicMap tm) throws SailException {
 		addCharacteristics(subj);
 		createTypeListSPX(subj, tm);
-		Role thisRole, otherRole;
-		Iterator<Role> thisRolesIterator = subj.getRolesPlayed().iterator(), otherRolesIterator;
-		while (thisRolesIterator.hasNext()) {
-			thisRole = thisRolesIterator.next();
-			otherRolesIterator = thisRole.getParent().getRoles().iterator();
-			while (otherRolesIterator.hasNext()) {
-				otherRole = otherRolesIterator.next();
-				if (!thisRole.getType().equals(otherRole.getType())) {
-					statements.add(statementFactory.create(subj, otherRole
-							.getType(), otherRole.getPlayer()));
+		Role subjectRole, objectRole;
+		Iterator<Role> subjectRolesIterator = subj.getRolesPlayed().iterator(), objectsRolesIterator;
+		while (subjectRolesIterator.hasNext()) {
+			subjectRole = subjectRolesIterator.next();
+			objectsRolesIterator = subjectRole.getParent().getRoles().iterator();
+			while (objectsRolesIterator.hasNext()) {
+				objectRole = objectsRolesIterator.next();
+				if (!subjectRole.getType().equals(objectRole.getType())) {
+					statements.add(statementFactory.create(subj, objectRole
+							.getType(), objectRole.getPlayer()));
 				}
 			}
 		}
