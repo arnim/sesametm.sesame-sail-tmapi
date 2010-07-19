@@ -24,7 +24,7 @@ public class AllSesameSailTests {
 
     suite.addTestSuite(SeeAlsoTest.class);
 
-    suite.addTestSuite(ToyTest.class);
+//    suite.addTestSuite(ToyTest.class);
 
     
     return suite;
