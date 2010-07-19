@@ -178,16 +178,40 @@ public class TmapiStatementIterator<X extends Exception> extends
 	}
 
 	private void createListSXX(Topic subj, TopicMap tm) throws SailException {
+		
+		System.out.println(statementFactory.getBestLocator(subj));
+		
 		addCharacteristics(subj);
 		createTypeListSPX(subj, tm);
 		Role subjectRole, objectRole;
+		
+		
+		System.out.println("suROleCount: " + subj.getRolesPlayed().size());
+
+		
 		Iterator<Role> subjectRolesIterator = subj.getRolesPlayed().iterator(), objectsRolesIterator;
 		while (subjectRolesIterator.hasNext()) {
 			subjectRole = subjectRolesIterator.next();
+			
+			System.out.println("obRoleCount: " + subjectRole.getParent().getRoles().size());
+			System.out.println("AssoType: " + statementFactory.getBestLocator(subjectRole.getParent().getType()));
+
+
+			
 			objectsRolesIterator = subjectRole.getParent().getRoles().iterator();
 			while (objectsRolesIterator.hasNext()) {
 				objectRole = objectsRolesIterator.next();
+				System.out.println();
+				
+				System.out.println("obj: " + statementFactory.getBestLocator(objectRole.getPlayer()));
+				System.out.println(!subjectRole.getType().equals(objectRole.getType()));
+
+				
 				if (!subjectRole.getType().equals(objectRole.getType())) {
+					
+					System.out.println("objTATSACHE: " + statementFactory.getBestLocator(objectRole.getPlayer()));
+
+					
 					statements.add(statementFactory.create(subj, objectRole
 							.getType(), objectRole.getPlayer()));
 				}
