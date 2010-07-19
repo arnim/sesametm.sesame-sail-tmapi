@@ -5,8 +5,6 @@
 
 package de.topicmapslab.sesame.sail.tmapi;
 
-import java.io.FileInputStream;
-
 import junit.framework.TestCase;
 
 import org.junit.Before;
