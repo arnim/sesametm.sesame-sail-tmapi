@@ -150,7 +150,9 @@ public class TmapiStatementIterator<X extends Exception> extends
 	}
 	
 	private void createTypeListXPO(Topic oTopic, TopicMap tm){
-		Iterator<Topic> subjectIterator = tm.getIndex(TypeInstanceIndex.class).getTopics(oTopic).iterator();
+		TypeInstanceIndex index = tm.getIndex(TypeInstanceIndex.class);
+		index.open();
+		Iterator<Topic> subjectIterator = index.getTopics(oTopic).iterator();
 		while (subjectIterator.hasNext()) {
 			statements.add(statementFactory.create(subjectIterator.next(), RDF.TYPE, oTopic));	
 		}
