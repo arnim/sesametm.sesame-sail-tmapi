@@ -36,6 +36,7 @@ public class TmapiStatementIterator<X extends Exception> extends
 	private Set<Statement> statements;
 	private TmapiStatementFactory statementFactory;
 	private Iterator<Statement> iterator;
+	private PluginService plugin;
 
 	public TmapiStatementIterator(Sail tmapiStore, Locator subj, Locator pred,
 			Locator obj, TopicMap... topicMaps) {
@@ -53,6 +54,10 @@ public class TmapiStatementIterator<X extends Exception> extends
 		}
 
 		this.iterator = statements.iterator();
+
+//		System.out.println(1);
+//		plugin = PluginService.getInstance();
+//		System.out.println(3);
 	}
 
 	@Override
@@ -83,6 +88,17 @@ public class TmapiStatementIterator<X extends Exception> extends
 			new MultiLocatorHandler(subj, pred, obj, tm, this).evaluate();
 			
 //			new SeeAlsoHandler(subj, pred, obj, tm, this).evaluate();
+
+			System.out.println(1);
+			plugin = PluginService.getInstance();
+			System.out.println(3);
+			
+			
+			plugin.evaluate(subj, pred, obj, tm, this);
+			
+//			System.out.println(plugin.getInstance().getDefinition("dfs"));
+			
+			System.out.println(4);
 
 		
 			

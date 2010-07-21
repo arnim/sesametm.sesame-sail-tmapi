@@ -6,14 +6,13 @@
 	<artifactId>sesame-sail-tmapi</artifactId>
 
 	<name>OpenRDF Sesame: TMAPI</name>
-	<version>0.0.5</version>
+	<version>0.0.6-SNAPSHOT</version>
 	<description>Sail implementation that stores data in TMAPI</description>
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.5.10</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.tmapi</groupId>
