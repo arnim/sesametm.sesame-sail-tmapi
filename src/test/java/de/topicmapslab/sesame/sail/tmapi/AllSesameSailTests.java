@@ -20,9 +20,6 @@ public class AllSesameSailTests {
     
     suite.addTestSuite(TmdmStoreTest.class);
     
-    suite.addTestSuite(MultiLocatorTest.class);
-
-
     
     return suite;
   }

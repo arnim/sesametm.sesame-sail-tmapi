@@ -80,9 +80,6 @@ public class TmapiStatementIterator<X extends Exception> extends
 			sTopic = getTopic(subj, tm);
 			pTopic = getTopic(pred, tm);
 			oTopic = getTopic(obj, tm);
-
-			new MultiLocatorHandler(subj, pred, obj, tm, this).evaluate();
-			
 			
 			PluginService.getInstance().evaluate(subj, pred, obj, tm, this);
 			
