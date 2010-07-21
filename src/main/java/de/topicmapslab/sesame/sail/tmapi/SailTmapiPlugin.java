@@ -14,7 +14,7 @@ import de.topicmapslab.sesame.sail.tmapi.utils.TmapiStatementIterator;
  * @author Arnim Bleier
  *
  */
-public interface Plugin {
+public interface SailTmapiPlugin {
 	
 	void evaluate(Locator subject, Locator predicate, Locator object, TopicMap tm, TmapiStatementIterator<?> statementIterator );
 	
