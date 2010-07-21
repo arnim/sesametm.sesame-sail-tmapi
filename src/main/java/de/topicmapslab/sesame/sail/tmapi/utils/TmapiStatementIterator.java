@@ -55,9 +55,6 @@ public class TmapiStatementIterator<X extends Exception> extends
 
 		this.iterator = statements.iterator();
 
-//		System.out.println(1);
-//		plugin = PluginService.getInstance();
-//		System.out.println(3);
 	}
 
 	@Override
@@ -88,17 +85,10 @@ public class TmapiStatementIterator<X extends Exception> extends
 			new MultiLocatorHandler(subj, pred, obj, tm, this).evaluate();
 			
 //			new SeeAlsoHandler(subj, pred, obj, tm, this).evaluate();
+			
+			PluginService.getInstance().evaluate(subj, pred, obj, tm, this);
+			
 
-			System.out.println(1);
-			plugin = PluginService.getInstance();
-			System.out.println(3);
-			
-			
-			plugin.evaluate(subj, pred, obj, tm, this);
-			
-//			System.out.println(plugin.getInstance().getDefinition("dfs"));
-			
-			System.out.println(4);
 
 		
 			
@@ -342,7 +332,7 @@ public class TmapiStatementIterator<X extends Exception> extends
 	}
 
 
-	Topic getTopic(Locator l, TopicMap tm) {
+	public Topic getTopic(Locator l, TopicMap tm) {
 		if (l == null)
 			return null;
 		Topic t = null;

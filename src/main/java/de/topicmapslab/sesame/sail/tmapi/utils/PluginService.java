@@ -25,8 +25,6 @@ public class PluginService {
 
 
     private PluginService() {
-		System.out.println(22);
-
         loader = ServiceLoader.load(Plugin.class);
         loader.reload();
     }
@@ -44,7 +42,7 @@ public class PluginService {
         try {
             Iterator<Plugin> plugins = loader.iterator();
             while (plugins.hasNext()) {
-            	plugins.next().evaluate(subj, pred, obj, tm, other );
+            	plugins.next().evaluate(subj, pred, obj, tm, other);
             }
         } catch (ServiceConfigurationError serviceError) {
             serviceError.printStackTrace();
