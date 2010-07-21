@@ -12,7 +12,7 @@ import java.util.ServiceLoader;
 import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMap;
 
-import de.topicmapslab.sesame.sail.tmapi.Plugin;
+import de.topicmapslab.sesame.sail.tmapi.SailTmapiPlugin;
 
 /**
  * @author Arnim Bleier
@@ -21,11 +21,11 @@ import de.topicmapslab.sesame.sail.tmapi.Plugin;
 public class PluginService {
 
     private static PluginService service;
-    private ServiceLoader<Plugin> loader;
+    private ServiceLoader<SailTmapiPlugin> loader;
 
 
     private PluginService() {
-        loader = ServiceLoader.load(Plugin.class);
+        loader = ServiceLoader.load(SailTmapiPlugin.class);
         loader.reload();
     }
 
@@ -40,7 +40,7 @@ public class PluginService {
 
     public void evaluate(Locator subj, Locator pred, Locator obj, TopicMap tm, TmapiStatementIterator<?> other ) {
         try {
-            Iterator<Plugin> plugins = loader.iterator();
+            Iterator<SailTmapiPlugin> plugins = loader.iterator();
             while (plugins.hasNext()) {
             	plugins.next().evaluate(subj, pred, obj, tm, other);
             }
