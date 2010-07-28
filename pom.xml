@@ -65,40 +65,40 @@
 			<version>1.5.1</version>
 			<scope>test</scope>
 		</dependency>
-		
-        <dependency>
-            <groupId>org.tinytim</groupId>
-            <artifactId>tinytim</artifactId>
-            <version>2.0.1-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        
-        
-        		 <dependency>
-                       <groupId>org.tmapix</groupId>
-                       <artifactId>tmapix-core</artifactId>
-                       <version>0.1.0</version>
-                       <scope>test</scope>
-               </dependency>
-               <dependency>
-                       <groupId>org.tmapix</groupId>
-                       <artifactId>tmapix-io</artifactId>
-                       <version>0.3.0</version>
-                       <scope>test</scope>
-               </dependency>
-               <dependency>
-                       <groupId>semagia</groupId>
-                       <artifactId>semagia-mio</artifactId>
-                       <version>0.9.5</version>
-                       <scope>test</scope>
-               </dependency>
-               <dependency>
-                       <groupId>semagia</groupId>
-                       <artifactId>semagia-mio-xtm</artifactId>
-                       <version>0.9.4</version>
-                       <scope>test</scope>
-               </dependency>
-		
+
+		<dependency>
+			<groupId>org.tinytim</groupId>
+			<artifactId>tinytim</artifactId>
+			<version>2.0.1-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.tmapix</groupId>
+			<artifactId>tmapix-core</artifactId>
+			<version>0.1.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.tmapix</groupId>
+			<artifactId>tmapix-io</artifactId>
+			<version>0.3.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>semagia</groupId>
+			<artifactId>semagia-mio</artifactId>
+			<version>0.9.5</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>semagia</groupId>
+			<artifactId>semagia-mio-xtm</artifactId>
+			<version>0.9.4</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 	<organization>
 		<name>Topic Maps Lab</name>
@@ -145,9 +145,9 @@
 			<url>http://repo.aduna-software.org/maven2/releases</url>
 		</repository>
 		<repository>
-            <id>TinyTiM snapshot</id>
-            <url>http://tinytim.sourceforge.net/maven-repository/snapshots/</url>
-        </repository>
+			<id>TinyTiM snapshot</id>
+			<url>http://tinytim.sourceforge.net/maven-repository/snapshots/</url>
+		</repository>
 	</repositories>
 
 	<distributionManagement>

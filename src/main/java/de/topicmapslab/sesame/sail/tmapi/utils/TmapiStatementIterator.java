@@ -82,10 +82,7 @@ public class TmapiStatementIterator<X extends Exception> extends
 			oTopic = getTopic(obj, tm);
 			
 			PluginService.getInstance().evaluate(subj, pred, obj, tm, this);
-			
 
-
-		
 			
 			if (sTopic == null && subj != null || pred != null && (pTopic == null && !RDF.TYPE.toString().equals(pred.toExternalForm()) )
 				 || oTopic == null && obj != null) {
