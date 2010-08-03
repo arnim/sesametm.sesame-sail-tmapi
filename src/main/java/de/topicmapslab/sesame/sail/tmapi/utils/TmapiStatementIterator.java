@@ -36,6 +36,10 @@ public class TmapiStatementIterator<X extends Exception> extends
 	private Set<Statement> statements;
 	private TmapiStatementFactory statementFactory;
 	private Iterator<Statement> iterator;
+	
+	private final String TMDMTYPE = "http://psi.topicmaps.org/iso13250/model/type";
+	private final String TMDMINSTANCE = "http://psi.topicmaps.org/iso13250/model/instance";
+
 
 	public TmapiStatementIterator(Sail tmapiStore, Locator subj, Locator pred,
 			Locator obj, TopicMap... topicMaps) {
@@ -183,25 +187,18 @@ public class TmapiStatementIterator<X extends Exception> extends
 		createTypeListSPX(subj, tm);
 		Role subjectRole, objectRole;
 		
-		
-		
 		Iterator<Role> subjectRolesIterator = subj.getRolesPlayed().iterator(), objectsRolesIterator;
 		while (subjectRolesIterator.hasNext()) {
 			subjectRole = subjectRolesIterator.next();
-			
-
-
-			
+						
 			objectsRolesIterator = subjectRole.getParent().getRoles().iterator();
 			while (objectsRolesIterator.hasNext()) {
 				objectRole = objectsRolesIterator.next();
-				
 
-
-				
-				if (!subjectRole.getType().equals(objectRole.getType())) {
-					
-					
+				if (!subjectRole.getType().equals(objectRole.getType())
+						
+						&&  !isTypeOrInstanceRoleType(objectRole.getType())) {
+										
 					statements.add(statementFactory.create(subj, objectRole
 							.getType(), objectRole.getPlayer()));
 				}
@@ -223,7 +220,11 @@ public class TmapiStatementIterator<X extends Exception> extends
 			while (ojectRolesIterator.hasNext()) {
 				objectRole = ojectRolesIterator.next();
 				if (!subjectRoleType.equals(objectRole.getType())
-						&& objectRole.getType().equals(pred)) {
+						&& objectRole.getType().equals(pred)
+
+						&&  !isTypeOrInstanceRoleType(objectRole.getType())
+						
+				) {
 					statements.add(statementFactory.create(subj, objectRole
 							.getType(), objectRole.getPlayer()));
 				}
@@ -244,7 +245,11 @@ public class TmapiStatementIterator<X extends Exception> extends
 		Iterator<Role> subjectRolesIterator, objectRolesIterator = obj.getRolesPlayed().iterator();
 		while (objectRolesIterator.hasNext()) {
 			objectRole = objectRolesIterator.next();
-			if (objectRole.getType().equals(pred)){
+			if (objectRole.getType().equals(pred)
+
+					&&  !isTypeOrInstanceRoleType(objectRole.getType())
+							
+			){
 				subjectRolesIterator = objectRole.getParent().getRoles().iterator();
 				while (subjectRolesIterator.hasNext()) {
 					subjectRole = subjectRolesIterator.next();
@@ -274,7 +279,12 @@ public class TmapiStatementIterator<X extends Exception> extends
 			subjectRoleIterator = objectRole.getParent().getRoles().iterator();
 			while (subjectRoleIterator.hasNext()) {
 				subjectRole = subjectRoleIterator.next();
-				if (!subjectRole.getType().equals(objectRoleType)) {
+				if (!subjectRole.getType().equals(objectRoleType)
+				
+
+						&&  !isTypeOrInstanceRoleType(objectRole.getType())
+							
+				) {
 					statements.add(statementFactory.create(subjectRole
 							.getPlayer(), objectRoleType, obj));
 				}
@@ -323,6 +333,15 @@ public class TmapiStatementIterator<X extends Exception> extends
 		}
 	}
 
+	
+	private boolean isTypeOrInstanceRoleType(Topic t){
+		if (statementFactory.getAllLocators(t).size() != 1)
+			return false;
+		if (statementFactory.getBestLocator(t).equals(TMDMINSTANCE) 
+				|| statementFactory.getBestLocator(t).equals(TMDMTYPE))
+			return true;
+		return false;
+	}
 
 	public Topic getTopic(Locator l, TopicMap tm) {
 		if (l == null)
