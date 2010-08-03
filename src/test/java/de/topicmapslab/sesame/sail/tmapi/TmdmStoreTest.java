@@ -282,6 +282,7 @@ public class TmdmStoreTest extends TestCase {
 				_con.getValueFactory().createURI(
 						"http://xmlns.com/foaf/0.1/Person"), true);
 		
+		
 		assertTrue(result.hasNext());
 		Statement statement = result.next();
 		assertEquals("http://xmlns.com/foaf/0.1/Person", statement

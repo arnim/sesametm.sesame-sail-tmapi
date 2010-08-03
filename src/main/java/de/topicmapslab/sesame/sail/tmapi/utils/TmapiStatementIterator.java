@@ -337,8 +337,8 @@ public class TmapiStatementIterator<X extends Exception> extends
 	private boolean isTypeOrInstanceRoleType(Topic t){
 		if (statementFactory.getAllLocators(t).size() != 1)
 			return false;
-		if (statementFactory.getBestLocator(t).equals(TMDMINSTANCE) 
-				|| statementFactory.getBestLocator(t).equals(TMDMTYPE))
+		if (statementFactory.getBestLocator(t).toExternalForm().equals(TMDMINSTANCE) 
+				|| statementFactory.getBestLocator(t).toExternalForm().equals(TMDMTYPE))
 			return true;
 		return false;
 	}
