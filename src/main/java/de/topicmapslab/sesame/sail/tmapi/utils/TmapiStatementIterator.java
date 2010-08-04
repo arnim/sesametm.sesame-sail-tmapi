@@ -110,15 +110,24 @@ public class TmapiStatementIterator<X extends Exception> extends
 					createListXXO(oTopic, tm);
 				else if (sTopic == null && pTopic != null && oTopic != null)
 					createListXPO(pTopic, oTopic, tm);
-				else
+				
+				else if (sTopic != null && pTopic == null && oTopic != null)
+					createListSxO(sTopic, oTopic, tm);
+				
+				else {
 					System.err
-							.println("You should never read this! TmapiStatementIterator:104 ");
+					.println("You should never read this! TmapiStatementIterator:115 ");
+					
+				}
+					
 			}
 		}
 
 	}
 	
 	
+
+
 	private void createTypeList(Topic sTopic, Topic oTopic, TopicMap tm){
 		
 		if (sTopic == null && oTopic == null)
@@ -172,7 +181,32 @@ public class TmapiStatementIterator<X extends Exception> extends
 	
 	
 	
+	private void createListSxO(Topic subj, Topic obj, TopicMap tm) {
 
+
+		createTypeListSPO(subj, obj, tm);
+		Role subjectRole, objectRole;
+		
+		Iterator<Role> subjectRolesIterator = subj.getRolesPlayed().iterator(), objectsRolesIterator;
+		while (subjectRolesIterator.hasNext()) {
+			subjectRole = subjectRolesIterator.next();
+						
+			objectsRolesIterator = obj.getRolesPlayed().iterator();
+			while (objectsRolesIterator.hasNext()) {
+				objectRole = objectsRolesIterator.next();
+
+				if ( subjectRole.getParent().equals(objectRole.getParent())
+						&& !subjectRole.getType().equals(objectRole.getType())
+						
+						&&  !isTypeOrInstanceRoleType(objectRole.getType())) {
+										
+					statements.add(statementFactory.create(subj, objectRole
+							.getType(), objectRole.getPlayer()));
+				}
+			}
+		}
+		
+	}
 	
 	private void createListXXX(TopicMap tm) throws SailException {
 		Iterator<Topic> tIterator = tm.getTopics().iterator();

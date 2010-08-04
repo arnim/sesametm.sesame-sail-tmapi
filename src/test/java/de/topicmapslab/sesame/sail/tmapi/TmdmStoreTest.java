@@ -20,6 +20,8 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.sail.SailRepository;
+import org.openrdf.rio.RDFHandler;
+import org.openrdf.rio.n3.N3Writer;
 import org.tmapi.core.Association;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
@@ -84,8 +86,8 @@ public class TmdmStoreTest extends TestCase {
 	}
 
 	
-//	
-//	
+	
+	
 //	/**
 //	 * Test.
 //	 * 
@@ -96,20 +98,53 @@ public class TmdmStoreTest extends TestCase {
 //		_tmapiRepository = new SailRepository(_sail);
 //		_tmapiRepository.initialize();
 //		_con = _tmapiRepository.getConnection();
-//		RDFHandler rdfWriter = new N3Writer(System.out);
+////		RDFHandler rdfWriter = new N3Writer(System.out);
 //
-//		String queryString = "CONSTRUCT   { ?s a ?o . }  WHERE   {  ?s a ?o .  }";
+//		String queryString = "CONSTRUCT   { <http://www.topicmapslab.de/test/base/bert> ?p <http://xmlns.com/foaf/0.1/Person> . } " +
+//				" WHERE   {  <http://www.topicmapslab.de/test/base/bert> ?p <http://xmlns.com/foaf/0.1/Person> .  }";
 //	
 //		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL,
 //				queryString);
-////		GraphQueryResult result = query.evaluate();
-////		assertTrue(result.hasNext());
-////		Statement statement = result.next();
+//		GraphQueryResult result = query.evaluate();
+//		while (result.hasNext()) {
+//			System.out.println( result.next());;
+//			
+//		}
 //
 //
 //	}
-//	
-//	
+	
+	
+	
+	/**
+	 * Test.
+	 * 
+	 */
+	@Test
+	public void testSxO() throws Exception {
+		_sail = new TmapiStore(_tms, CONFIG.LIVE);
+		_tmapiRepository = new SailRepository(_sail);
+		_tmapiRepository.initialize();
+		_con = _tmapiRepository.getConnection();
+
+		String queryString = "CONSTRUCT   { <http://www.topicmapslab.de/test/base/bert> ?p <http://xmlns.com/foaf/0.1/Person> . } " +
+				" WHERE   {  <http://www.topicmapslab.de/test/base/bert> ?p <http://xmlns.com/foaf/0.1/Person> .  }";
+	
+		GraphQuery query = _con.prepareGraphQuery(QueryLanguage.SPARQL,
+				queryString);
+		GraphQueryResult result = query.evaluate();
+		assertTrue(result.hasNext());
+		Statement ne = result.next();
+		assertEquals("http://www.topicmapslab.de/test/base/bert", ne.getSubject().stringValue());
+		assertEquals(RDF.TYPE, ne.getPredicate());
+		assertEquals("http://xmlns.com/foaf/0.1/Person", ne.getObject().stringValue());
+
+		assertFalse(result.hasNext());
+
+
+	}
+	
+	
 	
 	
 	
