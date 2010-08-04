@@ -357,6 +357,24 @@ public class TmapiStoreTest extends TestCase {
 				.createURI("http://www.topicmapslab.de/test/base/wrong"), true);
 		assertFalse(result.hasNext());
 	}
+	
+	
+	protected void _testSxO() throws Exception {
+		RepositoryResult<Statement> result = _con.getStatements(_con
+				.getValueFactory().createURI(
+				"http://www.topicmapslab.de/test/base/bert_0-0"), null
+				, _con.getValueFactory().createURI(
+				"http://www.topicmapslab.de/test/base/xyz"), true);
+		
+		assertTrue(result.hasNext());
+		Statement statement = result.next();
+		assertEquals("http://www.topicmapslab.de/test/base/bert_0-0", statement
+				.getSubject().stringValue());
+		assertEquals("http://www.topicmapslab.de/test/base/xyz", statement
+				.getObject().stringValue());
+		assertFalse(result.hasNext());
+	}
+
 
 	protected void _testxxx() throws Exception {
 		RepositoryResult<Statement> result = _con.getStatements(null, null,
@@ -436,6 +454,7 @@ public class TmapiStoreTest extends TestCase {
 		_testxPx();
 		_testxPO();
 		_testxxO();
+		_testSxO();
 		_testxxx();
 		_testSELECT();
 		_testSsparqlConstruct();
