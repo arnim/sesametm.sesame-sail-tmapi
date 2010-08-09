@@ -25,7 +25,7 @@ public class PluginService {
 
 
     private PluginService() {
-        loader = ServiceLoader.load(SailTmapiPlugin.class);
+        loader = ServiceLoader.load(SailTmapiPlugin.class, getClass().getClassLoader());
         loader.reload();
     }
 
