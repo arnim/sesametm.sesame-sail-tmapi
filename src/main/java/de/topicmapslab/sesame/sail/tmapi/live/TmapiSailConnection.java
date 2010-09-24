@@ -272,7 +272,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void startTransactionInternal() throws SailException {
-		System.out.println("startTransactionInternal");
+//		System.out.println("startTransactionInternal");
 	}
 	
 	
