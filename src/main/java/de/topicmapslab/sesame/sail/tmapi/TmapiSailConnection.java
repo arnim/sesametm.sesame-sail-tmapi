@@ -3,7 +3,7 @@
  * License:   Apache License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html
  */
 
-package de.topicmapslab.sesame.sail.tmapi.live;
+package de.topicmapslab.sesame.sail.tmapi;
 
 import info.aduna.concurrent.locks.Lock;
 import info.aduna.iteration.CloseableIteration;
@@ -34,6 +34,7 @@ import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMapSystem;
 
 
+
 /**
  * @author Arnim Bleier
  * 
@@ -41,15 +42,15 @@ import org.tmapi.core.TopicMapSystem;
 public class TmapiSailConnection extends SailConnectionBase {
 
 	private TopicMapSystem tmSystem;
-	protected LiveStore store;
+	protected TmapiStore store;
 
 	/**
 	 * @param sailBase
 	 */
-	public TmapiSailConnection(LiveStore sailBase) {
+	public TmapiSailConnection(TmapiStore sailBase) {
 		super(sailBase);
 		this.store = sailBase;
-		tmSystem = ((LiveStore) sailBase).getTmSystem();
+		tmSystem = ((TmapiStore) sailBase).getTmSystem();
 	}
 
 	/*
