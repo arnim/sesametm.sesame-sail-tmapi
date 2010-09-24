@@ -28,9 +28,7 @@ import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
 
-import de.topicmapslab.sesame.sail.tmapi.CONFIG;
 import de.topicmapslab.sesame.sail.tmapi.utils.TmapiStatementIterator;
-import de.topicmapslab.sesame.sail.tmapi.utils.TmqlStatementIterator;
 
 /**
  * @author Arnim Bleier
@@ -114,9 +112,6 @@ public class LiveStore extends SailBase {
 		predicate = getLocator(pred);
 		object = getLocator(obj);
 
-		if (config.equals(CONFIG.TMQL))
-			return new TmqlStatementIterator<X>(this, subject, predicate, object,
-					relevantMSs);
 		return new TmapiStatementIterator<X>(this, subject, predicate, object,
 				relevantMSs);
 	}

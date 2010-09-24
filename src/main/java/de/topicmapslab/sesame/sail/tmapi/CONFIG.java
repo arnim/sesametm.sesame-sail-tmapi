@@ -13,6 +13,6 @@ public class CONFIG {
 	
 	public final static String INDEXED = "indexed";
 	public final static String LIVE = "live";
-	public final static String TMQL = "tmql";
+//	public final static String TMQL = "tmql";
 
 }

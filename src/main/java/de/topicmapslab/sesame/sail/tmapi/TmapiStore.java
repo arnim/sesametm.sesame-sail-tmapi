@@ -14,7 +14,6 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.Sail;
 import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
-import org.openrdf.sail.memory.MemoryStore;
 import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMapSystem;
 
@@ -45,15 +44,7 @@ public class TmapiStore implements Sail {
 	}
 	
 	private void setup(){
-		if (config.equals(CONFIG.INDEXED)) {
-			this.store = new MemoryStore();
-		}
-		else if (config.equals(CONFIG.LIVE)) {
 			this.store = new LiveStore(tmSys, config);
-		}
-		else if (config.equals(CONFIG.TMQL)) {
-			this.store = new LiveStore(tmSys, config);
-		}
 	}
 	
 	public String getConfiguration(){
