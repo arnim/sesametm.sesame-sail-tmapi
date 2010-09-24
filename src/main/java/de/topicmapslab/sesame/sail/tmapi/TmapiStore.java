@@ -7,18 +7,14 @@ package de.topicmapslab.sesame.sail.tmapi;
 
 
 import java.io.File;
-import java.util.Iterator;
 
-import org.openrdf.model.Statement;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.Sail;
 import org.openrdf.sail.SailConnection;
 import org.openrdf.sail.SailException;
-import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMapSystem;
 
 import de.topicmapslab.sesame.sail.tmapi.live.LiveStore;
-import de.topicmapslab.sesame.sail.tmapi.utils.TmapiStatementIterator;
 
 /**
  * @author Arnim Bleier
@@ -30,58 +26,19 @@ public class TmapiStore implements Sail {
 	private TopicMapSystem tmSys;
 	private Sail store;
 	private SailConnection con = null;
-	private String config;
 	
 	
 	public TmapiStore(TopicMapSystem tmSys) throws SailException{
-		this(tmSys, CONFIG.LIVE);
-	}
-	
-	public TmapiStore(TopicMapSystem tmSys, String config) throws SailException{
 		this.tmSys = tmSys;
-		this.config = config;
 		setup();
 	}
 	
 	private void setup(){
-			this.store = new LiveStore(tmSys, config);
+			this.store = new LiveStore(tmSys);
 	}
-	
-	public String getConfiguration(){
-		return config;
-	}
-	
-	/**
-	 * Indexes this repository. 
-	 * 
-	 * @throws SailException
-	 *         when indexing of the store failed.
-	 */
-	protected void index()
-		throws SailException{
-		if (config.equals(CONFIG.INDEXED)){
-			
-			Iterator<Locator> locatorsIterator = tmSys.getLocators().iterator();
-			Locator l;
 
-			while (locatorsIterator.hasNext()) {
-				try {
-					l = locatorsIterator.next();
-					TmapiStatementIterator<SailException> si = new TmapiStatementIterator<SailException>( this, (Locator) null, (Locator) null, (Locator) null,  tmSys.getTopicMap(l));
-					while (si.hasNext()) {
-						 Statement statement = (Statement) si.next();
-						 getConnection().addStatement(statement.getSubject(), statement.getPredicate(), statement.getObject(), getValueFactory().createURI(l.toExternalForm()));
-					}
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			
-		}
-		else
-			throw new SailException();
-	}
+	
+
 	
 	/**
 	 * @return {@link TopicMapSystem}
@@ -107,8 +64,6 @@ public class TmapiStore implements Sail {
 
 	public void initialize() throws SailException {
 		store.initialize();
-		if (config == CONFIG.INDEXED)
-			index();
 	}
 
 	public boolean isWritable() throws SailException {

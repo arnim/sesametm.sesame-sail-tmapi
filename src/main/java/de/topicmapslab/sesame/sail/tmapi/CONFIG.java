@@ -11,8 +11,8 @@ package de.topicmapslab.sesame.sail.tmapi;
  */
 public class CONFIG {
 	
-	public final static String INDEXED = "indexed";
-	public final static String LIVE = "live";
+//	public final static String INDEXED = "indexed";
+//	public final static String LIVE = "live";
 //	public final static String TMQL = "tmql";
 
 }
