@@ -79,7 +79,7 @@ public class TmdmStoreTest extends TestCase {
 		bwf.createRole(employee, bert);
 		bwf.createRole(employer, xyz);
 		
-		_sail = new TmapiStore(_tms, CONFIG.LIVE);
+		_sail = new TmapiStore(_tms);
 		_tmapiRepository = new SailRepository(_sail);
 		_tmapiRepository.initialize();
 		_con = _tmapiRepository.getConnection();
@@ -122,7 +122,7 @@ public class TmdmStoreTest extends TestCase {
 	 */
 	@Test
 	public void testSxO() throws Exception {
-		_sail = new TmapiStore(_tms, CONFIG.LIVE);
+		_sail = new TmapiStore(_tms);
 		_tmapiRepository = new SailRepository(_sail);
 		_tmapiRepository.initialize();
 		_con = _tmapiRepository.getConnection();

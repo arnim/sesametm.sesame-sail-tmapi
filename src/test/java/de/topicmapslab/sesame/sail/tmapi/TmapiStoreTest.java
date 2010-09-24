@@ -382,38 +382,38 @@ public class TmapiStoreTest extends TestCase {
 		assertEquals(6, result.asList().size());
 	}
 
-	protected void _testPerformance() throws Exception {
-		for (int i = 1; i < 100; i++) {
-			populateMap(i, 500);
-
-		}
-		System.out
-				.println("Query performance on 100 Topic Maps with 500 indufidual sets "
-						+ "conforming to the schema of Kal Ahmed "
-						+ "and a "
-						+ _sail.getConfiguration() + " configuration:");
-		if (_sail.getConfiguration() == CONFIG.INDEXED)
-			_sail.index();
-		System.out.println("Test getStatements(null, null, null)");
-		Statement statement;
-		long start = System.currentTimeMillis();
-		RepositoryResult<Statement> result = _con.getStatements(null, null,
-				null, true);
-		long repositoryResultTime = System.currentTimeMillis();
-		System.out.println("Generating RepositoryResult Iterable: "
-				+ (System.currentTimeMillis() - start) + "ms");
-		while (result.hasNext()) {
-			statement = result.next();
-		}
-		System.out.println("Iterating Result: "
-				+ (System.currentTimeMillis() - repositoryResultTime) + "ms");
-		System.out.println("Total time elapsed: "
-				+ (System.currentTimeMillis() - start) + "ms");
-
-		System.out.println("======================================");
-		System.out.println();
-
-	}
+//	protected void _testPerformance() throws Exception {
+//		for (int i = 1; i < 100; i++) {
+//			populateMap(i, 500);
+//
+//		}
+//		System.out
+//				.println("Query performance on 100 Topic Maps with 500 indufidual sets "
+//						+ "conforming to the schema of Kal Ahmed "
+//						+ "and a "
+//						+ _sail.getConfiguration() + " configuration:");
+//		if (_sail.getConfiguration() == CONFIG.INDEXED)
+//			_sail.index();
+//		System.out.println("Test getStatements(null, null, null)");
+//		Statement statement;
+//		long start = System.currentTimeMillis();
+//		RepositoryResult<Statement> result = _con.getStatements(null, null,
+//				null, true);
+//		long repositoryResultTime = System.currentTimeMillis();
+//		System.out.println("Generating RepositoryResult Iterable: "
+//				+ (System.currentTimeMillis() - start) + "ms");
+//		while (result.hasNext()) {
+//			statement = result.next();
+//		}
+//		System.out.println("Iterating Result: "
+//				+ (System.currentTimeMillis() - repositoryResultTime) + "ms");
+//		System.out.println("Total time elapsed: "
+//				+ (System.currentTimeMillis() - start) + "ms");
+//
+//		System.out.println("======================================");
+//		System.out.println();
+//
+//	}
 
 	protected void _testContextDependency() throws RepositoryException {
 		assertEquals(
@@ -442,7 +442,7 @@ public class TmapiStoreTest extends TestCase {
 	 */
 	@Test
 	public void testLive() throws Exception {
-		_sail = new TmapiStore(_tms, CONFIG.LIVE);
+		_sail = new TmapiStore(_tms);
 		_tmapiRepository = new SailRepository(_sail);
 		_tmapiRepository.initialize();
 		_con = _tmapiRepository.getConnection();
@@ -461,30 +461,7 @@ public class TmapiStoreTest extends TestCase {
 //		_testPerformance(); //not resource friendly
 	}
 
-	/**
-	 * Tests against an indexed store.
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	public void testIndexed() throws Exception {
-		_sail = new TmapiStore(_tms, CONFIG.INDEXED);
-		_tmapiRepository = new SailRepository(_sail);
-		_tmapiRepository.initialize();
-		_con = _tmapiRepository.getConnection();
-		_testGetContextIDs();
-		_testContextDependency();
-		_testSPO();
-		_testSxx();
-		_testSPx();
-		_testxPx();
-		_testxPO();
-		_testxxO();
-		_testxxx();
-		_testSELECT();
-		_testSsparqlConstruct();
-//		_testPerformance(); // not resource friendly
-	}
+
 
 //	/**
 //	 * Tests against the TMQL engine.

@@ -50,16 +50,14 @@ public class LiveStore extends SailBase {
 	private final ReadWriteLockManager statementListLockManager = new ReadPrefReadWriteLockManager(
 			debugEnabled());
 
-	private String config;
 
 	/**
 	 * 
 	 * @param tmSys
 	 * @param config
 	 */
-	public LiveStore(TopicMapSystem tmSys, String config) {
+	public LiveStore(TopicMapSystem tmSys) {
 		this.setTmSystem(tmSys);
-		this.setConfig(config);
 	}
 
 	/*
@@ -168,19 +166,5 @@ public class LiveStore extends SailBase {
 
 	}
 
-	/**
-	 * @param config
-	 *            the config to set
-	 */
-	public void setConfig(String config) {
-		this.config = config;
-	}
-
-	/**
-	 * @return the config
-	 */
-	public String getConfig() {
-		return config;
-	}
 
 }
