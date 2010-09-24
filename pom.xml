@@ -6,7 +6,7 @@
 	<artifactId>sesame-sail-tmapi</artifactId>
 
 	<name>OpenRDF Sesame: TMAPI</name>
-	<version>0.0.8-SNAPSHOT</version>
+	<version>0.0.8</version>
 	<description>Sail implementation that stores data in TMAPI</description>
 	<dependencies>
 		<dependency>
