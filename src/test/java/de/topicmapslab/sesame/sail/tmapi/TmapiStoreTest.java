@@ -50,6 +50,10 @@ public class TmapiStoreTest extends TestCase {
 	public void setUp() throws Exception {
 		_tms = TopicMapSystemFactory.newInstance().newTopicMapSystem();
 		populateMap(0, 1);
+		_sail = new TmapiStore(_tms);
+		_tmapiRepository = new SailRepository(_sail);
+		_tmapiRepository.initialize();
+		_con = _tmapiRepository.getConnection();
 	}
 
 	private void populateMap(int count, int individuals)
@@ -93,12 +97,14 @@ public class TmapiStoreTest extends TestCase {
 		_con.exportStatements(null, null, null, true, rdfWriter);
 	}
 
-	protected void _testGetContextIDs() throws Exception {
+	@Test
+	public void testGetContextIDs() throws Exception {
 		assertEquals(1, _con.getContextIDs().asList().size());
 		assertEquals(baseIRI + "_0", _con.getContextIDs().next().stringValue());
 	}
 
-	protected void _testSsparqlConstruct() throws Exception {
+	@Test
+	public void testSsparqlConstruct() throws Exception {
 		String queryString = "CONSTRUCT   { <http://www.topicmapslab.de/test/base/subject> <http://www.topicmapslab.de/test/base/predicate> ?o . }  WHERE   { <http://www.topicmapslab.de/test/base/alf_0-0> <http://www.topicmapslab.de/test/base/employer> ?o . ?s ?p ?o . }";
 		// String queryString =
 		// "CONSTRUCT   { <http://www.topicmapslab.de/test/base/subject> <http://www.topicmapslab.de/test/base/predicate> ?o . }  WHERE   { <http://www.topicmapslab.de/test/base/alf_0> <http://www.topicmapslab.de/test/base/hourlyWage> ?o . ?s ?p ?o . }";
@@ -117,7 +123,8 @@ public class TmapiStoreTest extends TestCase {
 		assertFalse(result.hasNext());
 	}
 
-	protected void _testSELECT() throws Exception {
+	@Test
+	public void testSELECT() throws Exception {
 
 		OutputStream output = new OutputStream() {
 			private StringBuilder string = new StringBuilder();
@@ -143,7 +150,8 @@ public class TmapiStoreTest extends TestCase {
 		assertTrue(output.toString().contains("14.50"));
 	}
 
-	protected void _testSPO() throws Exception {
+	@Test
+	public void testSPO() throws Exception {
 		RepositoryResult<Statement> result = _con.getStatements(_con
 				.getValueFactory().createURI(
 						"http://www.topicmapslab.de/test/base/bert_0-0"), _con
@@ -186,7 +194,8 @@ public class TmapiStoreTest extends TestCase {
 		assertFalse(result.hasNext());
 	}
 
-	protected void _testSxx() throws Exception {
+	@Test
+	public void testSxx() throws Exception {
 		RepositoryResult<Statement> result = _con.getStatements(_con
 				.getValueFactory().createURI(
 						"http://www.topicmapslab.de/test/base/bert_0-0"), null,
@@ -204,19 +213,11 @@ public class TmapiStoreTest extends TestCase {
 				.getStatements(_con.getValueFactory().createURI(
 						"http://www.topicmapslab.de/test/base/wrong"), null,
 						null, true);
-		assertFalse(result.hasNext());
-		
-//		
-//		result = _con
-//		.getStatements(_con.getValueFactory().createURI(
-//				"http://www.topicmapslab.de/test/base/xyz"), null,
-//				null, true);
-//		
-//		System.out.println(result.asList());
-		
+		assertFalse(result.hasNext());	
 	}
 
-	protected void _testSPx() throws Exception {
+	@Test
+	public void testSPx() throws Exception {
 		RepositoryResult<Statement> result = _con.getStatements(_con
 				.getValueFactory().createURI(
 						"http://www.topicmapslab.de/test/base/bert_0-0"), _con
@@ -259,7 +260,8 @@ public class TmapiStoreTest extends TestCase {
 
 	}
 
-	protected void _testxPx() throws Exception {
+	@Test
+	public void testxPx() throws Exception {
 		RepositoryResult<Statement> result = _con.getStatements(null, _con
 				.getValueFactory().createURI(
 						"http://www.topicmapslab.de/test/base/hourlyWage"),
@@ -305,7 +307,8 @@ public class TmapiStoreTest extends TestCase {
 		assertFalse(result.hasNext());
 	}
 
-	protected void _testxPO() throws Exception {
+	@Test
+	public void testxPO() throws Exception {
 		RepositoryResult<Statement> result = _con.getStatements(null, _con
 				.getValueFactory().createURI(
 						"http://www.topicmapslab.de/test/base/employer"), _con
@@ -339,7 +342,8 @@ public class TmapiStoreTest extends TestCase {
 		assertFalse(result.hasNext());
 	}
 
-	protected void _testxxO() throws Exception {
+	@Test
+	public void testxxO() throws Exception {
 		RepositoryResult<Statement> result = _con.getStatements(null, null,
 				_con.getValueFactory().createURI(
 						"http://www.topicmapslab.de/test/base/alf_0-0"), true);
@@ -359,7 +363,8 @@ public class TmapiStoreTest extends TestCase {
 	}
 	
 	
-	protected void _testSxO() throws Exception {
+	@Test
+	public void testSxO() throws Exception {
 		RepositoryResult<Statement> result = _con.getStatements(_con
 				.getValueFactory().createURI(
 				"http://www.topicmapslab.de/test/base/bert_0-0"), null
@@ -375,8 +380,8 @@ public class TmapiStoreTest extends TestCase {
 		assertFalse(result.hasNext());
 	}
 
-
-	protected void _testxxx() throws Exception {
+	@Test
+	public void testxxx() throws Exception {
 		RepositoryResult<Statement> result = _con.getStatements(null, null,
 				null, true);
 		assertEquals(6, result.asList().size());
@@ -415,7 +420,8 @@ public class TmapiStoreTest extends TestCase {
 //
 //	}
 
-	protected void _testContextDependency() throws RepositoryException {
+	@Test
+	public void testContextDependency() throws RepositoryException {
 		assertEquals(
 				_con.getStatements(null, null, null, true).asList().size(),
 				_con.getStatements(
@@ -436,56 +442,5 @@ public class TmapiStoreTest extends TestCase {
 				.asList().size());
 	}
 
-	/**
-	 * Tests against an indexed store.
-	 * 
-	 */
-	@Test
-	public void testLive() throws Exception {
-		_sail = new TmapiStore(_tms);
-		_tmapiRepository = new SailRepository(_sail);
-		_tmapiRepository.initialize();
-		_con = _tmapiRepository.getConnection();
-		_testGetContextIDs();
-		_testContextDependency();
-		_testSPO();
-		_testSxx();
-		_testSPx();
-		_testxPx();
-		_testxPO();
-		_testxxO();
-		_testSxO();
-		_testxxx();
-		_testSELECT();
-		_testSsparqlConstruct();
-//		_testPerformance(); //not resource friendly
-	}
-
-
-
-//	/**
-//	 * Tests against the TMQL engine.
-//	 * 
-//	 * @throws Exception
-//	 */
-//	@Test
-//	public void testTMQL() throws Exception {
-//		_sail = new TmapiStore(_tms, CONFIG.TMQL);
-//		_tmapiRepository = new SailRepository(_sail);
-//		_tmapiRepository.initialize();
-//		_con = _tmapiRepository.getConnection();
-//		 _testGetContextIDs();
-//		 _testContextDependency();
-//		 _testSPO();
-//		 _testSxx();
-//		 _testSPx();
-//		 _testxPx();
-//		 _testxPO();
-//		 _testxxO();
-//		 _testxxx();
-//		 _testSELECT();
-//		 _testSsparqlConstruct();
-////		 _testPerformance(); //not resource friendly
-//	}
 
 }
