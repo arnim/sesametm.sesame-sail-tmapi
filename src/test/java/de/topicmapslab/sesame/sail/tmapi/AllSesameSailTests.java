@@ -13,12 +13,13 @@ public class AllSesameSailTests {
 
   public static Test suite() {
     TestSuite suite = new TestSuite("All Tests for Sesame Sail TMAPI");
-
-
     
     suite.addTestSuite(TmapiStoreTest.class);
     
     suite.addTestSuite(TmdmStoreTest.class);
+    
+    suite.addTestSuite(MaianaTest.class);
+
     
     
     return suite;
