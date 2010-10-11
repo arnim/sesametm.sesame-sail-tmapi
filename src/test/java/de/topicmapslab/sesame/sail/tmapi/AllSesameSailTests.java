@@ -20,6 +20,7 @@ public class AllSesameSailTests {
     
     suite.addTestSuite(MaianaTest.class);
 
+    suite.addTestSuite(CRUDTest.class);
     
     
     return suite;
