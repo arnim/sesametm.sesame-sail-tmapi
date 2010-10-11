@@ -11,8 +11,11 @@ import info.aduna.iteration.CloseableIteratorIteration;
 import info.aduna.iteration.LockingIteration;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Set;
 
 import org.openrdf.model.Namespace;
 import org.openrdf.model.Resource;
@@ -31,7 +34,11 @@ import org.openrdf.query.impl.EmptyBindingSet;
 import org.openrdf.sail.SailException;
 import org.openrdf.sail.helpers.SailConnectionBase;
 import org.tmapi.core.Locator;
+import org.tmapi.core.TopicMap;
+import org.tmapi.core.TopicMapExistsException;
 import org.tmapi.core.TopicMapSystem;
+
+import de.topicmapslab.sesame.sail.tmapi.utils.TMAPIStatementWriter;
 
 
 
@@ -62,9 +69,35 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 * org.openrdf.model.Resource[])
 	 */
 	@Override
-	protected void addStatementInternal(Resource arg0, URI arg1, Value arg2,
-			Resource... arg3) throws SailException {
+	protected void addStatementInternal(Resource subject, URI predicate, Value object,
+			Resource... contexts) throws SailException {
+		for (Resource resource : contexts) {
+			new TMAPIStatementWriter(subject, predicate, object, getTopicMaps(resource)).write();
+		}
+		
 	}
+	
+	
+	
+	/**
+	 * 
+	 * 
+	 * @param context
+	 * @return Gets or creates a {@link TopicMap}.
+	 */
+	private TopicMap getTopicMaps(Resource context) {
+		TopicMap result;
+		result = tmSystem.getTopicMap(context.stringValue());
+		if (result != null)
+			return result;
+		try {
+			return tmSystem.createTopicMap(context.stringValue());
+		} catch (TopicMapExistsException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -75,7 +108,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void clearInternal(Resource... arg0) throws SailException {
-//		System.out.println("clearInternal");
+		System.err.println(2);
 
 	}
 
@@ -87,7 +120,8 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void clearNamespacesInternal() throws SailException {
-//		System.out.println("clearNamespacesInternal");
+		System.err.println(3);
+
 	}
 
 	/*
@@ -97,7 +131,9 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void closeInternal() throws SailException {
-//		System.out.println("closeInternal");
+
+		System.err.println(4);
+
 	}
 
 	/*
@@ -107,7 +143,8 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void commitInternal() throws SailException {
-//		System.out.println("commitInternal");
+		System.err.println(5);
+
 	}
 
 	/*
@@ -163,7 +200,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected String getNamespaceInternal(String arg0) throws SailException {
-		System.out.println("getNamespaceInternal");
+		System.err.println(6);
 		return null;
 	}
 
@@ -224,7 +261,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	@Override
 	protected void removeStatementsInternal(Resource arg0, URI arg1,
 			Value arg2, Resource... arg3) throws SailException {
-		System.out.println("removeNamespaceInternal");
+		System.err.println("removeNamespaceInternal");
 	}
 
 	/*
@@ -234,7 +271,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void rollbackInternal() throws SailException {
-		System.out.println("rollbackInternal");
+		System.err.println("rollbackInternal");
 
 	}
 
@@ -248,7 +285,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	@Override
 	protected void setNamespaceInternal(String arg0, String arg1)
 			throws SailException {
-//		System.out.println("setNamespaceInternal");
+		System.err.println(7);
 
 	}
 
@@ -261,7 +298,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected long sizeInternal(Resource... arg0) throws SailException {
-		System.out.println("sizeInternal 0");
+		System.err.println(8);
 		return 0;
 	}
 
@@ -273,7 +310,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void startTransactionInternal() throws SailException {
-//		System.out.println("startTransactionInternal");
+		System.err.println(9);
 	}
 	
 	

@@ -1,1 +1,3 @@
-<http://purl.org/dc/elements/1.1/Topic> <http://purl.org/dc/elements/1.1/predicate>  "Primer - Getting into the Semantic Web and RDF using N3".
+<http://purl.org/dc/elements/1.1/Topic1> <http://purl.org/dc/elements/1.1/predicate1>  "Primer - Getting into the Semantic Web and RDF using N3"^^<http://www.w3.org/2001/XMLSchema#string> . 
+<http://purl.org/dc/elements/1.1/Topic2> <http://purl.org/dc/elements/1.1/predicate2>  <http://purl.org/dc/elements/1.1/object2> . 
+<http://purl.org/dc/elements/1.1/Topic3> <http://purl.org/dc/elements/1.1/predicate3>  "Text 3" . 

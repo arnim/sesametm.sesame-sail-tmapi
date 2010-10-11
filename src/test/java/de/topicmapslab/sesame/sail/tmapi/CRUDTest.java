@@ -53,13 +53,9 @@ public class CRUDTest extends TestCase {
 	@Test
 	public void testSIMPLE() throws Exception {
 		is = accessor.convertStringToInputStream("test.n3");
-		System.out.println(accessor.getFileAsString("test.n3"));
-		
 		
 		_con.add(is, baseIRI, RDFFormat.N3, valueFactory.createURI(baseURI));
-		
-		
-		
+
 		repositoryResult = _con.getStatements(null, null, null, true);
 		
 		while (repositoryResult.hasNext()) {
