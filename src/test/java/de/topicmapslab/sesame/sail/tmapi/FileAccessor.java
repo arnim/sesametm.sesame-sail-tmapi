@@ -5,7 +5,9 @@
 
 package de.topicmapslab.sesame.sail.tmapi;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class FileAccessor {
 
@@ -21,5 +23,15 @@ public class FileAccessor {
       throws Exception {
     return getClass().getResourceAsStream(fileName);
   }
+  
+  public String getFileAsString(String fileName) throws Exception {
+	    BufferedReader reader = new BufferedReader(new InputStreamReader(convertStringToInputStream(fileName)));
+	    StringBuilder sb = new StringBuilder();
+	    String line = null;
+	    while ((line = reader.readLine()) != null) {
+	      sb.append(line + "\n");
+	    }
+	    return sb.toString();
+	  }
 
 }

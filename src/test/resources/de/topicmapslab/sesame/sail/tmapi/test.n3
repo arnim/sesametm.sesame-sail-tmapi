@@ -1,2 +1,1 @@
-@prefix dc:  <http://purl.org/dc/elements/1.1/> .
-dc:Locator dc:title  "Primer - Getting into the Semantic Web and RDF using N3".
+<http://purl.org/dc/elements/1.1/Topic> <http://purl.org/dc/elements/1.1/predicate>  "Primer - Getting into the Semantic Web and RDF using N3".
