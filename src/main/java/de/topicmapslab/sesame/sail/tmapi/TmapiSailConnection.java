@@ -120,8 +120,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void clearNamespacesInternal() throws SailException {
-		System.err.println(3);
-
+		// No Namespace handling
 	}
 
 	/*
@@ -200,7 +199,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected String getNamespaceInternal(String arg0) throws SailException {
-		System.err.println(6);
+		// No Namespace handling
 		return null;
 	}
 
@@ -212,6 +211,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	@Override
 	protected CloseableIteration<? extends Namespace, SailException> getNamespacesInternal()
 			throws SailException {
+		// No Namespace handling
 			 return new CloseableIteratorIteration<Namespace, SailException>(new LinkedHashMap<String, NamespaceImpl>(16).values().iterator());
 	}
 
@@ -246,7 +246,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void removeNamespaceInternal(String arg0) throws SailException {
-		System.out.println("removeNamespaceInternal");
+		// No Namespace handling
 
 	}
 
@@ -285,7 +285,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	@Override
 	protected void setNamespaceInternal(String arg0, String arg1)
 			throws SailException {
-		System.err.println(7);
+		// No Namespace handling
 
 	}
 

@@ -18,6 +18,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.n3.N3Writer;
 import org.tmapi.core.TopicMapSystem;
 import org.tmapi.core.TopicMapSystemFactory;
 
@@ -61,6 +62,11 @@ public class CRUDTest extends TestCase {
 		while (repositoryResult.hasNext()) {
 			System.out.println(repositoryResult.next());
 		}
+		
+		System.out.println(_con.getContextIDs().asList());
+
+		
+		_con.export( new N3Writer(System.out), valueFactory.createURI(baseURI));
 
 	}
 
