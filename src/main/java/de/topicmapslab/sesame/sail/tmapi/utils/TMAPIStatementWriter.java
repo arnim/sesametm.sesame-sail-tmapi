@@ -9,6 +9,7 @@ import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.LiteralImpl;
+import org.openrdf.model.vocabulary.XMLSchema;
 import org.tmapi.core.Locator;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
@@ -33,19 +34,24 @@ public class TMAPIStatementWriter {
 	
 	public void write(){
 		createAsCharacteristic();
+		createAsAssociation();
 	}
 	
 	
+	private void createAsAssociation() {
+		
+	}
+
 	private void createAsCharacteristic(){
 		try {
 			URI dt = ((LiteralImpl) object).getDatatype();
 			if (dt != null)
 				subject.createOccurrence(predicate, object.stringValue(), tm.createLocator(dt.stringValue()));
 			else // default xsd:string as dataType
-				subject.createOccurrence(predicate, object.stringValue(), tm.createLocator("http://www.w3.org/2001/XMLSchema#string"));
+				subject.createOccurrence(predicate, object.stringValue(), tm.createLocator(XMLSchema.STRING.stringValue()));
 		} catch (ClassCastException e) {
 			// Has an URI as Object.
-			subject.createOccurrence(predicate, object.stringValue(), tm.createLocator("http://www.w3.org/2001/XMLSchema#anyURI"));
+			subject.createOccurrence(predicate, object.stringValue(), tm.createLocator(XMLSchema.ANYURI.stringValue()));
 		}
 	}
 	

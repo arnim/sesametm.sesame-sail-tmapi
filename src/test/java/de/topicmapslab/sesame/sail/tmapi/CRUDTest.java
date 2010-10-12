@@ -51,20 +51,48 @@ public class CRUDTest extends TestCase {
 	}
 	
 	
+//	@Test
+//	public void testSIMPLE() throws Exception {
+//		is = accessor.convertStringToInputStream("test.n3");
+//		
+//		_con.add(is, baseIRI, RDFFormat.N3, valueFactory.createURI(baseURI));
+//
+//		repositoryResult = _con.getStatements(null, null, null, true);
+//		
+//
+//		
+//
+//		
+//		_con.export( new N3Writer(System.out), valueFactory.createURI(baseURI));
+//
+//	}
+	
 	@Test
-	public void testSIMPLE() throws Exception {
-		is = accessor.convertStringToInputStream("test.n3");
+	public void test2Occurences() throws Exception {
+		is = accessor.convertStringToInputStream("2Occurences.n3");
 		
 		_con.add(is, baseIRI, RDFFormat.N3, valueFactory.createURI(baseURI));
-
+		assertEquals(5, _con.getStatements(null, null, null, true).asList().size());
+		assertEquals(5, _con.getStatements(null, null, null, true, valueFactory.createURI(baseURI)).asList().size());
+		assertEquals(1, _con.getContextIDs().asList().size());
 		repositoryResult = _con.getStatements(null, null, null, true);
 		
-		while (repositoryResult.hasNext()) {
-			System.out.println(repositoryResult.next());
-		}
-		
-		System.out.println(_con.getContextIDs().asList());
+		_con.export( new N3Writer(System.out), valueFactory.createURI(baseURI));
 
+	}
+	
+	
+	@Test
+	public void test2Association() throws Exception {
+		is = accessor.convertStringToInputStream("2Association.n3");
+		_con.add(is, baseIRI, RDFFormat.N3, valueFactory.createURI(baseURI));
+		
+		
+		assertEquals(2, _con.getStatements(null, null, null, true).asList().size());
+		assertEquals(2, _con.getStatements(null, null, null, true, valueFactory.createURI(baseURI)).asList().size());
+		
+		assertEquals(1, _con.getContextIDs().asList().size());
+		repositoryResult = _con.getStatements(null, null, null, true);
 		
 		_con.export( new N3Writer(System.out), valueFactory.createURI(baseURI));
 
