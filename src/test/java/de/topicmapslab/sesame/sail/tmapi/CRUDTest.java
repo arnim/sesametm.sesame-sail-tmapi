@@ -19,6 +19,7 @@ import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.n3.N3Writer;
+import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
 import org.tmapi.core.TopicMapSystemFactory;
 
@@ -66,31 +67,39 @@ public class CRUDTest extends TestCase {
 //		_con.export( new N3Writer(System.out), valueFactory.createURI(baseURI));
 //
 //	}
-	
-	@Test
-	public void test2Occurences() throws Exception {
-		is = accessor.convertStringToInputStream("2Occurences.n3");
-		
-		_con.add(is, baseIRI, RDFFormat.N3, valueFactory.createURI(baseURI));
-		assertEquals(5, _con.getStatements(null, null, null, true).asList().size());
-		assertEquals(5, _con.getStatements(null, null, null, true, valueFactory.createURI(baseURI)).asList().size());
-		assertEquals(1, _con.getContextIDs().asList().size());
-		repositoryResult = _con.getStatements(null, null, null, true);
-		
-		_con.export( new N3Writer(System.out), valueFactory.createURI(baseURI));
-
-	}
+//	
+//	@Test
+//	public void test2Occurences() throws Exception {
+//		is = accessor.convertStringToInputStream("2Occurences.n3");
+//		
+//		_con.add(is, baseIRI, RDFFormat.N3, valueFactory.createURI(baseURI));
+//		assertEquals(5, _con.getStatements(null, null, null, true).asList().size());
+//		assertEquals(5, _con.getStatements(null, null, null, true, valueFactory.createURI(baseURI)).asList().size());
+//		assertEquals(1, _con.getContextIDs().asList().size());
+//		repositoryResult = _con.getStatements(null, null, null, true);
+//		
+//		_con.export( new N3Writer(System.out), valueFactory.createURI(baseURI));
+//
+//	}
 	
 	
 	@Test
 	public void test2Association() throws Exception {
 		is = accessor.convertStringToInputStream("2Association.n3");
 		_con.add(is, baseIRI, RDFFormat.N3, valueFactory.createURI(baseURI));
+		TopicMap tm = _tms.getTopicMap(baseURI);
+		assertEquals(1, tm.getAssociations().size());
+		
+		System.out.println(tm.getTopics());
 		
 		
-		assertEquals(2, _con.getStatements(null, null, null, true).asList().size());
-		assertEquals(2, _con.getStatements(null, null, null, true, valueFactory.createURI(baseURI)).asList().size());
+		assertEquals(4, tm.getTopics().size());
+
 		
+//		
+//		assertEquals(2, _con.getStatements(null, null, null, true).asList().size());
+//		assertEquals(2, _con.getStatements(null, null, null, true, valueFactory.createURI(baseURI)).asList().size());
+//		
 		assertEquals(1, _con.getContextIDs().asList().size());
 		repositoryResult = _con.getStatements(null, null, null, true);
 		
