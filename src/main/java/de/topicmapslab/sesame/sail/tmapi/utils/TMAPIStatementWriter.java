@@ -12,6 +12,7 @@ import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.LiteralImpl;
+import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.tmapi.core.Association;
 import org.tmapi.core.Locator;
@@ -41,7 +42,8 @@ public class TMAPIStatementWriter {
 		this.tm = tm;
 		this.subject = createTopic(tm.createLocator(subject.stringValue()));
 		this.subjectValue = subject.stringValue();
-		this.predicate = createTopic(tm.createLocator(predicate.stringValue()));
+		if (!predicate.stringValue().equals(RDF.TYPE.stringValue()))
+			this.predicate = createTopic(tm.createLocator(predicate.stringValue()));
 		this.object = object;
 		index = tm.getIndex(LiteralIndex.class);
 		if (!index.isOpen())
@@ -54,10 +56,17 @@ public class TMAPIStatementWriter {
 		if (subjectIsNew){
 			associateOccurences(index.getOccurrences(tm.createLocator(subjectValue)));
 		}
-		createAsCharacteristic();
+		if (this.predicate != null) 
+			createAsCharacteristic();
+		else
+			createAsTypeInstance();
 	}
 	
 	
+	private void createAsTypeInstance() {
+		subject.addType(createTopic(tm.createLocator(object.stringValue())));		
+	}
+
 	private void associateOccurences(Collection<Occurrence> occurences) {
 		Iterator<Occurrence> it = occurences.iterator();
 		Occurrence o;

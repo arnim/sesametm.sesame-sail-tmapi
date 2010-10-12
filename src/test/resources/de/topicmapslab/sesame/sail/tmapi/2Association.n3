@@ -3,4 +3,6 @@
 
 <http://www.ex.org/xyz#Topic1> ex:Predicate1  <http://www.ex.org/xyz#Object1> . 
 ex:Object1 ex:Predicate2 ex:Objec2  . 
+ex:ObjectNotKnown ex:PredicateNotKnown ex:ObjecNotKnown  . 
+
 
