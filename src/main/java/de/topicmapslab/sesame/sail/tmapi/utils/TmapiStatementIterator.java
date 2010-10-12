@@ -198,7 +198,10 @@ public class TmapiStatementIterator<X extends Exception> extends
 				if ( subjectRole.getParent().equals(objectRole.getParent())
 						&& !subjectRole.getType().equals(objectRole.getType())
 						
-						&&  !isTypeOrInstanceRoleType(objectRole.getType())) {
+						&&  !isTypeOrInstanceRoleType(objectRole.getType())
+						&& !subjectRole.getType().getSubjectIdentifiers().contains(tm.createLocator(TMAPIStatementWriter.subjectRoleTypeString))
+						
+				) {
 										
 					statements.add(statementFactory.create(subj, objectRole
 							.getType(), objectRole.getPlayer()));
@@ -231,7 +234,11 @@ public class TmapiStatementIterator<X extends Exception> extends
 
 				if (!subjectRole.getType().equals(objectRole.getType())
 						
-						&&  !isTypeOrInstanceRoleType(objectRole.getType())) {
+						&&  !isTypeOrInstanceRoleType(objectRole.getType())
+						&& !objectRole.getType().getSubjectIdentifiers().contains(tm.createLocator(TMAPIStatementWriter.subjectRoleTypeString))
+		
+				) {
+					
 										
 					statements.add(statementFactory.create(subj, objectRole
 							.getType(), objectRole.getPlayer()));

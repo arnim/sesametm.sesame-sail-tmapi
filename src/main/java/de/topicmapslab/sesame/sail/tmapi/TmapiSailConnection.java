@@ -11,11 +11,8 @@ import info.aduna.iteration.CloseableIteratorIteration;
 import info.aduna.iteration.LockingIteration;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Set;
 
 import org.openrdf.model.Namespace;
 import org.openrdf.model.Resource;
@@ -130,9 +127,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void closeInternal() throws SailException {
-
-		System.err.println(4);
-
+		// Always open
 	}
 
 	/*

@@ -33,7 +33,7 @@ public class TMAPIStatementWriter {
 	private LiteralIndex index;
 	private boolean subjectIsNew = false;
 	private String subjectValue;
-	public final String subjectRoleTypeString = "http://www.tmapi.org/2.0/api#SubjectRoleType";
+	public final static String subjectRoleTypeString = "http://www.tmapi.org/2.0/api#SubjectRoleType";
 	private Topic subjectRoleType;
 	
 
@@ -51,17 +51,9 @@ public class TMAPIStatementWriter {
 	}
 	
 	public void write(){	
-		
 		if (subjectIsNew){
-			Collection<Occurrence> occurences = index.getOccurrences(tm.createLocator(subjectValue));
-			if (!occurences.isEmpty()) {
-				associateOccurences(occurences);
-			}
+			associateOccurences(index.getOccurrences(tm.createLocator(subjectValue)));
 		}
-		
-		
-		
-
 		createAsCharacteristic();
 	}
 	
@@ -76,7 +68,6 @@ public class TMAPIStatementWriter {
 			a.createRole(subjectRoleType, o.getParent());
 			a.createRole(o.getType(), createTopic(tm.createLocator(o.getValue())));
 			o.remove();
-			
 		}
 	}
 
@@ -105,11 +96,13 @@ public class TMAPIStatementWriter {
 			return t;
 		try {
 			t = (Topic) tm.getConstructByItemIdentifier(l);
+			if (t != null)
+				return t;
 		} catch (ClassCastException e) {
 			// Found Construct is not a Topic
 		}
 		this.subjectIsNew  = true;
-		return tm.createTopicByItemIdentifier(l);
+		return tm.createTopicBySubjectIdentifier(l);
 	}
 
 }
