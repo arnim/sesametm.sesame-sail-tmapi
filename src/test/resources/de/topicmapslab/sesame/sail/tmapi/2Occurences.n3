@@ -1,0 +1,12 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> . 
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> . 
+ 
+
+<http://purl.org/dc/elements/1.1/Topic1> <http://purl.org/dc/elements/1.1/predicate1>  "Primer - Getting into the Semantic Web and RDF using N3"^^<http://www.w3.org/2001/XMLSchema#string> . 
+<http://purl.org/dc/elements/1.1/Topic11> <http://purl.org/dc/elements/1.1/predicate11>  "Primer - Getting into the Semantic Web and RDF using N31"^^xsd:string . 
+
+<http://purl.org/dc/elements/1.1/Topic2> <http://purl.org/dc/elements/1.1/predicate2>  <http://purl.org/dc/elements/1.1/object2> . 
+<http://purl.org/dc/elements/1.1/Topic3> <http://purl.org/dc/elements/1.1/predicate3>  "Text 3" . 
+
+rdf:TopicNS <http://purl.org/dc/elements/1.1/predicateNS>  "Text 3" . 
+
