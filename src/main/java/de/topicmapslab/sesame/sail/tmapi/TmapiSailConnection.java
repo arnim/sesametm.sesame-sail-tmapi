@@ -142,8 +142,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void commitInternal() throws SailException {
-		System.err.println(5);
-
+		// No bulk operations
 	}
 
 	/*
@@ -271,8 +270,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void rollbackInternal() throws SailException {
-		System.err.println("rollbackInternal");
-
+		// No bulk operations
 	}
 
 	/*
@@ -310,7 +308,7 @@ public class TmapiSailConnection extends SailConnectionBase {
 	 */
 	@Override
 	protected void startTransactionInternal() throws SailException {
-		System.err.println(9);
+		// No bulk operations
 	}
 	
 	
