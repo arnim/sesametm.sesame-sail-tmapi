@@ -167,35 +167,36 @@ public class TMConnector {
 			try {
 				gq = (GraphQuery) q;
 			} catch (Exception e) {
-				throw new ResultFormatException(demandType + " is not allowed in CONSTRUCT", e);
+				throw new RuntimeException(e);
 			}
 			if (demandType.equals("n3"))
 				gq.evaluate(new N3Writer(out));
-			if (demandType.equals("xml"))
+			else if (demandType.equals("xml"))
 				gq.evaluate(new RDFXMLWriter(out));
-			if (demandType.equals("html"))
+			else if (demandType.equals("html"))
 				gq.evaluate(new N3Writer(out));
-
+			else
+				throw new ResultFormatException(demandType + " is not allowed in CONSTRUCT");
 			
-		} else if (q.getClass() == SailGraphQuery.class) {
+		} else {
 			// No N3
 			TupleQuery tq = null;
 			try {
 				tq = (TupleQuery) q;
 			} catch (Exception e) {
-				throw new ResultFormatException(demandType + " is not allowed in SELECT", e);
+				throw new RuntimeException(e);
 			}
 			if (demandType.equals("csv"))
 				tq.evaluate(new SPARQLResultsCSVWriter(out));
-			if (demandType.equals("json")) 
+			else if (demandType.equals("json")) 
 				tq.evaluate(new SPARQLResultsJSONWriter(out));
-			if (demandType.equals("xml"))
+			else if (demandType.equals("xml"))
 				tq.evaluate(new SPARQLResultsXMLWriter(out));
-			if (demandType.equals("html"))
+			else if (demandType.equals("html"))
 				tq.evaluate(new HtmlTableResultWriter(out));
+			else throw new ResultFormatException(demandType + " is not allowed in SELECT");
 			
-		} else
-			throw new ResultFormatException(demandType + " is not allowed Recognized");
+		} 
 	}
 
 }
