@@ -17,7 +17,6 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.n3.N3Writer;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
 import org.tmapi.core.TopicMapSystemFactory;
@@ -69,7 +68,6 @@ public class CRUDTest extends TestCase {
 	@Test
 	public void test2Occurences() throws Exception {
 		is = accessor.convertStringToInputStream("2Occurences.n3");
-		
 		_con.add(is, baseIRI, RDFFormat.N3, valueFactory.createURI(baseURI));
 		assertEquals(5, _con.getStatements(null, null, null, true).asList().size());
 		assertEquals(5, _con.getStatements(null, null, null, true, valueFactory.createURI(baseURI)).asList().size());
