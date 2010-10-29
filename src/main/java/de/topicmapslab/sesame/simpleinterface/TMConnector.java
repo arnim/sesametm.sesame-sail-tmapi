@@ -15,7 +15,9 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.query.GraphQuery;
+import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.Query;
+import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
 import org.openrdf.query.TupleQueryResultHandlerException;
@@ -24,11 +26,13 @@ import org.openrdf.query.resultio.sparqljson.SPARQLResultsJSONWriter;
 import org.openrdf.query.resultio.sparqlxml.SPARQLResultsXMLWriter;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryResult;
+import org.openrdf.repository.sail.SailGraphQuery;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.repository.sail.SailRepositoryConnection;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.n3.N3Writer;
+import org.openrdf.rio.rdfxml.RDFXMLWriter;
 import org.openrdf.rio.rdfxml.util.RDFXMLPrettyWriter;
 import org.openrdf.sail.SailException;
 import org.tmapi.core.Locator;
@@ -140,88 +144,58 @@ public class TMConnector {
 	}
 
 	public void executeSPARQL(String baseIRI, String query,
-			OutputStream out) {
+			OutputStream out) throws MalformedQueryException, RepositoryException, QueryEvaluationException, RDFHandlerException, TupleQueryResultHandlerException {
 		 executeSPARQL(baseIRI, query, "xml", out);
 	}
 
 	public void executeSPARQL(String baseIRI, String query,
-			String demandType, OutputStream out) {
+			String demandType, OutputStream out) throws MalformedQueryException, RepositoryException, QueryEvaluationException, RDFHandlerException, TupleQueryResultHandlerException {
 		demandType = demandType.toLowerCase();
-		SimpleSparqlResult result = new SimpleSparqlResult();
-		Query q = null;
-
-		try {
-			q = con.prepareQuery(QueryLanguage.SPARQL, query);
-
-			// assert asure that only the graph baseIRI can be queried
+		Query q = con.prepareQuery(QueryLanguage.SPARQL, query);
+		
+		if (baseIRI != null) {
+			// assure that only the graph baseIRI can be queried
 			DatasetImpl dataSet = new DatasetImpl();
 			dataSet.addDefaultGraph(con.getValueFactory().createURI(baseIRI));
 			q.setDataset(dataSet);
-
-			try {
-
-				if (demandType.equals("xml")) {
-					try {
-						((TupleQuery) q).evaluate(new SPARQLResultsXMLWriter(
-								out));
-					} catch (ClassCastException e) {
-						((GraphQuery) q)
-								.evaluate(new RDFXMLPrettyWriter(out));
-					}
-				} else if (demandType.equals("html")) {
-					HtmlQueryResult htmlResult = new HtmlQueryResult();
-					try {
-						((TupleQuery) q).evaluate(htmlResult);
-						result.setResult(htmlResult.toString());
-					} catch (ClassCastException e) {
-						((GraphQuery) q).evaluate(new N3Writer(out));
-						result.setResult("<pre>"
-								+ out.toString().replaceAll("&", "&amp;")
-										.replaceAll("\"", "&quot;")
-										.replaceAll("<", "&lt;")
-										.replaceAll(">", "&gt;") + "</pre>");
-					}
-				} else if (demandType.equals("json")) {
-					try {
-						((TupleQuery) q).evaluate(new SPARQLResultsJSONWriter(
-								out));
-					} catch (ClassCastException e) {
-						result.setError(formatMissmatchErrorMessage(demandType,
-								"SELECT"));
-					}
-				} else if (demandType.equals("csv")) {
-					try {
-						((TupleQuery) q).evaluate(new SPARQLResultsCSVWriter(
-								out));
-					} catch (ClassCastException e) {
-						result.setError(formatMissmatchErrorMessage(demandType,
-								"SELECT"));
-					}
-				} else if (demandType.equals("n3")) {
-					try {
-						((GraphQuery) q).evaluate(new N3Writer(out));
-					} catch (ClassCastException e) {
-						result.setError(formatMissmatchErrorMessage(demandType,
-								"CONSTRUCT"));
-					}
-				}
-
-				if (result.getResult() == null)
-					result.setResult(out.toString());
-
-			} catch (TupleQueryResultHandlerException e) {
-				result.setError(e.getMessage());
-			}
-
-		} catch (Exception e) {
-			// MalformedQuery
-			result.setError(e.getMessage());
 		}
-	}
+		
+		
+		if (q.getClass() == SailGraphQuery.class) {
+			// No CSV and JSON
+			GraphQuery gq = null;
+			try {
+				gq = (GraphQuery) q;
+			} catch (Exception e) {
+				throw new ResultFormatException(demandType + " is not allowed in CONSTRUCT", e);
+			}
+			if (demandType.equals("n3"))
+				gq.evaluate(new N3Writer(out));
+			if (demandType.equals("xml"))
+				gq.evaluate(new RDFXMLWriter(out));
+			if (demandType.equals("html"))
+				gq.evaluate(new N3Writer(out));
 
-	private String formatMissmatchErrorMessage(String format, String style) {
-		return "The result format " + format.toUpperCase()
-				+ " is only available for " + style.toUpperCase() + " Queries";
+			
+		} else if (q.getClass() == SailGraphQuery.class) {
+			// No N3
+			TupleQuery tq = null;
+			try {
+				tq = (TupleQuery) q;
+			} catch (Exception e) {
+				throw new ResultFormatException(demandType + " is not allowed in SELECT", e);
+			}
+			if (demandType.equals("csv"))
+				tq.evaluate(new SPARQLResultsCSVWriter(out));
+			if (demandType.equals("json")) 
+				tq.evaluate(new SPARQLResultsJSONWriter(out));
+			if (demandType.equals("xml"))
+				tq.evaluate(new SPARQLResultsXMLWriter(out));
+			if (demandType.equals("html"))
+				tq.evaluate(new HtmlTableResultWriter(out));
+			
+		} else
+			throw new ResultFormatException(demandType + " is not allowed Recognized");
 	}
 
 }
