@@ -4,6 +4,10 @@
  */
 package de.topicmapslab.sesame.simpleinterface;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,59 +16,69 @@ import org.openrdf.query.BindingSet;
 import org.openrdf.query.TupleQueryResultHandler;
 import org.openrdf.query.TupleQueryResultHandlerException;
 
-public class HtmlQueryResult implements TupleQueryResultHandler {
+public class HtmlTableResultWriter implements TupleQueryResultHandler {
 
 	
-	StringBuilder resultHTML = new StringBuilder();
+//	StringBuilder resultHTML = new StringBuilder();
 	private final String NEWLINE =  System.getProperty("line.separator");
 	private final String TAB = "  ";
 	List<String> vars = new ArrayList<String>();
+	private Writer out;
 
 
+
+	public HtmlTableResultWriter(OutputStream out) {
+		this.out = new OutputStreamWriter(out);
+	}
 
 	public void endQueryResult() throws TupleQueryResultHandlerException {
-		resultHTML.append("</table>");
+		try {
+			out.write("</table>");
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public void handleSolution(BindingSet list)
 			throws TupleQueryResultHandlerException {
-		resultHTML.append(TAB + "<tr>"+ NEWLINE);
+		try {
+			out.write(TAB + "<tr>"+ NEWLINE);
 		Iterator<String> varsIterator = vars.iterator();
 		while (varsIterator.hasNext()) {
 			String string = varsIterator.next();
 			try {
-				resultHTML.append(TAB + TAB + "<td>" + list.getBinding(string).getValue().stringValue() + "</td>"+ NEWLINE);			
+				out.write(TAB + TAB + "<td>" + list.getBinding(string).getValue().stringValue() + "</td>"+ NEWLINE);			
 			} catch (NullPointerException e) {
 				throw new TupleQueryResultHandlerException("Binding for variable \"?" + string + "\" not found.", e.getCause());
 			}
 		}
 
-		resultHTML.append(TAB + "</tr>" + NEWLINE);
+		out.write(TAB + "</tr>" + NEWLINE);
+		} catch (IOException e1) {
+			throw new RuntimeException(e1);
+		}
 	}
 
 	public void startQueryResult(List<String> list)
 			throws TupleQueryResultHandlerException {
-		resultHTML.append("<table class=\"sparql\" border=\"1\">" + NEWLINE);
-		resultHTML.append(TAB + "<tr>" + NEWLINE);
+		try {
+		out.write("<table class=\"sparql\" border=\"1\">" + NEWLINE);
+		out.write(TAB + "<tr>" + NEWLINE);
 		
 		Iterator<String> listIterator = list.iterator();
 		while (listIterator.hasNext()) {
 			String ne = listIterator.next();
 			vars.add(ne);
-			resultHTML.append(TAB + TAB + "<th>" + ne + "</th>" + NEWLINE);
+			out.write(TAB + TAB + "<th>" + ne + "</th>" + NEWLINE);
 			
 		}
 		
-		resultHTML.append(TAB + "</tr>" + NEWLINE);
+		out.write(TAB + "</tr>" + NEWLINE);
+		} catch (IOException e1) {
+			throw new RuntimeException(e1);
+		}
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return resultHTML.toString();
-	}
 
 }
