@@ -5,10 +5,14 @@
 
 package de.topicmapslab.sesame.simpleinterface;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.tmapi.core.Association;
 import org.tmapi.core.Topic;
@@ -19,10 +23,29 @@ import org.tmapi.core.TopicMapSystemFactory;
 import de.topicmapslab.sesame.simpleinterface.SimpleSparqlResult;
 
 public class TMConnectorTest {
+	
+	
+	
+	private class StringOutputStream extends OutputStream {
+		private StringBuilder string = new StringBuilder();
+
+		@Override
+		public void write(int b) throws IOException {
+			this.string.append((char) b);
+		}
+
+		@Override
+		public String toString() {
+			return this.string.toString();
+		}
+	};
+	
 
 	private TMConnector _sesameConnector;
 	private TopicMap _tm;
 	private Topic _mary;
+	OutputStream _out; 
+
 
 	@Before
 	public void setUp() throws Exception {
@@ -41,50 +64,57 @@ public class TMConnectorTest {
 		love.createRole(_tm.createTopicByItemIdentifier(_tm
 				.createLocator("http://www.example.com/tm#Beloved")), _mary);
 		_sesameConnector = new TMConnector(testTMS);
+		_out = new StringOutputStream();
 	}
 
 	@Test
 	public void testGetRDFXML() throws Exception {
 
-		String result = _sesameConnector.getRDFXML(_tm.createLocator("http://www.example.com/tm"),
-				_tm.createLocator("http://www.example.com/tm#John"));
-		assertEquals(482, result.length());
+		_sesameConnector.getRDFXML(_tm.createLocator("http://www.example.com/tm"),
+				_tm.createLocator("http://www.example.com/tm#John"), _out);
+		assertEquals(482, _out.toString().length());
 
 	}
 
 	@Test
 	public void testGetRDFN3() throws Exception {
 
-		String result = _sesameConnector.getRDFN3(_tm.createLocator("http://www.example.com/tm"),
-				_tm.createLocator("http://www.example.com/tm#John"));
+		_sesameConnector.getRDFN3(_tm.createLocator("http://www.example.com/tm"),
+				_tm.createLocator("http://www.example.com/tm#John"), _out);
 
-		assertEquals(208, result.length());
+		assertEquals(208, _out.toString().length());
 
-		result = _sesameConnector.getRDFN3(_tm.createLocator("http://www.example.com/tm"),
-				_tm.createLocator("http://www.example.com/tm#Beloved"));
-		assertEquals(105, result.length());
+		 _sesameConnector.getRDFN3(_tm.createLocator("http://www.example.com/tm"),
+				_tm.createLocator("http://www.example.com/tm#Beloved"), _out);
+		assertEquals(105, _out.toString().length());
 
 	}
 
 	@Test
 	public void testSparqlXML() throws Exception {
+
+		
 		String queryString = "SELECT * WHERE  { ?s ?p ?o }";
-		SimpleSparqlResult result = _sesameConnector.executeSPARQL(
-				"http://www.example.com/tm", queryString);
-				assertTrue(result.getResult().contains("<uri>http"));
-		assertTrue(result.getResult().length() > 500);
-		assertTrue(result.getError() == null);
+		_sesameConnector.executeSPARQL(
+				"http://www.example.com/tm", queryString, _out);
+		String result = _out.toString();
+
+				assertTrue(_out.toString().contains("<uri>http"));
+		assertTrue(result.length() > 500);
+		assertTrue(result == null);
 	}
 
 	@Test
 	public void testSparqlN3() throws Exception {
 
+
 		String queryString = "CONSTRUCT {?s ?p ?o . } WHERE  { ?s ?p ?o }";
-		SimpleSparqlResult result = _sesameConnector.executeSPARQL(
-				"http://www.example.com/tm", queryString);
-		assertTrue(result.getResult().contains("<rdf:Description rdf:about="));
-		assertTrue(result.getResult().length() > 100);
-		assertTrue(result.getError() == null);
+		_sesameConnector.executeSPARQL(
+				"http://www.example.com/tm", queryString, _out);
+		String result = _out.toString();
+		assertTrue(result.contains("<rdf:Description rdf:about="));
+		assertTrue(result.length() > 100);
+		assertTrue(result == null);
 
 	}
 
@@ -92,53 +122,58 @@ public class TMConnectorTest {
 	public void testSparqlN3HTML() throws Exception {
 
 		String queryString = "CONSTRUCT {?s ?p ?o . } WHERE  { ?s ?p ?o }";
-		SimpleSparqlResult result = _sesameConnector.executeSPARQL(
-				"http://www.example.com/tm", queryString, "html");
-		assertTrue(result.getResult().length() > 100);
-		assertTrue(result.getError() == null);
-		assertTrue(result.getResult().contains("<pre>"));
-		assertTrue(result.getResult().contains("&lt;http:"));
+		_sesameConnector.executeSPARQL(
+				"http://www.example.com/tm", queryString, "html", _out);
+		String result = _out.toString();
+		assertTrue(result.length() > 100);
+		assertTrue(result.contains("<pre>"));
+		assertTrue(result.contains("&lt;http:"));
 	}
 
 	@Test
 	public void testSparqlFALTY() throws Exception {
-		String queryString = "CONSTRUCT {?s ?p ?o  WHERE  { ?s ?p ?o }";
-		SimpleSparqlResult result = _sesameConnector.executeSPARQL(
-				"http://www.example.com/tm", queryString);
-		assertTrue(result.getError() != null);
-		assertTrue(result.getResult() == null);
+		try {
+			String queryString = "CONSTRUCT {?s ?p ?o  WHERE  { ?s ?p ?o }";
+			_sesameConnector.executeSPARQL(
+					"http://www.example.com/tm", queryString, _out);
+			fail("Syntax Error not raised!");
+		} catch (Exception e) {
+		}
+		
 	}
 
 	@Test
 	public void testSparqlIsLive() throws Exception {
 		_mary.createName("nachträglich");
 		String queryString = "SELECT ?s ?p ?o WHERE  { ?s ?p ?o }";
-		SimpleSparqlResult result = _sesameConnector.executeSPARQL(
-				"http://www.example.com/tm", queryString, "html");		
-		assertTrue(result.getResult().length() > 500);
-		assertTrue(result.getResult().contains("nachträglich"));
-		assertTrue(result.getResult().contains("<td>http"));
-		assertTrue(result.getError() == null);
+		_sesameConnector.executeSPARQL(
+				"http://www.example.com/tm", queryString, "html", _out);	
+		String result = _out.toString();
+		assertTrue(result.length() > 500);
+		assertTrue(result.contains("nachträglich"));
+		assertTrue(result.contains("<td>http"));
 	}
 
 	@Test
 	public void testSparqlNonMatchingVar() throws Exception {
 		String queryString = "SELECT ?wo ?name WHERE  { ?s ?p ?o }";
-		SimpleSparqlResult result = _sesameConnector.executeSPARQL(
-				"http://www.example.com/tm", queryString, "html");
-		assertTrue(result.getError() != null);
-		assertTrue(result.getResult() == null);
-		assertTrue(result.getError().getMessage().contains("\"?wo\""));
+		try {
+			_sesameConnector.executeSPARQL(
+					"http://www.example.com/tm", queryString, "html", _out);
+			fail("Unbound variables ?wo ?name");
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 	}
 	
 	@Test
 	public void testSparqlNonMatchingVarXML() throws Exception {
 		String queryString = "SELECT ?wo ?name WHERE  { ?s ?p ?o }";
-		SimpleSparqlResult result = _sesameConnector.executeSPARQL(
-				"http://www.example.com/tm", queryString, "xml");
-		assertTrue(result.getError() == null);
-		assertTrue(result.getResult() != null);
-		assertTrue(result.getResult().contains("wo"));
+		_sesameConnector.executeSPARQL(
+				"http://www.example.com/tm", queryString, "xml", _out);
+
+		assertTrue(_out.toString().contains("wo"));
 	}
 
 	@Test
@@ -146,19 +181,15 @@ public class TMConnectorTest {
 
 		Topic prob2 = _tm.createTopicBySubjectIdentifier(_tm
 				.createLocator("http://en.wikipedia.org/wiki/Saxony"));
-		prob2
-				.addType(_tm
+		prob2.addType(_tm
 						.createTopicBySubjectIdentifier(_tm
 								.createLocator("http://en.wikipedia.org/wiki/State_(administrative_division)")));
 
 		String queryString = "CONSTRUCT {<http://en.wikipedia.org/wiki/Saxony> a <http://en.wikipedia.org/wiki/State_(administrative_division)>} "
 				+ " WHERE  { <http://en.wikipedia.org/wiki/Saxony> a <http://en.wikipedia.org/wiki/State_(administrative_division)> }";
-		SimpleSparqlResult result = _sesameConnector.executeSPARQL(
-				"http://www.example.com/tm", queryString);
-		assertTrue(result.getError() == null);
-		assertTrue(result
-				.getResult()
-				.contains(
+		_sesameConnector.executeSPARQL(
+				"http://www.example.com/tm", queryString, _out);
+		assertTrue(_out.toString().contains(
 						"State_(administrative_division)"));
 
 	}
@@ -168,10 +199,9 @@ public class TMConnectorTest {
 		String queryString = ""
 				+ "CONSTRUCT {?s  <http://www.w3.org/2000/01/rdf-schema#seeAlso>  ?o } "
 				+ "WHERE {?s  <http://www.w3.org/2000/01/rdf-schema#seeAlso>  ?o }";
-		SimpleSparqlResult result = _sesameConnector.executeSPARQL(
-				"http://www.example.com/tm", queryString);
-		assertTrue(result.getError() == null);
-		assertTrue(result.getResult().length() > 100);
+		_sesameConnector.executeSPARQL(
+				"http://www.example.com/tm", queryString, _out);
+		assertTrue(_out.toString().length() > 100);
 	}
 	
 	
@@ -180,10 +210,9 @@ public class TMConnectorTest {
 		String queryString = ""
 				+ "CONSTRUCT {?s  <http://www.w3.org/2000/01/rdf-schema#seeAlso>  ?M } "
 				+ "WHERE {?s  <http://www.w3.org/2000/01/rdf-schema#seeAlso>  ?o }";
-		SimpleSparqlResult result = _sesameConnector.executeSPARQL(
-				"http://www.example.com/tm", queryString);		
-		assertTrue(result.getError() == null);
-		assertTrue(result.getResult().length() < 200);
+		_sesameConnector.executeSPARQL(
+				"http://www.example.com/tm", queryString, _out);		
+		assertTrue(_out.toString().length() < 200);
 	}
 	
 	
@@ -192,54 +221,49 @@ public class TMConnectorTest {
 	@Test
 	public void testSparqlJSONSelect() throws Exception {
 		String queryString = "SELECT ?s ?p ?o WHERE  { ?s ?p ?o }";
-		SimpleSparqlResult result = _sesameConnector.executeSPARQL(
-				"http://www.example.com/tm", queryString, "json");
-		assertTrue(result.getResult().length() > 500);
-		assertTrue(result.getError() == null);
+		_sesameConnector.executeSPARQL(
+				"http://www.example.com/tm", queryString, "json", _out);
+		assertTrue(_out.toString().length() > 500);
 	}
 	
-	// Wrong
-	@Test
-	public void testSparqlN3Select() throws Exception {
-		String queryString = "SELECT ?s ?p ?o WHERE  { ?s ?p ?o }";
-		SimpleSparqlResult result = _sesameConnector.executeSPARQL(
-				"http://www.example.com/tm", queryString, "n3");
-		assertTrue(result.getResult().length() == 0);
-//		System.out.println(result.getError());
-//		assertTrue(result.getError() != null);
-	}
+
 	
 	
 	@Test
 	public void testSparqlJSONConstruct() throws Exception {
 		String queryString = "CONSTRUCT { ?s ?p ?o } WHERE  { ?s ?p ?o }";
-		SimpleSparqlResult result = _sesameConnector.executeSPARQL(
-				"http://www.example.com/tm", queryString, "json");
-		assertTrue(result.getResult().length() == 0);
-		assertTrue(result.getError() != null);
-		assertTrue(result.getError().getMessage().contains("e result format JSON is only availab"));
+		
+		try {
+			_sesameConnector.executeSPARQL(
+					"http://www.example.com/tm", queryString, "json", _out);
+			fail("It schould not be possible to CONSTRUCT JSON");
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 	}
 	
 	@Test
 	public void testSparqlCSVConstruct() throws Exception {
 		String queryString = "CONSTRUCT { ?s ?p ?o } WHERE  { ?s ?p ?o }";
-		SimpleSparqlResult result = _sesameConnector.executeSPARQL(
-				"http://www.example.com/tm", queryString, "csv");
-		assertTrue(result.getResult().length() == 0);
-		assertTrue(result.getError() != null);
-		assertEquals(400, result.getError().getCode());
+		
+		try {
+			_sesameConnector.executeSPARQL(
+					"http://www.example.com/tm", queryString, "csv", _out);
+			fail("It schould not be possible to CONSTRUCT CSV");
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 
-		assertTrue(result.getError().getMessage().contains("ormat CSV is only available for SELEC"));
 	}
 	
 	
 	@Test
 	public void testSparql2CSV() throws Exception {
 		String queryString = "SELECT * WHERE  { ?instance ?p ?type }";
-		SimpleSparqlResult result = _sesameConnector.executeSPARQL(
-				"http://www.example.com/tm", queryString, "csv");
-		assertTrue(result.getError() == null);
-		assertTrue(result.getResult().contains("oved\";\"http://"));
+		_sesameConnector.executeSPARQL(
+				"http://www.example.com/tm", queryString, "csv", _out);
+		assertTrue(_out.toString().contains("oved\";\"http://"));
 	}
 
 }
