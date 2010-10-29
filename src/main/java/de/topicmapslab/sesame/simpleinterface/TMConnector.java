@@ -36,13 +36,21 @@ import org.tmapi.core.TopicMapSystem;
 
 import de.topicmapslab.sesame.sail.tmapi.TmapiStore;
 
-public class SesameConnector {
+public class TMConnector {
+
+
+
+	/**
+	 * @author Arnim Bleier
+	 *
+	 */
+
 
 	private TopicMapSystem tms;
 	private SailRepositoryConnection con;
 	private ValueFactory valueFactory;
 
-	public SesameConnector(TopicMapSystem tms) throws SailException,
+	public TMConnector(TopicMapSystem tms) throws SailException,
 			RepositoryException {
 		this.tms = tms;
 		TmapiStore sail = new TmapiStore(this.tms);
