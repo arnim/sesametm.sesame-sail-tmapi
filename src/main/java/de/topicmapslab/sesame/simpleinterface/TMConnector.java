@@ -32,6 +32,7 @@ import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.n3.N3Writer;
 import org.openrdf.rio.rdfxml.util.RDFXMLPrettyWriter;
 import org.openrdf.sail.SailException;
+import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMapSystem;
 
 import de.topicmapslab.sesame.sail.tmapi.TmapiStore;
@@ -60,7 +61,8 @@ public class TMConnector {
 		valueFactory = con.getValueFactory();
 	}
 
-	private class MyOutputStream extends OutputStream {
+	
+	private class StringOutputStream extends OutputStream {
 		private StringBuilder string = new StringBuilder();
 
 		@Override
@@ -131,9 +133,11 @@ public class TMConnector {
 
 	}
 
-	public String getRDFN3(String baseIRI, String resource)
+	public String getRDFN3(Locator tmBaseIRI, Locator reference)
 			throws RepositoryException, RDFHandlerException {
-		MyOutputStream out = new MyOutputStream();
+		String baseIRI = tmBaseIRI.toExternalForm();
+		String resource = reference.toExternalForm();
+		StringOutputStream out = new StringOutputStream();
 		RDFWriter rdfWriter = new N3Writer(out);
 
 		HashSet<Statement> resultSet = new HashSet<Statement>();
@@ -147,9 +151,11 @@ public class TMConnector {
 		return out.toString();
 	}
 
-	public String getRDFXML(String baseIRI, String resource)
+	public String getRDFXML(Locator tmBaseIRI, Locator reference)
 			throws RepositoryException, RDFHandlerException {
-		MyOutputStream out = new MyOutputStream();
+		String baseIRI = tmBaseIRI.toExternalForm();
+		String resource = reference.toExternalForm();
+		StringOutputStream out = new StringOutputStream();
 		RDFWriter rdfWriter = new RDFXMLPrettyWriter(out);
 
 		HashSet<Statement> resultSet = new HashSet<Statement>();
@@ -172,7 +178,7 @@ public class TMConnector {
 			String demandType) {
 		demandType = demandType.toLowerCase();
 		SimpleSparqlResult result = new SimpleSparqlResult();
-		OutputStream output = new MyOutputStream();
+		OutputStream output = new StringOutputStream();
 		Query q = null;
 
 		try {
