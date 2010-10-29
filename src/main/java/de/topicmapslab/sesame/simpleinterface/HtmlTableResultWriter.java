@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -28,12 +29,13 @@ public class HtmlTableResultWriter implements TupleQueryResultHandler {
 
 
 	public HtmlTableResultWriter(OutputStream out) {
-		this.out = new OutputStreamWriter(out);
+		this.out = new OutputStreamWriter(out, Charset.defaultCharset());
 	}
 
 	public void endQueryResult() throws TupleQueryResultHandlerException {
 		try {
 			out.write("</table>");
+			out.flush();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -47,6 +49,11 @@ public class HtmlTableResultWriter implements TupleQueryResultHandler {
 		while (varsIterator.hasNext()) {
 			String string = varsIterator.next();
 			try {
+
+				System.err.println(list.getBinding(string).getValue().stringValue());
+
+
+
 				out.write(TAB + TAB + "<td>" + list.getBinding(string).getValue().stringValue() + "</td>"+ NEWLINE);			
 			} catch (NullPointerException e) {
 				throw new TupleQueryResultHandlerException("Binding for variable \"?" + string + "\" not found.", e.getCause());
