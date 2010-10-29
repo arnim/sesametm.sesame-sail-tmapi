@@ -5,7 +5,6 @@
 
 package de.topicmapslab.sesame.simpleinterface;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -39,13 +38,10 @@ import de.topicmapslab.sesame.sail.tmapi.TmapiStore;
 
 public class TMConnector {
 
-
-
 	/**
 	 * @author Arnim Bleier
-	 *
+	 * 
 	 */
-
 
 	private TopicMapSystem tms;
 	private SailRepositoryConnection con;
@@ -61,21 +57,6 @@ public class TMConnector {
 		valueFactory = con.getValueFactory();
 	}
 
-	
-	private class StringOutputStream extends OutputStream {
-		private StringBuilder string = new StringBuilder();
-
-		@Override
-		public void write(int b) throws IOException {
-			this.string.append((char) b);
-		}
-
-		@Override
-		public String toString() {
-			return this.string.toString();
-		}
-	};
-
 	private void rdfToString(String baseIRI, String resource,
 			HashSet<Statement> rdfWriter) throws RepositoryException,
 			RDFHandlerException {
@@ -89,43 +70,36 @@ public class TMConnector {
 			s = resultStatementList.next();
 			rdfWriter.add(s);
 			try {
-				result2 = con.getStatements(
-						(Resource) s.getObject(),
-						RDFS.SEEALSO, 
-						null, 
-						true, 
+				result2 = con.getStatements((Resource) s.getObject(),
+						RDFS.SEEALSO, null, true,
 						valueFactory.createURI(baseIRI));
 				while (result2.hasNext()) {
 					rdfWriter.add(result2.next());
 				}
-				
-				result2 = con.getStatements(
-						(Resource) s.getObject(),
-						RDF.TYPE, 
-						null, 
-						true, 
-						valueFactory.createURI(baseIRI));
+
+				result2 = con.getStatements((Resource) s.getObject(), RDF.TYPE,
+						null, true, valueFactory.createURI(baseIRI));
 				while (result2.hasNext()) {
 					rdfWriter.add(result2.next());
 				}
-				
-				
+
 			} catch (ClassCastException e) {
 				// The Object is not a Resource
 			}
 
 		}
 
-		resultStatementList = con.getStatements(null, null, valueFactory
-				.createURI(resource), true, valueFactory.createURI(baseIRI));
+		resultStatementList = con.getStatements(null, null,
+				valueFactory.createURI(resource), true,
+				valueFactory.createURI(baseIRI));
 
 		while (resultStatementList.hasNext()) {
 			rdfWriter.add(resultStatementList.next());
 		}
 
-		resultStatementList = con.getStatements(null, valueFactory
-				.createURI(resource), null, true, valueFactory
-				.createURI(baseIRI));
+		resultStatementList = con.getStatements(null,
+				valueFactory.createURI(resource), null, true,
+				valueFactory.createURI(baseIRI));
 
 		while (resultStatementList.hasNext()) {
 			rdfWriter.add(resultStatementList.next());
@@ -133,11 +107,10 @@ public class TMConnector {
 
 	}
 
-	public String getRDFN3(Locator tmBaseIRI, Locator reference)
-			throws RepositoryException, RDFHandlerException {
+	public void getRDFN3(Locator tmBaseIRI, Locator reference,
+			OutputStream out) throws RepositoryException, RDFHandlerException {
 		String baseIRI = tmBaseIRI.toExternalForm();
 		String resource = reference.toExternalForm();
-		StringOutputStream out = new StringOutputStream();
 		RDFWriter rdfWriter = new N3Writer(out);
 
 		HashSet<Statement> resultSet = new HashSet<Statement>();
@@ -148,14 +121,12 @@ public class TMConnector {
 			rdfWriter.handleStatement(statementIterator.next());
 		}
 		rdfWriter.endRDF();
-		return out.toString();
 	}
 
-	public String getRDFXML(Locator tmBaseIRI, Locator reference)
-			throws RepositoryException, RDFHandlerException {
+	public void getRDFXML(Locator tmBaseIRI, Locator reference,
+			OutputStream out) throws RepositoryException, RDFHandlerException {
 		String baseIRI = tmBaseIRI.toExternalForm();
 		String resource = reference.toExternalForm();
-		StringOutputStream out = new StringOutputStream();
 		RDFWriter rdfWriter = new RDFXMLPrettyWriter(out);
 
 		HashSet<Statement> resultSet = new HashSet<Statement>();
@@ -166,91 +137,91 @@ public class TMConnector {
 			rdfWriter.handleStatement(statementIterator.next());
 		}
 		rdfWriter.endRDF();
-
-		return out.toString();
 	}
 
-	public SimpleSparqlResult executeSPARQL(String baseIRI, String query) {
-		return executeSPARQL(baseIRI, query, "xml");
+	public void executeSPARQL(String baseIRI, String query,
+			OutputStream out) {
+		 executeSPARQL(baseIRI, query, "xml", out);
 	}
 
-	public SimpleSparqlResult executeSPARQL(String baseIRI, String query,
-			String demandType) {
+	public void executeSPARQL(String baseIRI, String query,
+			String demandType, OutputStream out) {
 		demandType = demandType.toLowerCase();
 		SimpleSparqlResult result = new SimpleSparqlResult();
-		OutputStream output = new StringOutputStream();
 		Query q = null;
 
 		try {
 			q = con.prepareQuery(QueryLanguage.SPARQL, query);
 
+			// assert asure that only the graph baseIRI can be queried
+			DatasetImpl dataSet = new DatasetImpl();
+			dataSet.addDefaultGraph(con.getValueFactory().createURI(baseIRI));
+			q.setDataset(dataSet);
 
-		// assert asure that only the graph baseIRI can be queried
-		DatasetImpl dataSet = new DatasetImpl();
-		dataSet.addDefaultGraph(con.getValueFactory().createURI(baseIRI));
-		q.setDataset(dataSet);
-		
-		try {
-			
+			try {
 
-		
-		if (demandType.equals("xml")) {
-			try {
-				((TupleQuery) q).evaluate(new SPARQLResultsXMLWriter(output));
-			} catch (ClassCastException e) {
-				((GraphQuery) q).evaluate(new RDFXMLPrettyWriter(output));
+				if (demandType.equals("xml")) {
+					try {
+						((TupleQuery) q).evaluate(new SPARQLResultsXMLWriter(
+								out));
+					} catch (ClassCastException e) {
+						((GraphQuery) q)
+								.evaluate(new RDFXMLPrettyWriter(out));
+					}
+				} else if (demandType.equals("html")) {
+					HtmlQueryResult htmlResult = new HtmlQueryResult();
+					try {
+						((TupleQuery) q).evaluate(htmlResult);
+						result.setResult(htmlResult.toString());
+					} catch (ClassCastException e) {
+						((GraphQuery) q).evaluate(new N3Writer(out));
+						result.setResult("<pre>"
+								+ out.toString().replaceAll("&", "&amp;")
+										.replaceAll("\"", "&quot;")
+										.replaceAll("<", "&lt;")
+										.replaceAll(">", "&gt;") + "</pre>");
+					}
+				} else if (demandType.equals("json")) {
+					try {
+						((TupleQuery) q).evaluate(new SPARQLResultsJSONWriter(
+								out));
+					} catch (ClassCastException e) {
+						result.setError(formatMissmatchErrorMessage(demandType,
+								"SELECT"));
+					}
+				} else if (demandType.equals("csv")) {
+					try {
+						((TupleQuery) q).evaluate(new SPARQLResultsCSVWriter(
+								out));
+					} catch (ClassCastException e) {
+						result.setError(formatMissmatchErrorMessage(demandType,
+								"SELECT"));
+					}
+				} else if (demandType.equals("n3")) {
+					try {
+						((GraphQuery) q).evaluate(new N3Writer(out));
+					} catch (ClassCastException e) {
+						result.setError(formatMissmatchErrorMessage(demandType,
+								"CONSTRUCT"));
+					}
+				}
+
+				if (result.getResult() == null)
+					result.setResult(out.toString());
+
+			} catch (TupleQueryResultHandlerException e) {
+				result.setError(e.getMessage());
 			}
-		} else if (demandType.equals("html")) {
-			HtmlQueryResult htmlResult = new HtmlQueryResult();
-			try {
-				((TupleQuery) q).evaluate(htmlResult);
-				result.setResult(htmlResult.toString());
-			} catch (ClassCastException e) {
-				((GraphQuery) q).evaluate(new N3Writer(output));
-				result.setResult("<pre>" + output.toString().replaceAll("&", "&amp;")
-						.replaceAll("\"", "&quot;").replaceAll("<", "&lt;")
-						.replaceAll(">", "&gt;") + "</pre>");
-			}
-		} else if (demandType.equals("json")) {
-			try {
-				((TupleQuery) q).evaluate(new SPARQLResultsJSONWriter(output));
-			} catch (ClassCastException e) {
-				result.setError(formatMissmatchErrorMessage(demandType, "SELECT"));
-			}
-		} else if (demandType.equals("csv")) {
-			try {
-				((TupleQuery) q).evaluate(new SPARQLResultsCSVWriter(output));
-			} catch (ClassCastException e) {
-				result.setError(formatMissmatchErrorMessage(demandType, "SELECT"));
-			}
-		} else if (demandType.equals("n3")) {
-			try {
-				((GraphQuery) q).evaluate(new N3Writer(output));
-			} catch (ClassCastException e) {
-				result.setError(formatMissmatchErrorMessage(demandType, "CONSTRUCT"));
-			}
-		}
-		
-		if (result.getResult() == null)
-			result.setResult(output.toString());
-		
-		} catch (TupleQueryResultHandlerException e) {
-			result.setError(e.getMessage());
-		}
-		
-		
-		
+
 		} catch (Exception e) {
 			// MalformedQuery
 			result.setError(e.getMessage());
 		}
-		return result;
-		
-		
 	}
-	
-	private String formatMissmatchErrorMessage(String format, String style){
-		return "The result format " + format.toUpperCase() + " is only available for " + style.toUpperCase() + " Queries";
+
+	private String formatMissmatchErrorMessage(String format, String style) {
+		return "The result format " + format.toUpperCase()
+				+ " is only available for " + style.toUpperCase() + " Queries";
 	}
 
 }
