@@ -135,7 +135,6 @@ public class TMConnectorTest {
 					queryString, "html", _out);
 			fail("Unbound variables ?wo ?name");
 		} catch (Exception e) {
-			// TODO: handle exception
 		}
 
 	}
@@ -202,7 +201,6 @@ public class TMConnectorTest {
 					queryString, SPARQLResultFormat.JSON, _out);
 			fail("It schould not be possible to CONSTRUCT JSON");
 		} catch (Exception e) {
-			// TODO: handle exception
 		}
 
 	}
@@ -216,7 +214,6 @@ public class TMConnectorTest {
 					queryString, SPARQLResultFormat.CSV, _out);
 			fail("It schould not be possible to CONSTRUCT CSV");
 		} catch (Exception e) {
-			// TODO: handle exception
 		}
 
 	}
