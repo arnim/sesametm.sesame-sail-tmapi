@@ -17,17 +17,14 @@ import org.openrdf.query.BindingSet;
 import org.openrdf.query.TupleQueryResultHandler;
 import org.openrdf.query.TupleQueryResultHandlerException;
 
-public class HtmlTableResultWriter implements TupleQueryResultHandler {
+public class SPARQLResultsHTMLTableWriter implements TupleQueryResultHandler {
 
-	
-	private final String NEWLINE =  System.getProperty("line.separator");
+	private final String NEWLINE = System.getProperty("line.separator");
 	private final String TAB = "  ";
 	List<String> vars = new ArrayList<String>();
 	private Writer out;
 
-
-
-	public HtmlTableResultWriter(OutputStream out) {
+	public SPARQLResultsHTMLTableWriter(OutputStream out) {
 		this.out = new OutputStreamWriter(out, Charset.defaultCharset());
 	}
 
@@ -43,18 +40,22 @@ public class HtmlTableResultWriter implements TupleQueryResultHandler {
 	public void handleSolution(BindingSet list)
 			throws TupleQueryResultHandlerException {
 		try {
-			out.write(TAB + "<tr>"+ NEWLINE);
-		Iterator<String> varsIterator = vars.iterator();
-		while (varsIterator.hasNext()) {
-			String string = varsIterator.next();
-			try {
-				out.write(TAB + TAB + "<td>" + list.getBinding(string).getValue().stringValue() + "</td>"+ NEWLINE);			
-			} catch (NullPointerException e) {
-				throw new TupleQueryResultHandlerException("Binding for variable \"?" + string + "\" not found.", e.getCause());
+			out.write(TAB + "<tr>" + NEWLINE);
+			Iterator<String> varsIterator = vars.iterator();
+			while (varsIterator.hasNext()) {
+				String string = varsIterator.next();
+				try {
+					out.write(TAB + TAB + "<td>"
+							+ list.getBinding(string).getValue().stringValue()
+							+ "</td>" + NEWLINE);
+				} catch (NullPointerException e) {
+					throw new TupleQueryResultHandlerException(
+							"Binding for variable \"?" + string
+									+ "\" not found.", e.getCause());
+				}
 			}
-		}
 
-		out.write(TAB + "</tr>" + NEWLINE);
+			out.write(TAB + "</tr>" + NEWLINE);
 		} catch (IOException e1) {
 			throw new RuntimeException(e1);
 		}
@@ -63,23 +64,21 @@ public class HtmlTableResultWriter implements TupleQueryResultHandler {
 	public void startQueryResult(List<String> list)
 			throws TupleQueryResultHandlerException {
 		try {
-		out.write("<table class=\"sparql\" border=\"1\">" + NEWLINE);
-		out.write(TAB + "<tr>" + NEWLINE);
-		
-		Iterator<String> listIterator = list.iterator();
-		while (listIterator.hasNext()) {
-			String ne = listIterator.next();
-			vars.add(ne);
-			out.write(TAB + TAB + "<th>" + ne + "</th>" + NEWLINE);
-			
-		}
-		
-		out.write(TAB + "</tr>" + NEWLINE);
+			out.write("<table class=\"sparql\" border=\"1\">" + NEWLINE);
+			out.write(TAB + "<tr>" + NEWLINE);
+
+			Iterator<String> listIterator = list.iterator();
+			while (listIterator.hasNext()) {
+				String ne = listIterator.next();
+				vars.add(ne);
+				out.write(TAB + TAB + "<th>" + ne + "</th>" + NEWLINE);
+
+			}
+
+			out.write(TAB + "</tr>" + NEWLINE);
 		} catch (IOException e1) {
 			throw new RuntimeException(e1);
 		}
 	}
-	
-	
 
 }

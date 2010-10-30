@@ -111,8 +111,8 @@ public class TMConnector {
 
 	}
 
-	public void getRDFN3(Locator tmBaseIRI, Locator reference,
-			OutputStream out) throws RepositoryException, RDFHandlerException {
+	public void getRDFN3(Locator tmBaseIRI, Locator reference, OutputStream out)
+			throws RepositoryException, RDFHandlerException {
 		String baseIRI = tmBaseIRI.toExternalForm();
 		String resource = reference.toExternalForm();
 		RDFWriter rdfWriter = new N3Writer(out);
@@ -127,8 +127,8 @@ public class TMConnector {
 		rdfWriter.endRDF();
 	}
 
-	public void getRDFXML(Locator tmBaseIRI, Locator reference,
-			OutputStream out) throws RepositoryException, RDFHandlerException {
+	public void getRDFXML(Locator tmBaseIRI, Locator reference, OutputStream out)
+			throws RepositoryException, RDFHandlerException {
 		String baseIRI = tmBaseIRI.toExternalForm();
 		String resource = reference.toExternalForm();
 		RDFWriter rdfWriter = new RDFXMLPrettyWriter(out);
@@ -143,24 +143,27 @@ public class TMConnector {
 		rdfWriter.endRDF();
 	}
 
-	public void executeSPARQL(String baseIRI, String query,
-			OutputStream out) throws MalformedQueryException, RepositoryException, QueryEvaluationException, RDFHandlerException, TupleQueryResultHandlerException {
-		 executeSPARQL(baseIRI, query, "xml", out);
+	public void executeSPARQL(String baseIRI, String query, OutputStream out)
+			throws MalformedQueryException, RepositoryException,
+			QueryEvaluationException, RDFHandlerException,
+			TupleQueryResultHandlerException {
+		executeSPARQL(baseIRI, query, "xml", out);
 	}
 
-	public void executeSPARQL(String baseIRI, String query,
-			String demandType, OutputStream out) throws MalformedQueryException, RepositoryException, QueryEvaluationException, RDFHandlerException, TupleQueryResultHandlerException {
+	public void executeSPARQL(String baseIRI, String query, String demandType,
+			OutputStream out) throws MalformedQueryException,
+			RepositoryException, QueryEvaluationException, RDFHandlerException,
+			TupleQueryResultHandlerException {
 		demandType = demandType.toLowerCase();
 		Query q = con.prepareQuery(QueryLanguage.SPARQL, query);
-		
+
 		if (baseIRI != null) {
 			// assure that only the graph baseIRI can be queried
 			DatasetImpl dataSet = new DatasetImpl();
 			dataSet.addDefaultGraph(con.getValueFactory().createURI(baseIRI));
 			q.setDataset(dataSet);
 		}
-		
-		
+
 		if (q.getClass() == SailGraphQuery.class) {
 			// No CSV and JSON
 			GraphQuery gq = null;
@@ -176,8 +179,9 @@ public class TMConnector {
 			else if (demandType.equals("html"))
 				gq.evaluate(new N3Writer(out));
 			else
-				throw new ResultFormatException(demandType + " is not allowed in CONSTRUCT");
-			
+				throw new ResultFormatException(demandType
+						+ " is not allowed in CONSTRUCT");
+
 		} else {
 			// No N3
 			TupleQuery tq = null;
@@ -188,15 +192,17 @@ public class TMConnector {
 			}
 			if (demandType.equals("csv"))
 				tq.evaluate(new SPARQLResultsCSVWriter(out));
-			else if (demandType.equals("json")) 
+			else if (demandType.equals("json"))
 				tq.evaluate(new SPARQLResultsJSONWriter(out));
 			else if (demandType.equals("xml"))
 				tq.evaluate(new SPARQLResultsXMLWriter(out));
 			else if (demandType.equals("html"))
-				tq.evaluate(new HtmlTableResultWriter(out));
-			else throw new ResultFormatException(demandType + " is not allowed in SELECT");
-			
-		} 
+				tq.evaluate(new SPARQLResultsHTMLTableWriter(out));
+			else
+				throw new ResultFormatException(demandType
+						+ " is not allowed in SELECT");
+
+		}
 	}
 
 }

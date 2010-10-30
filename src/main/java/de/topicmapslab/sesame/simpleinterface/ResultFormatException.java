@@ -6,13 +6,11 @@ package de.topicmapslab.sesame.simpleinterface;
 
 /**
  * @author Arnim Bleier
- *
+ * 
  */
 public class ResultFormatException extends RuntimeException {
 
-
 	private static final long serialVersionUID = 5534304917478834240L;
-
 
 	/**
 	 * @param message
