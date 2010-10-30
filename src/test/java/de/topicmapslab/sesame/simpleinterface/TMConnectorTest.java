@@ -5,6 +5,7 @@
 
 package de.topicmapslab.sesame.simpleinterface;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -22,27 +23,7 @@ import org.tmapi.core.TopicMapSystemFactory;
 
 public class TMConnectorTest {
 	
-	
-	
-	private class StringOutputStream extends OutputStream {
-		private StringBuilder string = new StringBuilder();
-		private String s;
 
-		@Override
-		public void write(int b) throws IOException {
-			this.string.append((char) b);
-		}
-
-		/*
-		 * Is changing the Stream!
-		 */
-		@Override
-		public String toString() {
-			s = this.string.toString();
-			string =  new StringBuilder();
-			return s;
-		}
-	};
 	
 
 	private TMConnector _sesameConnector;
@@ -68,7 +49,7 @@ public class TMConnectorTest {
 		love.createRole(_tm.createTopicByItemIdentifier(_tm
 				.createLocator("http://www.example.com/tm#Beloved")), _mary);
 		_sesameConnector = new TMConnector(testTMS);
-		_out = new StringOutputStream();
+		_out = new ByteArrayOutputStream();
 	}
 
 	@Test
@@ -83,14 +64,9 @@ public class TMConnectorTest {
 	@Test
 	public void testGetRDFN3() throws Exception {
 
-		_sesameConnector.getRDFN3(_tm.createLocator("http://www.example.com/tm"),
-				_tm.createLocator("http://www.example.com/tm#John"), _out);
-
-		assertEquals(208, _out.toString().length());
-
-
 		 _sesameConnector.getRDFN3(_tm.createLocator("http://www.example.com/tm"),
 				_tm.createLocator("http://www.example.com/tm#Beloved"), _out);
+		 
 		assertEquals(105, _out.toString().length());
 
 	}
@@ -145,21 +121,17 @@ public class TMConnectorTest {
 		
 	}
 
-//	@Test
-//	public void testSparqlIsLive() throws Exception {
-//		_mary.createName("nachträglich");
-//		System.out.println(_mary.getNames().iterator().next().getValue());
-//		String queryString = "SELECT ?s ?p ?o WHERE  { ?s ?p ?o }";
-//		_sesameConnector.executeSPARQL(
-//				"http://www.example.com/tm", queryString, "html", _out);	
-//		String result = _out.toString();
-//		
-//		
-//		System.out.println(result);
-//		assertTrue(result.length() > 500);
-//		assertTrue(result.contains("nachträglich"));
-//		assertTrue(result.contains("<td>http"));
-//	}
+	@Test
+	public void testSparqlIsLive() throws Exception {
+		_mary.createName("nachträglich");
+		String queryString = "SELECT ?s ?p ?o WHERE  { ?s ?p ?o }";
+		_sesameConnector.executeSPARQL(
+				"http://www.example.com/tm", queryString, "html", _out);	
+		String result = _out.toString();
+		assertTrue(result.length() > 500);
+		assertTrue(result.contains("nachträglich"));
+		assertTrue(result.contains("<td>http"));
+	}
 
 	@Test
 	public void testSparqlNonMatchingVar() throws Exception {

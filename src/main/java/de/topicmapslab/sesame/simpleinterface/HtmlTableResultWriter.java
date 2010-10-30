@@ -20,7 +20,6 @@ import org.openrdf.query.TupleQueryResultHandlerException;
 public class HtmlTableResultWriter implements TupleQueryResultHandler {
 
 	
-//	StringBuilder resultHTML = new StringBuilder();
 	private final String NEWLINE =  System.getProperty("line.separator");
 	private final String TAB = "  ";
 	List<String> vars = new ArrayList<String>();
@@ -49,11 +48,6 @@ public class HtmlTableResultWriter implements TupleQueryResultHandler {
 		while (varsIterator.hasNext()) {
 			String string = varsIterator.next();
 			try {
-
-				System.err.println(list.getBinding(string).getValue().stringValue());
-
-
-
 				out.write(TAB + TAB + "<td>" + list.getBinding(string).getValue().stringValue() + "</td>"+ NEWLINE);			
 			} catch (NullPointerException e) {
 				throw new TupleQueryResultHandlerException("Binding for variable \"?" + string + "\" not found.", e.getCause());
