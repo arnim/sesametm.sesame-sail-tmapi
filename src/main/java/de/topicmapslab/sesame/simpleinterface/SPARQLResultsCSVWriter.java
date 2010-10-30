@@ -22,7 +22,7 @@ public class SPARQLResultsCSVWriter implements TupleQueryResultHandler {
 	private String[] bindingNames;
 
 	SPARQLResultsCSVWriter(OutputStream output) {
-		char  seperator =  ';';		
+		char seperator = ';';
 		writer = new CSVWriter(new OutputStreamWriter(output), seperator);
 	}
 
