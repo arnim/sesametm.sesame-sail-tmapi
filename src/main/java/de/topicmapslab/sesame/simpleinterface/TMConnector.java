@@ -5,6 +5,19 @@
 
 package de.topicmapslab.sesame.simpleinterface;
 
+/**
+ * A Class to provide a simplified interface <br>
+ * to <a href="http://www.openrdf.org/">Sesame</a> for accessing <a href="http://www.topicmaps.org/">Topic Maps</a>.
+ * 
+ * @see <a href="http://www.openrdf.org/">Sesame</a>
+ * @see <a href="http://www.topicmaps.org/">Topic Maps</a>
+ * @see <a href="http://www.tmapi.org/2.0/">Topic Maps API (TMAPI) 2.0</a>
+ * 
+ * @author Arnim Bleier
+ *
+ */
+
+
 import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -42,15 +55,17 @@ import de.topicmapslab.sesame.sail.tmapi.TmapiStore;
 
 public class TMConnector {
 
-	/**
-	 * @author Arnim Bleier
-	 * 
-	 */
 
 	private TopicMapSystem tms;
 	private SailRepositoryConnection con;
 	private ValueFactory valueFactory;
 
+	/**
+	 * 
+	 * @param tms The {@link TopicMapSystem} this should be initialized with.
+	 * @throws SailException
+	 * @throws RepositoryException
+	 */
 	public TMConnector(TopicMapSystem tms) throws SailException,
 			RepositoryException {
 		this.tms = tms;
@@ -111,6 +126,15 @@ public class TMConnector {
 
 	}
 
+	/**
+	 * Serializes a topic to N3 
+	 * 
+	 * @param tmBaseIRI The base IRI of the Topic Map
+	 * @param reference A Locator of the Topic
+	 * @param out The OutputStream to be written on
+	 * @throws RepositoryException
+	 * @throws RDFHandlerException
+	 */
 	public void getRDFN3(Locator tmBaseIRI, Locator reference, OutputStream out)
 			throws RepositoryException, RDFHandlerException {
 		String baseIRI = tmBaseIRI.toExternalForm();
@@ -127,6 +151,15 @@ public class TMConnector {
 		rdfWriter.endRDF();
 	}
 
+	/**
+	 * Serializes a topic to RDF/XML 
+	 * 
+	 * @param tmBaseIRI The base IRI of the Topic Map
+	 * @param reference A Locator of the Topic
+	 * @param out The OutputStream to be written on
+	 * @throws RepositoryException
+	 * @throws RDFHandlerException
+	 */
 	public void getRDFXML(Locator tmBaseIRI, Locator reference, OutputStream out)
 			throws RepositoryException, RDFHandlerException {
 		String baseIRI = tmBaseIRI.toExternalForm();
@@ -143,6 +176,18 @@ public class TMConnector {
 		rdfWriter.endRDF();
 	}
 
+	/**
+	 * Executes a SPARQL query
+	 * 
+	 * @param baseIRI tmBaseIRI The base IRI of the Topic Map
+	 * @param query The query String
+	 * @param out out The OutputStream to be written on
+	 * @throws MalformedQueryException
+	 * @throws RepositoryException
+	 * @throws QueryEvaluationException
+	 * @throws RDFHandlerException
+	 * @throws TupleQueryResultHandlerException
+	 */
 	public void executeSPARQL(String baseIRI, String query, OutputStream out)
 			throws MalformedQueryException, RepositoryException,
 			QueryEvaluationException, RDFHandlerException,
@@ -150,6 +195,19 @@ public class TMConnector {
 		executeSPARQL(baseIRI, query, "xml", out);
 	}
 
+	/**
+	 * Executes a SPARQL query
+	 * 
+	 * @param baseIRI tmBaseIRI The base IRI of the Topic Map
+	 * @param query The query String
+	 * @param demandType The required {@link SPARQLResultFormat}
+	 * @param out out The OutputStream to be written on
+	 * @throws MalformedQueryException
+	 * @throws RepositoryException
+	 * @throws QueryEvaluationException
+	 * @throws RDFHandlerException
+	 * @throws TupleQueryResultHandlerException
+	 */
 	public void executeSPARQL(String baseIRI, String query, String demandType,
 			OutputStream out) throws MalformedQueryException,
 			RepositoryException, QueryEvaluationException, RDFHandlerException,
