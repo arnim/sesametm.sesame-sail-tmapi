@@ -4,6 +4,12 @@
  */
 package de.topicmapslab.sesame.simpleinterface;
 
+/**
+ * A TupleQueryResultWriter that writes query results in the <a href="http://tools.ietf.org/html/rfc4180">Comma-Separated Values Format</a>
+ * 
+ * @author Arnim Bleier
+ */
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;

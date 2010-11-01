@@ -4,7 +4,11 @@
  */
 package de.topicmapslab.sesame.simpleinterface;
 
+
 /**
+ * An RuntimeException that can be thrown by an {@link TMConnector} when 
+ * it encounters an invalid combination of Query type and {@link SPARQLResultFormat}.
+ * 
  * @author Arnim Bleier
  * 
  */

@@ -4,11 +4,16 @@
  */
 package de.topicmapslab.sesame.simpleinterface;
 
+/**
+ * A TupleQueryResultWriter that writes query results in a <a href="http://www.w3.org/TR/html401/struct/tables.html">HTML table</a>
+ * 
+ * @author Arnim Bleier
+ */
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -25,7 +30,7 @@ public class SPARQLResultsHTMLTableWriter implements TupleQueryResultHandler {
 	private Writer out;
 
 	public SPARQLResultsHTMLTableWriter(OutputStream out) {
-		this.out = new OutputStreamWriter(out, Charset.defaultCharset());
+		this.out = new OutputStreamWriter(out);
 	}
 
 	public void endQueryResult() throws TupleQueryResultHandlerException {
