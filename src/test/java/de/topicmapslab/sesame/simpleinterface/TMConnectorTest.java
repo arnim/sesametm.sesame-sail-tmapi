@@ -5,12 +5,10 @@
 
 package de.topicmapslab.sesame.simpleinterface;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+
+import junit.framework.TestCase;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +18,7 @@ import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
 import org.tmapi.core.TopicMapSystemFactory;
 
-public class TMConnectorTest {
+public class TMConnectorTest extends TestCase {
 
 	private TMConnector _sesameConnector;
 	private TopicMap _tm;
