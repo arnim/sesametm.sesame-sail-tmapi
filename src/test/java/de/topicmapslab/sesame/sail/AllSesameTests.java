@@ -3,25 +3,24 @@
  * License:   Apache License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html
  */
 
-package de.topicmapslab.sesame.sail.tmapi;
+package de.topicmapslab.sesame.sail;
 
+import de.topicmapslab.sesame.sail.tmapi.AllSesameSailTests;
+import de.topicmapslab.sesame.simpleinterface.TMConnectorTest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 
-public class AllSesameSailTests extends TestSuite {
+public class AllSesameTests extends TestSuite {
 
   public static Test suite() {
-    TestSuite suite = new TestSuite("All Tests for Sesame Sail TMAPI");
+    TestSuite suite = new TestSuite();
     
-    suite.addTestSuite(TmapiStoreTest.class);
+//    suite.addTestSuite(AllSesameSailTests.class);
     
-    suite.addTestSuite(TmdmStoreTest.class);
+    suite.addTestSuite(TMConnectorTest.class);
     
-    suite.addTestSuite(MaianaTest.class);
-
-    suite.addTestSuite(CRUDTest.class);
-
+    
     return suite;
   }
   
@@ -29,5 +28,6 @@ public class AllSesameSailTests extends TestSuite {
   public static void main(String[] args) {
       junit.textui.TestRunner.run(suite());
   }
+
 
 }
