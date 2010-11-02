@@ -1,5 +1,5 @@
 /*
- * Copyright: Copyright 2010 Topic Maps Lab, University of Leipzig. http://www.topicmapslab.de/
+  * Copyright: Copyright 2010 Topic Maps Lab, University of Leipzig. http://www.topicmapslab.de/
  * License:   Apache License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html
  */
 
@@ -7,6 +7,7 @@ package de.topicmapslab.sesame.simpleinterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import junit.framework.TestCase;
 
@@ -222,6 +223,21 @@ public class TMConnectorTest extends TestCase {
 		_sesameConnector.executeSPARQL("http://www.example.com/tm",
 				queryString, SPARQLResultFormat.CSV, _out);
 		assertTrue(_out.toString().contains("oved\";\"http://"));
+	}
+	
+	
+	@Test
+	public void testEscaping() throws Exception {
+		_mary.createName("Baden-WŸrttemberg");
+		String queryString = "SELECT ?s ?p ?o WHERE  { ?s ?p ?o }";
+		_sesameConnector.executeSPARQL("http://www.example.com/tm",
+				queryString, "html", _out);
+		
+		String result = new String(((ByteArrayOutputStream) _out).toByteArray(), Charset.defaultCharset());
+
+		assertTrue(result.length() > 500);
+		assertTrue(result.contains("Baden-WŸrttemberg"));
+		assertTrue(result.contains("<td>http"));
 	}
 
 }
