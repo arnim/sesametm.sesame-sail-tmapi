@@ -7,6 +7,7 @@ package de.topicmapslab.sesame.sail.tmapi;
 
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -15,10 +16,13 @@ import org.junit.Test;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.RDF;
+import org.openrdf.model.vocabulary.XMLSchema;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
+import org.tmapi.core.Name;
+import org.tmapi.core.Occurrence;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
 import org.tmapi.core.TopicMapSystem;
@@ -133,7 +137,24 @@ public class CRUDTest extends TestCase {
 		assertTrue(tm.getTopicBySubjectIdentifier(tm.createLocator("http://www.ex.org/s")).getSubjectIdentifiers().contains(tm.createLocator("http://www.ex.org/s1")));
 		assertTrue(tm.getTopicBySubjectIdentifier(tm.createLocator("http://www.ex.org/s")).getSubjectIdentifiers().contains(tm.createLocator("http://www.ex.org/s2")));
 
+	}
+	
+	
+	@Test
+	public void testOccurenceName() throws Exception {
+		_con.add(vf.createURI("http://www.ex.org/s"), vf.createURI("http://www.ex.org/p"), vf.createURI("hoho"), vf.createURI(baseIRI));
+		TopicMap tm = _tms.getTopicMap(baseIRI);
+		assertEquals(2, tm.getTopics().size());
+		Set<Occurrence> occs = tm.getTopicBySubjectIdentifier(tm.createLocator("http://www.ex.org/s")).getOccurrences();
+		assertEquals(1, occs.size());
+		assertEquals(XMLSchema.STRING.stringValue(), occs.iterator().next().getDatatype().toExternalForm());
+		assertEquals("hoho", occs.iterator().next().getValue());
 
+		_con.add(vf.createURI("http://www.ex.org/so"), vf.createURI("http://www.ex.org/name"), vf.createURI("A Name"), vf.createURI(baseIRI));
+		assertEquals(4, tm.getTopics().size());
+		Set<Name> names = tm.getTopicBySubjectIdentifier(tm.createLocator("http://www.ex.org/so")).getNames();
+		assertEquals(1, names.size());
+		assertEquals("A Name", names.iterator().next().getValue());
 	}
 
 }
