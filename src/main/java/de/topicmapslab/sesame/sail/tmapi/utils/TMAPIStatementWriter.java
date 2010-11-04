@@ -99,18 +99,31 @@ public class TMAPIStatementWriter {
 
 	
 	private void createAsCharacteristic(){
+		URI dt = null;
+		try {
+			dt = ((LiteralImpl) object).getDatatype();
+		} catch (Exception e) {
+			dt = XMLSchema.ANYURI;
+		}
+		if (dt == null)
+			dt = XMLSchema.STRING;
+		if (subjectValue.toLowerCase().contains("name") &&
+				dt == XMLSchema.STRING)
+			createAsName(l(dt.stringValue()));
+		else
+			createAsOccurrence(l(dt.stringValue()));
+	}
+	
+	private void createAsOccurrence(Locator dt){
 		Topic subject = createTopic(l(subjectValue));
 		Topic predicate = createTopic(l(predicateValue));
-		try {
-			URI dt = ((LiteralImpl) object).getDatatype();
-			if (dt != null)
-				subject.createOccurrence(predicate, object.stringValue(), tm.createLocator(dt.stringValue()));
-			else // default xsd:string as dataType
-				subject.createOccurrence(predicate, object.stringValue(), tm.createLocator(XMLSchema.STRING.stringValue()));
-		} catch (ClassCastException e) {
-			// Has an URI as Object.
-			subject.createOccurrence(predicate, object.stringValue(), tm.createLocator(XMLSchema.ANYURI.stringValue()));
-		}
+		subject.createOccurrence(predicate, object.stringValue(), dt);
+	}
+	
+	private void createAsName(Locator dt){
+		Topic subject = createTopic(l(subjectValue));
+		Topic predicate = createTopic(l(predicateValue));
+		subject.createName(predicate, object.stringValue());
 	}
 	
 	private Locator l(String s){
