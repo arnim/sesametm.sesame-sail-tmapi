@@ -12,6 +12,7 @@ import org.openrdf.model.Resource;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.LiteralImpl;
+import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.tmapi.core.Association;
@@ -28,23 +29,21 @@ import org.tmapi.index.LiteralIndex;
 public class TMAPIStatementWriter {
 	
 	private TopicMap tm;
-	private Topic subject;
-	private Topic predicate;
 	private Value object;
 	private LiteralIndex index;
-	private boolean subjectIsNew = false;
 	private String subjectValue;
 	public final static String subjectRoleTypeString = "http://www.tmapi.org/2.0/api#SubjectRoleType";
 	private Topic subjectRoleType;
+	private String predicateValue;
 	
 
 	public TMAPIStatementWriter(Resource subject, URI predicate, Value object, TopicMap tm){
 		this.tm = tm;
-		this.subject = createTopic(tm.createLocator(subject.stringValue()));
 		this.subjectValue = subject.stringValue();
-		if (!predicate.stringValue().equals(RDF.TYPE.stringValue()))
-			this.predicate = createTopic(tm.createLocator(predicate.stringValue()));
+		this.predicateValue = predicate.stringValue();
 		this.object = object;
+		
+		// handle the index
 		index = tm.getIndex(LiteralIndex.class);
 		if (!index.isOpen())
 			index.open();
@@ -53,26 +52,44 @@ public class TMAPIStatementWriter {
 	}
 	
 	public void write(){	
-		if (subjectIsNew){
+		if (getTopic(l(this.subjectValue)) == null){ 
 			associateOccurences(index.getOccurrences(tm.createLocator(subjectValue)));
 		}
-		if (this.predicate != null) 
-			createAsCharacteristic();
-		else
+		if (this.predicateValue.equals(RDF.TYPE.stringValue()))
 			createAsTypeInstance();
+		else if (this.predicateValue.equals(OWL.SAMEAS.stringValue())) 
+			addLocator2Topic();
+		else
+			createAsCharacteristic();
+	}
+	
+	private void addLocator2Topic(){
+		Topic t = createTopic(l(this.subjectValue));
+		try {
+
+			t.addSubjectIdentifier(tm.createLocator(this.object.stringValue()));
+		} catch (Exception e) {
+			// Object is not a Locator
+		}
 	}
 	
 	
 	private void createAsTypeInstance() {
-		subject.addType(createTopic(tm.createLocator(object.stringValue())));		
+		createTopic(l(subjectValue)).addType(createTopic(tm.createLocator(object.stringValue())));		
 	}
 
+	
+	/**
+	 * Turns all IRI occurrences into Associations
+	 * 
+	 * @param occurences
+	 */
 	private void associateOccurences(Collection<Occurrence> occurences) {
 		Iterator<Occurrence> it = occurences.iterator();
 		Occurrence o;
 		while (it.hasNext()) {
 			o =  it.next();
-			this.subjectRoleType =  createTopic(tm.createLocator("http://www.tmapi.org/2.0/api#SubjectRoleType"));
+			this.subjectRoleType =  createTopic(tm.createLocator(subjectRoleTypeString));
 			Association a = tm.createAssociation(o.getType());
 			a.createRole(subjectRoleType, o.getParent());
 			a.createRole(o.getType(), createTopic(tm.createLocator(o.getValue())));
@@ -80,7 +97,10 @@ public class TMAPIStatementWriter {
 		}
 	}
 
+	
 	private void createAsCharacteristic(){
+		Topic subject = createTopic(l(subjectValue));
+		Topic predicate = createTopic(l(predicateValue));
 		try {
 			URI dt = ((LiteralImpl) object).getDatatype();
 			if (dt != null)
@@ -93,9 +113,12 @@ public class TMAPIStatementWriter {
 		}
 	}
 	
+	private Locator l(String s){
+		return tm.createLocator(s);
+	}
 	
 	
-	public Topic createTopic(Locator l) {
+	public Topic getTopic(Locator l) {
 		Topic t = null;
 		t = tm.getTopicBySubjectIdentifier(l);
 		if (t != null)
@@ -110,7 +133,14 @@ public class TMAPIStatementWriter {
 		} catch (ClassCastException e) {
 			// Found Construct is not a Topic
 		}
-		this.subjectIsNew  = true;
+		return t;
+	}
+	
+	
+	public Topic createTopic(Locator l) {
+		Topic t = getTopic(l);
+		if (t != null)
+			return t;
 		return tm.createTopicBySubjectIdentifier(l);
 	}
 

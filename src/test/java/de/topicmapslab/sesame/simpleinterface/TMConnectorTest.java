@@ -7,12 +7,14 @@ package de.topicmapslab.sesame.simpleinterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.io.StringBufferInputStream;
 import java.nio.charset.Charset;
 
 import junit.framework.TestCase;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openrdf.rio.RDFFormat;
 import org.tmapi.core.Association;
 import org.tmapi.core.Topic;
 import org.tmapi.core.TopicMap;
@@ -238,6 +240,14 @@ public class TMConnectorTest extends TestCase {
 		assertTrue(result.length() > 500);
 		assertTrue(result.contains("Baden-WŸrttemberg"));
 		assertTrue(result.contains("<td>http"));
+	}
+	
+	
+	
+	@Test
+	public void testWrite() throws Exception {
+		String rdf = "<http://www.w3.org/>	<http://purl.org/dc/elements/1.1/title>	 <http://www.w3.org/WorldWideWebConsortium> .";
+		_sesameConnector.addRDF("http://www.w3.org/", RDFFormat.N3, new StringBufferInputStream(rdf));
 	}
 
 }

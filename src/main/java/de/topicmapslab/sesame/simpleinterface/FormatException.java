@@ -6,27 +6,29 @@ package de.topicmapslab.sesame.simpleinterface;
 
 
 /**
- * An RuntimeException that can be thrown by an {@link TMConnector} when 
- * it encounters an invalid combination of Query type and {@link SPARQLResultFormat}.
+ * An FormatException that can be thrown by an {@link TMConnector} when 
+ * it encounters an invalid combination of Query type and {@link SPARQLResultFormat},
+ * or in case a wrong serialization format is given for 
+ * {@link TMConnector#addRDF(String, org.openrdf.rio.RDFFormat, java.io.InputStream)}.
  * 
  * @author Arnim Bleier
  * 
  */
-public class ResultFormatException extends RuntimeException {
+public class FormatException extends RuntimeException {
 
 	private static final long serialVersionUID = 5534304917478834240L;
 
 	/**
 	 * @param message
 	 */
-	public ResultFormatException(String message) {
+	public FormatException(String message) {
 		super(message);
 	}
 
 	/**
 	 * @param cause
 	 */
-	public ResultFormatException(Throwable cause) {
+	public FormatException(Throwable cause) {
 		super(cause);
 	}
 
@@ -34,7 +36,7 @@ public class ResultFormatException extends RuntimeException {
 	 * @param message
 	 * @param cause
 	 */
-	public ResultFormatException(String message, Throwable cause) {
+	public FormatException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
