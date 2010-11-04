@@ -17,7 +17,8 @@ package de.topicmapslab.sesame.simpleinterface;
  *
  */
 
-
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -42,7 +43,9 @@ import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.sail.SailGraphQuery;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.repository.sail.SailRepositoryConnection;
+import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.n3.N3Writer;
 import org.openrdf.rio.rdfxml.RDFXMLWriter;
@@ -55,14 +58,14 @@ import de.topicmapslab.sesame.sail.tmapi.TmapiStore;
 
 public class TMConnector {
 
-
 	private TopicMapSystem tms;
 	private SailRepositoryConnection con;
 	private ValueFactory valueFactory;
 
 	/**
 	 * 
-	 * @param tms The {@link TopicMapSystem} this should be initialized with.
+	 * @param tms
+	 *            The {@link TopicMapSystem} this should be initialized with.
 	 * @throws SailException
 	 * @throws RepositoryException
 	 */
@@ -127,11 +130,14 @@ public class TMConnector {
 	}
 
 	/**
-	 * Serializes a topic to N3 
+	 * Serializes a topic to N3
 	 * 
-	 * @param tmBaseIRI The base IRI of the Topic Map
-	 * @param reference A Locator of the Topic
-	 * @param out The OutputStream to be written on
+	 * @param tmBaseIRI
+	 *            The base IRI of the Topic Map
+	 * @param reference
+	 *            A Locator of the Topic
+	 * @param out
+	 *            The OutputStream to be written on
 	 * @throws RepositoryException
 	 * @throws RDFHandlerException
 	 */
@@ -152,11 +158,14 @@ public class TMConnector {
 	}
 
 	/**
-	 * Serializes a topic to RDF/XML 
+	 * Serializes a topic to RDF/XML
 	 * 
-	 * @param tmBaseIRI The base IRI of the Topic Map
-	 * @param reference A Locator of the Topic
-	 * @param out The OutputStream to be written on
+	 * @param tmBaseIRI
+	 *            The base IRI of the Topic Map
+	 * @param reference
+	 *            A Locator of the Topic
+	 * @param out
+	 *            The OutputStream to be written on
 	 * @throws RepositoryException
 	 * @throws RDFHandlerException
 	 */
@@ -179,9 +188,12 @@ public class TMConnector {
 	/**
 	 * Executes a SPARQL query
 	 * 
-	 * @param baseIRI tmBaseIRI The base IRI of the Topic Map
-	 * @param query The query String
-	 * @param out out The OutputStream to be written on
+	 * @param baseIRI
+	 *            tmBaseIRI The base IRI of the Topic Map
+	 * @param query
+	 *            The query String
+	 * @param out
+	 *            out The OutputStream to be written on
 	 * @throws MalformedQueryException
 	 * @throws RepositoryException
 	 * @throws QueryEvaluationException
@@ -198,10 +210,14 @@ public class TMConnector {
 	/**
 	 * Executes a SPARQL query
 	 * 
-	 * @param baseIRI tmBaseIRI The base IRI of the Topic Map
-	 * @param query The query String
-	 * @param demandType The required {@link SPARQLResultFormat}
-	 * @param out out The OutputStream to be written on
+	 * @param baseIRI
+	 *            tmBaseIRI The base IRI of the Topic Map
+	 * @param query
+	 *            The query String
+	 * @param demandType
+	 *            The required {@link SPARQLResultFormat}
+	 * @param out
+	 *            out The OutputStream to be written on
 	 * @throws MalformedQueryException
 	 * @throws RepositoryException
 	 * @throws QueryEvaluationException
@@ -237,7 +253,7 @@ public class TMConnector {
 			else if (demandType.equals("html"))
 				gq.evaluate(new N3Writer(out));
 			else
-				throw new ResultFormatException(demandType
+				throw new FormatException(demandType
 						+ " is not allowed in CONSTRUCT");
 
 		} else {
@@ -257,10 +273,25 @@ public class TMConnector {
 			else if (demandType.equals("html"))
 				tq.evaluate(new SPARQLResultsHTMLTableWriter(out));
 			else
-				throw new ResultFormatException(demandType
+				throw new FormatException(demandType
 						+ " is not allowed in SELECT");
 
 		}
+	}
+
+	/**
+	 * Adds RDF data from an InputStream to the Topic Map in the baseIRI.
+	 * 
+	 * @param baseIRI
+	 * @param dataFormat
+	 * @param in
+	 * @throws RDFParseException
+	 * @throws RepositoryException
+	 * @throws IOException
+	 */
+	public void addRDF(String baseIRI, RDFFormat dataFormat, InputStream in)
+			throws RDFParseException, RepositoryException, IOException {
+		con.add(in, baseIRI, dataFormat, valueFactory.createURI(baseIRI));
 	}
 
 }
