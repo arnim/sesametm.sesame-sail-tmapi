@@ -142,7 +142,7 @@ public class CRUDTest extends TestCase {
 	
 	@Test
 	public void testOccurenceName() throws Exception {
-		_con.add(vf.createURI("http://www.ex.org/s"), vf.createURI("http://www.ex.org/p"), vf.createURI("hoho"), vf.createURI(baseIRI));
+		_con.add(vf.createURI("http://www.ex.org/s"), vf.createURI("http://www.ex.org/p"), vf.createLiteral("hoho"), vf.createURI(baseIRI));
 		TopicMap tm = _tms.getTopicMap(baseIRI);
 		assertEquals(2, tm.getTopics().size());
 		Set<Occurrence> occs = tm.getTopicBySubjectIdentifier(tm.createLocator("http://www.ex.org/s")).getOccurrences();
@@ -150,9 +150,11 @@ public class CRUDTest extends TestCase {
 		assertEquals(XMLSchema.STRING.stringValue(), occs.iterator().next().getDatatype().toExternalForm());
 		assertEquals("hoho", occs.iterator().next().getValue());
 
-		_con.add(vf.createURI("http://www.ex.org/so"), vf.createURI("http://www.ex.org/name"), vf.createURI("A Name"), vf.createURI(baseIRI));
+		_con.add(vf.createURI("http://www.ex.org/so"), vf.createURI("http://www.ex.org/name"), vf.createLiteral("A Name"), vf.createURI(baseIRI));
 		assertEquals(4, tm.getTopics().size());
 		Set<Name> names = tm.getTopicBySubjectIdentifier(tm.createLocator("http://www.ex.org/so")).getNames();
+		assertEquals(0, tm.getTopicBySubjectIdentifier(tm.createLocator("http://www.ex.org/so")).getOccurrences().size());
+
 		assertEquals(1, names.size());
 		assertEquals("A Name", names.iterator().next().getValue());
 	}

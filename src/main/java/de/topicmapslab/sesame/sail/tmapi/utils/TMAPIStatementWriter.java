@@ -107,7 +107,7 @@ public class TMAPIStatementWriter {
 		}
 		if (dt == null)
 			dt = XMLSchema.STRING;
-		if (subjectValue.toLowerCase().contains("name") &&
+		if (predicateValue.toLowerCase().contains("name") &&
 				dt == XMLSchema.STRING)
 			createAsName(l(dt.stringValue()));
 		else
