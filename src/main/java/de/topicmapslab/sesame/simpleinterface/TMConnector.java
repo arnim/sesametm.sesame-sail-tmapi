@@ -246,11 +246,11 @@ public class TMConnector {
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
-			if (demandType.equals("n3"))
+			if (demandType.equals(SPARQLResultFormat.N3))
 				gq.evaluate(new N3Writer(out));
-			else if (demandType.equals("xml"))
+			else if (demandType.equals(SPARQLResultFormat.XML))
 				gq.evaluate(new RDFXMLWriter(out));
-			else if (demandType.equals("html"))
+			else if (demandType.equals(SPARQLResultFormat.HTML))
 				gq.evaluate(new N3Writer(out));
 			else
 				throw new FormatException(demandType
@@ -264,13 +264,13 @@ public class TMConnector {
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
-			if (demandType.equals("csv"))
+			if (demandType.equals(SPARQLResultFormat.CSV))
 				tq.evaluate(new SPARQLResultsCSVWriter(out));
-			else if (demandType.equals("json"))
+			else if (demandType.equals(SPARQLResultFormat.JSON))
 				tq.evaluate(new SPARQLResultsJSONWriter(out));
-			else if (demandType.equals("xml"))
+			else if (demandType.equals(SPARQLResultFormat.XML))
 				tq.evaluate(new SPARQLResultsXMLWriter(out));
-			else if (demandType.equals("html"))
+			else if (demandType.equals(SPARQLResultFormat.HTML))
 				tq.evaluate(new SPARQLResultsHTMLTableWriter(out));
 			else
 				throw new FormatException(demandType
