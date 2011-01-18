@@ -223,13 +223,15 @@ public class TMConnector {
 	 * @throws QueryEvaluationException
 	 * @throws RDFHandlerException
 	 * @throws TupleQueryResultHandlerException
+	 * @return ? extends Query the type of executed query
 	 */
-	public void executeSPARQL(String baseIRI, String query, String demandType,
+	public Class<? extends Query> executeSPARQL(String baseIRI, String query, String demandType,
 			OutputStream out) throws MalformedQueryException,
 			RepositoryException, QueryEvaluationException, RDFHandlerException,
 			TupleQueryResultHandlerException {
 		demandType = demandType.toLowerCase();
 		Query q = con.prepareQuery(QueryLanguage.SPARQL, query);
+		Class<? extends Query> queryType = null;
 
 		if (baseIRI != null) {
 			// assure that only the graph baseIRI can be queried
@@ -243,6 +245,7 @@ public class TMConnector {
 			GraphQuery gq = null;
 			try {
 				gq = (GraphQuery) q;
+				queryType = GraphQuery.class;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -261,6 +264,7 @@ public class TMConnector {
 			TupleQuery tq = null;
 			try {
 				tq = (TupleQuery) q;
+				queryType = TupleQuery.class;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -277,6 +281,7 @@ public class TMConnector {
 						+ " is not allowed in SELECT");
 
 		}
+		return queryType;
 	}
 
 	/**
