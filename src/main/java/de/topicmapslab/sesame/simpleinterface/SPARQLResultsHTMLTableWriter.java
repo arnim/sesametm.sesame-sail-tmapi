@@ -32,7 +32,7 @@ public class SPARQLResultsHTMLTableWriter implements TupleQueryResultHandler {
 
 	public SPARQLResultsHTMLTableWriter(OutputStream out) {
 		try {
-			this.out = new OutputStreamWriter(out, Charset.defaultCharset());
+			this.out = new OutputStreamWriter(out, Charset.forName("UTF-8"));
 		} catch (Exception e) {
 		}
 		

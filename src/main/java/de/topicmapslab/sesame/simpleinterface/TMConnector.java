@@ -31,10 +31,8 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.query.GraphQuery;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.Query;
-import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
-import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.query.impl.DatasetImpl;
 import org.openrdf.query.resultio.sparqljson.SPARQLResultsJSONWriter;
 import org.openrdf.query.resultio.sparqlxml.SPARQLResultsXMLWriter;
@@ -50,7 +48,6 @@ import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.n3.N3Writer;
 import org.openrdf.rio.rdfxml.RDFXMLWriter;
 import org.openrdf.rio.rdfxml.util.RDFXMLPrettyWriter;
-import org.openrdf.sail.SailException;
 import org.tmapi.core.Locator;
 import org.tmapi.core.TopicMapSystem;
 
@@ -66,17 +63,20 @@ public class TMConnector {
 	 * 
 	 * @param tms
 	 *            The {@link TopicMapSystem} this should be initialized with.
-	 * @throws SailException
-	 * @throws RepositoryException
+	 * @throws SailTmapiException
 	 */
-	public TMConnector(TopicMapSystem tms) throws SailException,
-			RepositoryException {
+	public TMConnector(TopicMapSystem tms) throws SailTmapiException {
 		this.tms = tms;
 		TmapiStore sail = new TmapiStore(this.tms);
 		SailRepository repository = new SailRepository(sail);
-		repository.initialize();
-		con = repository.getConnection();
-		valueFactory = con.getValueFactory();
+		try {
+			repository.initialize();
+			con = repository.getConnection();
+			valueFactory = con.getValueFactory();
+		} catch (Exception e) {
+			throw new SailTmapiException(e);
+		}
+
 	}
 
 	private void rdfToString(String baseIRI, String resource,
@@ -138,23 +138,26 @@ public class TMConnector {
 	 *            A Locator of the Topic
 	 * @param out
 	 *            The OutputStream to be written on
-	 * @throws RepositoryException
-	 * @throws RDFHandlerException
+	 * @throws SailTmapiException
 	 */
 	public void getRDFN3(Locator tmBaseIRI, Locator reference, OutputStream out)
-			throws RepositoryException, RDFHandlerException {
+			throws SailTmapiException {
 		String baseIRI = tmBaseIRI.toExternalForm();
 		String resource = reference.toExternalForm();
 		RDFWriter rdfWriter = new N3Writer(out);
-
-		HashSet<Statement> resultSet = new HashSet<Statement>();
-		rdfToString(baseIRI, resource, resultSet);
-		Iterator<Statement> statementIterator = resultSet.iterator();
-		rdfWriter.startRDF();
-		while (statementIterator.hasNext()) {
-			rdfWriter.handleStatement(statementIterator.next());
+		try {
+			HashSet<Statement> resultSet = new HashSet<Statement>();
+			rdfToString(baseIRI, resource, resultSet);
+			Iterator<Statement> statementIterator = resultSet.iterator();
+			rdfWriter.startRDF();
+			while (statementIterator.hasNext()) {
+				rdfWriter.handleStatement(statementIterator.next());
+			}
+			rdfWriter.endRDF();
+		} catch (Exception e) {
+			throw new SailTmapiException(e);
 		}
-		rdfWriter.endRDF();
+
 	}
 
 	/**
@@ -166,23 +169,26 @@ public class TMConnector {
 	 *            A Locator of the Topic
 	 * @param out
 	 *            The OutputStream to be written on
-	 * @throws RepositoryException
-	 * @throws RDFHandlerException
+	 * @throws SailTmapiException
 	 */
 	public void getRDFXML(Locator tmBaseIRI, Locator reference, OutputStream out)
-			throws RepositoryException, RDFHandlerException {
+			throws SailTmapiException {
 		String baseIRI = tmBaseIRI.toExternalForm();
 		String resource = reference.toExternalForm();
 		RDFWriter rdfWriter = new RDFXMLPrettyWriter(out);
-
-		HashSet<Statement> resultSet = new HashSet<Statement>();
-		rdfToString(baseIRI, resource, resultSet);
-		Iterator<Statement> statementIterator = resultSet.iterator();
-		rdfWriter.startRDF();
-		while (statementIterator.hasNext()) {
-			rdfWriter.handleStatement(statementIterator.next());
+		try {
+			HashSet<Statement> resultSet = new HashSet<Statement>();
+			rdfToString(baseIRI, resource, resultSet);
+			Iterator<Statement> statementIterator = resultSet.iterator();
+			rdfWriter.startRDF();
+			while (statementIterator.hasNext()) {
+				rdfWriter.handleStatement(statementIterator.next());
+			}
+			rdfWriter.endRDF();
+		} catch (Exception e) {
+			throw new SailTmapiException(e);
 		}
-		rdfWriter.endRDF();
+
 	}
 
 	/**
@@ -194,16 +200,10 @@ public class TMConnector {
 	 *            The query String
 	 * @param out
 	 *            out The OutputStream to be written on
-	 * @throws MalformedQueryException
-	 * @throws RepositoryException
-	 * @throws QueryEvaluationException
-	 * @throws RDFHandlerException
-	 * @throws TupleQueryResultHandlerException
+	 * @throws SailTmapiException
 	 */
 	public void executeSPARQL(String baseIRI, String query, OutputStream out)
-			throws MalformedQueryException, RepositoryException,
-			QueryEvaluationException, RDFHandlerException,
-			TupleQueryResultHandlerException {
+			throws SailTmapiException {
 		executeSPARQL(baseIRI, query, "xml", out);
 	}
 
@@ -218,19 +218,19 @@ public class TMConnector {
 	 *            The required {@link SPARQLResultFormat}
 	 * @param out
 	 *            out The OutputStream to be written on
-	 * @throws MalformedQueryException
-	 * @throws RepositoryException
-	 * @throws QueryEvaluationException
-	 * @throws RDFHandlerException
-	 * @throws TupleQueryResultHandlerException
-	 * @return ? extends Query the type of executed query
+	 * @throws SailTmapiException
 	 */
 	public Class<? extends Query> executeSPARQL(String baseIRI, String query, String demandType,
-			OutputStream out) throws MalformedQueryException,
-			RepositoryException, QueryEvaluationException, RDFHandlerException,
-			TupleQueryResultHandlerException {
+			OutputStream out) throws SailTmapiException {
 		demandType = demandType.toLowerCase();
-		Query q = con.prepareQuery(QueryLanguage.SPARQL, query);
+		Query q;
+		try {
+			q = con.prepareQuery(QueryLanguage.SPARQL, query);
+		} catch (MalformedQueryException e1) {
+			throw new SailTmapiException(e1);
+		} catch (RepositoryException e1) {
+			throw new SailTmapiException(e1);
+		}
 		Class<? extends Query> queryType = null;
 
 		if (baseIRI != null) {
@@ -247,17 +247,24 @@ public class TMConnector {
 				gq = (GraphQuery) q;
 				queryType = GraphQuery.class;
 			} catch (Exception e) {
-				throw new RuntimeException(e);
+				throw new SailTmapiException(e);
 			}
-			if (demandType.equals(SPARQLResultFormat.N3))
-				gq.evaluate(new N3Writer(out));
-			else if (demandType.equals(SPARQLResultFormat.XML))
-				gq.evaluate(new RDFXMLWriter(out));
-			else if (demandType.equals(SPARQLResultFormat.HTML))
-				gq.evaluate(new N3Writer(out));
-			else
-				throw new FormatException(demandType
-						+ " is not allowed in CONSTRUCT");
+			try {
+				if (demandType.equals(SPARQLResultFormat.N3))
+					gq.evaluate(new N3Writer(out));
+				else if (demandType.equals(SPARQLResultFormat.XML))
+					gq.evaluate(new RDFXMLWriter(out));
+				else if (demandType.equals(SPARQLResultFormat.HTML))
+					gq.evaluate(new N3Writer(out));
+				else
+					throw new SPARQLFormatException(demandType
+							+ " is not allowed in CONSTRUCT");
+			} catch (SPARQLFormatException e) {
+				throw new SPARQLFormatException(e);
+			} catch (Exception e) {
+				throw new SailTmapiException(e);
+			}
+
 
 		} else {
 			// No N3
@@ -265,20 +272,23 @@ public class TMConnector {
 			try {
 				tq = (TupleQuery) q;
 				queryType = TupleQuery.class;
+				if (demandType.equals(SPARQLResultFormat.CSV))
+					tq.evaluate(new SPARQLResultsCSVWriter(out));
+				else if (demandType.equals(SPARQLResultFormat.JSON))
+					tq.evaluate(new SPARQLResultsJSONWriter(out));
+				else if (demandType.equals(SPARQLResultFormat.XML))
+					tq.evaluate(new SPARQLResultsXMLWriter(out));
+				else if (demandType.equals(SPARQLResultFormat.HTML))
+					tq.evaluate(new SPARQLResultsHTMLTableWriter(out));
+				else
+					throw new SPARQLFormatException(demandType
+							+ " is not allowed in SELECT");
+			} catch (SPARQLFormatException e) {
+				throw new SPARQLFormatException(e);
 			} catch (Exception e) {
-				throw new RuntimeException(e);
+				throw new SailTmapiException(e);
 			}
-			if (demandType.equals(SPARQLResultFormat.CSV))
-				tq.evaluate(new SPARQLResultsCSVWriter(out));
-			else if (demandType.equals(SPARQLResultFormat.JSON))
-				tq.evaluate(new SPARQLResultsJSONWriter(out));
-			else if (demandType.equals(SPARQLResultFormat.XML))
-				tq.evaluate(new SPARQLResultsXMLWriter(out));
-			else if (demandType.equals(SPARQLResultFormat.HTML))
-				tq.evaluate(new SPARQLResultsHTMLTableWriter(out));
-			else
-				throw new FormatException(demandType
-						+ " is not allowed in SELECT");
+
 
 		}
 		return queryType;

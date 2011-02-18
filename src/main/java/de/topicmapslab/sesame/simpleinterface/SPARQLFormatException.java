@@ -14,21 +14,21 @@ package de.topicmapslab.sesame.simpleinterface;
  * @author Arnim Bleier
  * 
  */
-public class FormatException extends RuntimeException {
+public class SPARQLFormatException extends SailTmapiException {
 
 	private static final long serialVersionUID = 5534304917478834240L;
 
 	/**
 	 * @param message
 	 */
-	public FormatException(String message) {
+	public SPARQLFormatException(String message) {
 		super(message);
 	}
 
 	/**
 	 * @param cause
 	 */
-	public FormatException(Throwable cause) {
+	public SPARQLFormatException(Throwable cause) {
 		super(cause);
 	}
 
@@ -36,7 +36,7 @@ public class FormatException extends RuntimeException {
 	 * @param message
 	 * @param cause
 	 */
-	public FormatException(String message, Throwable cause) {
+	public SPARQLFormatException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
